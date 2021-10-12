@@ -15,41 +15,57 @@ class DataBaseService {
 
   Future updateUserData(String email, String password) async {
     return await userCollection.doc(uid).set({
-      'email': email,
-      'password': Crypt.sha256(password).toString(),
+      'Email': email,
+      'Password': Crypt.sha256(password).toString(),
     });
   }
 
-  Future updateUserRythmGame(int score, double pixelsFromCenter) async {
+  Future updateUserRythmGame(
+      int score, double pixelsFromCenter, String medicineAnswer) async {
     return await userCollection
         .doc(uid)
-        .collection("RythmGame")
-        .doc(createTimeStamp())
-        .set({'score': score, 'pixelsFromCenter': pixelsFromCenter});
-  }
-
-  Future updateUserMemoryGame(
-      int tries, int difficulty, bool gameFinished) async {
-    return await userCollection
-        .doc(uid)
-        .collection("MemoryGame")
+        .collection("Rhythm Test")
         .doc(createTimeStamp())
         .set({
-      'tries': tries,
-      'difficulty': difficulty,
-      'gameFinished': gameFinished
+      'Medicine Answer': medicineAnswer,
+      'Score': score,
+      'Total Pixels From Center': pixelsFromCenter
     });
   }
 
-  Future<void> uploadFile(File file,String folderName,String filetype) async {
+  Future updateUserMemoryGame(int tries, int difficulty, bool gameFinished,
+      String medicineAnswer) async {
+    return await userCollection
+        .doc(uid)
+        .collection("Memory Game")
+        .doc(createTimeStamp())
+        .set({
+      'Medicine Answer': medicineAnswer,
+      'Tries': tries,
+      'Difficulty': difficulty,
+      'Game Finished': gameFinished
+    });
+  }
+
+  Future updateGeneric(String collectionName, String medicineAnswer) async {
+    return await userCollection
+        .doc(uid)
+        .collection(collectionName)
+        .doc(createTimeStamp())
+        .set({"Medicine Answer": medicineAnswer});
+  }
+
+  Future uploadFile(File file, String folderName, String filetype) async {
+    String timeStamp = createTimeStamp();
     try {
       await FirebaseStorage.instance
           .ref(uid + '/' + folderName)
-          .child(createTimeStamp()+filetype)
+          .child(timeStamp + filetype)
           .putFile(file);
     } catch (e) {
       print(e);
     }
+
     // e.g, e.code == 'canceled'
   }
 }

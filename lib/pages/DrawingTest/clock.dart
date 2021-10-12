@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:parkinsons_app/services/Util.dart';
 import 'package:parkinsons_app/services/auth.dart';
 import 'package:parkinsons_app/services/database.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:quiver/time.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
@@ -12,6 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ClockDraw extends StatefulWidget {
+
+  String medicineAnswer;
+  ClockDraw({required this.medicineAnswer});
+
   @override
   _ClockDrawState createState() => _ClockDrawState();
 }
@@ -21,6 +27,7 @@ class _ClockDrawState extends State<ClockDraw> {
   double strokeWidth = 2.0;
 
   final controller = ScreenshotController();
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -180,7 +187,9 @@ class _ClockDrawState extends State<ClockDraw> {
       final image = File('${directory.path}/clock.png');
       image.writeAsBytes(imageBytes);
       String uid = AuthService().getCurrentUser().uid;
-      DataBaseService(uid:uid).uploadFile(image,"Clock Drawing Test",'.png');
+      DataBaseService db = DataBaseService(uid: uid);
+      db.updateGeneric("Clock Drawing Test", widget.medicineAnswer);
+      db.uploadFile(image,"Clock Drawing Test",'.png');
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("image uploaded sucessfully!")));
     }
     else{

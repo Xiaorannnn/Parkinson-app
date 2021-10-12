@@ -14,12 +14,15 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:csv/csv.dart';
 
 
-class Walking extends StatefulWidget {
+class StraightWalking extends StatefulWidget {
+  String medicineAnswer;
+  StraightWalking({required this.medicineAnswer});
+
   @override
-  _WalkingState createState() => _WalkingState();
+  _StraightWalkingState createState() => _StraightWalkingState();
 }
 
-class _WalkingState extends State<Walking> {
+class _StraightWalkingState extends State<StraightWalking> {
   bool isRecording = false;
   bool isDone = false;
   int stepsTaken = 0;
@@ -65,7 +68,7 @@ class _WalkingState extends State<Walking> {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
-          title: Text("Walking Test"),
+          title: Text("Straight Walking Test"),
           centerTitle: true,
         ),
         body: SafeArea(
@@ -137,7 +140,9 @@ class _WalkingState extends State<Walking> {
 
     //Upload to firebase
     String uid = AuthService().getCurrentUser().uid;
-    DataBaseService(uid:uid).uploadFile(file, "Walking Test",".csv");
+    DataBaseService db = DataBaseService(uid: uid);
+    db.uploadFile(file, "Straight Walking Test",".csv");
+    db.updateGeneric("Straight Walking Test", widget.medicineAnswer);
     resetData();
 
 
@@ -200,6 +205,23 @@ class _WalkingState extends State<Walking> {
     if (!mounted) return;
   }
 
+  void initSensorSate() {
+    _streamSubscriptions.add(
+      motionSensors.gyroscope.listen(onGyroScopeEvent),
+    );
+    _streamSubscriptions.add(
+      motionSensors.userAccelerometer.listen(onAccelerometerEvent),
+    );
+    _streamSubscriptions.add(
+      motionSensors.magnetometer.listen(onMagnetometerEvent),
+    );
+  }
+
+  void initAudio(){
+    audioPlayer = AudioPlayer();
+    audioCache = AudioCache(fixedPlayer: audioPlayer);
+  }
+
   /**--- Funcions for Sensors---**/
   void onGyroScopeEvent(GyroscopeEvent event) {
     setState(() {
@@ -224,36 +246,6 @@ class _WalkingState extends State<Walking> {
     });
   }
 
-
-
-  void initSensorSate() {
-    _streamSubscriptions.add(
-      motionSensors.gyroscope.listen(onGyroScopeEvent),
-    );
-    _streamSubscriptions.add(
-      motionSensors.userAccelerometer.listen(onAccelerometerEvent),
-    );
-    _streamSubscriptions.add(
-      motionSensors.magnetometer.listen(onMagnetometerEvent),
-    );
-
-
-  }
-
-  void initAudio(){
-    audioPlayer = AudioPlayer();
-    audioCache = AudioCache(fixedPlayer: audioPlayer);
-  }
-
-  //Future<int> _getDuration(String filePath) async {
-  //  final uri = await audioCache!.load(filePath);
-  //  await audioPlayer!.setUrl(uri.toString());
-  //  return Future.delayed(
-  //    const Duration(seconds: 2),
-  //        () => audioPlayer!.getDuration(),
-  //  );
-  //}
-
   /**--- Funcions for building the UI---**/
   Widget buildInstructions(Size screenSize) {
     return Container(
@@ -264,8 +256,10 @@ class _WalkingState extends State<Walking> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            "Put your smartphone in your pocket and walk straight atleast for 20 steps",
-            style: TextStyle(fontSize: screenSize.width * 0.08),
+            "1.Turn up your phone's volume so you can hear the instructions while you are walking\n\n"+
+            "2.Put your smartphone in your front pocket and  if you do not have pockets you can place the phone in your waist band of your pants\n\n"+
+            "3.Please stand up if you are sitting, please walk straight at least for 20 steps",
+            style: TextStyle(fontSize: 15.0),
           ),
         ),
       ),
