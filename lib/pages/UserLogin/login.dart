@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:parkinsons_app/services/auth.dart';
 import 'package:crypt/crypt.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 
@@ -33,12 +34,12 @@ class _LoginState extends State<Login> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "Welcome!",
+                        AppLocalizations.of(context)!.login_welcome,
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
                       ),
                       Text("$error", style: TextStyle(color: Colors.red)),
                       SizedBox(height: 50),
-                      buildEmail(),
+                      buildEmail(context),
                       SizedBox(height: 20),
                       buildPassword(),
                       buildLoginBtn(context,this),
@@ -53,12 +54,12 @@ class _LoginState extends State<Login> {
     }
   }
 
-  Widget buildEmail() {
+  Widget buildEmail(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          "Email",
+          AppLocalizations.of(context)!.login_email,
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),

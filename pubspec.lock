@@ -188,6 +188,11 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_localizations:
+    dependency: "direct main"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_neumorphic:
     dependency: "direct main"
     description:
@@ -262,7 +267,7 @@ packages:
     source: hosted
     version: "0.4.0"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       url: "https://pub.dartlang.org"

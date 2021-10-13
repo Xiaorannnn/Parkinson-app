@@ -1,0 +1,7 @@
+{
+    "login_welcome": "Welcome!",
+    "@login_welcome": {
+      "description": "Welcome message"
+    },
+    "login_email": "Email"
+}

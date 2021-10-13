@@ -20,7 +20,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:parkinsons_app/pages/UserLogin/login.dart';
 import 'package:parkinsons_app/pages/UserLogin/signup.dart';
 import 'package:parkinsons_app/pages/WalkingTest/StraightWalking.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -30,7 +31,24 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(initialRoute: '/login',
+    return MaterialApp(
+        localeResolutionCallback: (
+            Locale? locale,
+            Iterable<Locale> supportedLocales,
+            ) {
+          return locale;
+        },
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale('zh', 'CN'),
+          Locale('en', ''),
+        ],
+        initialRoute: '/login',
         onGenerateRoute: _getRoute,
         routes: {
       '/login': (context) => Login(),
@@ -105,4 +123,5 @@ class MyApp extends StatelessWidget {
 
     return null;
   }
+
 }
