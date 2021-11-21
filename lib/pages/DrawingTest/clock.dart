@@ -13,6 +13,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class ClockDraw extends StatefulWidget {
 
   String medicineAnswer;
@@ -80,7 +82,8 @@ class _ClockDrawState extends State<ClockDraw> {
 
       ],
       title: Text(
-        "Clock Drawing Test",
+          AppLocalizations.of(context)!.drawing_menu_clock,
+        // "Clock Drawing Test",
         style: TextStyle(fontSize: 15.0),
       ),
       centerTitle: true,
@@ -120,7 +123,8 @@ class _ClockDrawState extends State<ClockDraw> {
     return Container(
         width: screenSize.width * 0.8,
         child: Text(
-          "1: Draw a clock with all the numbers and set the hands to 10 minutes after 11\n\n2:Press the submit button",
+          AppLocalizations.of(context)!.drawing_clock_instruction,
+          // "1: Draw a clock with all the numbers and set the hands to 10 minutes after 11\n\n2:Press the submit button",
           style: TextStyle(fontSize: 15.0),
         ));
   }
@@ -202,7 +206,10 @@ class _ClockDrawState extends State<ClockDraw> {
       height: screenSize.height * 0.05,
       child: ElevatedButton(
         onPressed: () => onSubmitPressed(screenSize),
-        child: Text("Submit Drawing"),
+        child: Text(
+          AppLocalizations.of(context)!.drawing_submit
+            // "Submit Drawing"
+        ),
         style: ButtonStyle(
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15)))),

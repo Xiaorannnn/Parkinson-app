@@ -5,6 +5,8 @@ import 'package:parkinsons_app/pages/RhythmTest/rhythm.dart';
 import 'package:parkinsons_app/services/Util.dart';
 import 'package:parkinsons_app/services/auth.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class MedicineQuestion extends StatefulWidget {
   String routeNameOfNextWidget;
 
@@ -63,12 +65,16 @@ class _MedicineQuestionState extends State<MedicineQuestion> {
         SizedBox(
           height: screenSize.height * 0.025,
         ),
-        Text("We would like to understand how your performance on this activity could be affected by the timing of your medication.",style: TextStyle(fontSize: 20.0),),
+        Text(
+          // "We would like to understand how your performance on this activity could be affected by the timing of your medication.",
+          AppLocalizations.of(context)!.medicine_title,
+          style: TextStyle(fontSize: 20.0),),
         SizedBox(
           height: screenSize.height * 0.025,
         ),
         Text(
-          "When are you preforming this activity?",
+          AppLocalizations.of(context)!.medicine_question,
+          // "When are you preforming this activity?",
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ],
@@ -78,10 +84,10 @@ class _MedicineQuestionState extends State<MedicineQuestion> {
   Widget buildQuestions() {
 
     //choices that the user can pick
-    String choice1 = "Immediately before taking parkinson's medication";
-    String choice2 = "Just after taking Parkinson's medication(at your best)";
-    String choice3 = "Another time";
-    String choice4 = "I don't take Parkinson's medication";
+    String choice1 = AppLocalizations.of(context)!.medicine_choice1;
+    String choice2 = AppLocalizations.of(context)!.medicine_choice2;
+    String choice3 = AppLocalizations.of(context)!.medicine_choice3;
+    String choice4 = AppLocalizations.of(context)!.medicine_choice4;
 
     return Column(
       children: [
@@ -138,7 +144,8 @@ class _MedicineQuestionState extends State<MedicineQuestion> {
               horizontal: screenSize.width * 0.2,
             ),
             side: BorderSide(color: Colors.red)),
-        child: Text("Next", style: TextStyle(fontSize: 15, color: Colors.red)),
+        child: Text(AppLocalizations.of(context)!.medicine_next,
+            style: TextStyle(fontSize: 15, color: Colors.red)),
         onPressed: handleNextPressed);
   }
 

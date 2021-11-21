@@ -7,6 +7,8 @@ import 'package:parkinsons_app/services/database.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class JoinCircles extends StatefulWidget {
   String medicineAnswer;
 
@@ -25,10 +27,16 @@ class _JoinCirclesState extends State<JoinCircles> {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Join Circles'),
+        title: Text(
+            AppLocalizations.of(context)!.drawing_menu_circles
+            // 'Join Circles'
+        ),
         actions: [
           ElevatedButton(
-              child: Text('Submit Drawing'),
+              child: Text(
+                  AppLocalizations.of(context)!.drawing_submit
+                  // 'Submit Drawing'
+              ),
               onPressed: submitImage
           )
         ],
@@ -49,10 +57,16 @@ class _JoinCirclesState extends State<JoinCircles> {
                     SizedBox(height: screenSize.height * 0.1,),
                     Container(
                       padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.015),
-                        child: Text("INSTRUCTIONS",style: TextStyle(fontSize: 30.0,fontWeight: FontWeight.bold),)),
+                        child: Text(
+                          AppLocalizations.of(context)!.drawing_join_instructions,
+                          // "INSTRUCTIONS",
+                          style: TextStyle(fontSize: 30.0,fontWeight: FontWeight.bold),)),
                     Container(
                         padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.025,horizontal: screenSize.width * 0.025),
-                        child: Text("Please Join the circles together to form a letter (ignore the squares) ",style: TextStyle(fontSize: 15),)),
+                        child: Text(
+                          AppLocalizations.of(context)!.drawing_join_subinstructions,
+                          // "Please Join the circles together to form a letter (ignore the squares) ",
+                          style: TextStyle(fontSize: 15),)),
                   ]),
             ]
 

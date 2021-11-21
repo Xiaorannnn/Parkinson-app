@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parkinsons_app/pages/VisualMemoryTest/memory.dart';
 import 'package:parkinsons_app/services/Util.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class VisualMemoryTestMenu extends StatefulWidget {
   String medicineAnswer;
@@ -16,7 +17,8 @@ class _VisualMemoryTestMenuState extends State<VisualMemoryTestMenu> {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
         appBar:AppBar(
-          title:Text("Select Difficulty",
+          title:Text(
+              AppLocalizations.of(context)!.memory_menu_header,
             style: TextStyle(
                 fontSize: 15.0
             ),
@@ -27,12 +29,12 @@ class _VisualMemoryTestMenuState extends State<VisualMemoryTestMenu> {
             child: Container(
                 width: double.infinity,
                 height: screenSize.height,
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 40),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "Choose a Difficulty!",
+                        AppLocalizations.of(context)!.memory_menu,
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                       SizedBox(height: 10),
@@ -49,12 +51,14 @@ class _VisualMemoryTestMenuState extends State<VisualMemoryTestMenu> {
 
   Widget buildDifficultyBtn(BuildContext context, int difficulty) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 25),
+      padding: EdgeInsets.symmetric(vertical: 20),
       width: double.infinity,
       child: RaisedButton(
         elevation: 5,
         child: Text(
-          'Difficulty level ' + difficulty.toString() + " (" + (difficulty + 1).toString() + "x" + (difficulty +1).toString() +" grid)",
+          AppLocalizations.of(context)!.memory_menu_d + difficulty.toString() +
+              " (" + (difficulty + 1).toString() + "x" + (difficulty +1).toString() +
+              AppLocalizations.of(context)!.memory_menu_grid + ")",
           style: TextStyle(color: Colors.white),
         ),
         onPressed: () {

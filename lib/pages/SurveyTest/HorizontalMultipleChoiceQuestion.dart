@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'Question.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class HorizontalMultipleChoiceQuestion extends StatefulWidget with Question {
   String question;
   List<String> choices;
@@ -26,7 +28,7 @@ class _HorizontalMultipleChoiceQuestionState extends State<HorizontalMultipleCho
       child: Column(
         children: [
           Text(
-            "QUESTION " + widget.questionNumber.toString(),
+            AppLocalizations.of(context)!.survey_question + widget.questionNumber.toString(),
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           Container(

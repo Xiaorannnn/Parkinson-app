@@ -13,6 +13,8 @@ import 'package:motion_sensors/motion_sensors.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:csv/csv.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class StraightWalking extends StatefulWidget {
   String medicineAnswer;
@@ -68,7 +70,10 @@ class _StraightWalkingState extends State<StraightWalking> {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
-          title: Text("Straight Walking Test"),
+          title: Text(
+              AppLocalizations.of(context)!.walking_menu_straight
+              // "Straight Walking Test"
+          ),
           centerTitle: true,
         ),
         body: SafeArea(
@@ -83,7 +88,7 @@ class _StraightWalkingState extends State<StraightWalking> {
                   padding:
                       EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                   child: Text(
-                    "Instructions",
+                    AppLocalizations.of(context)!.walking_test_instruction,
                     style: TextStyle(
                         fontSize: 30.0,
                         fontWeight: FontWeight.bold,
@@ -256,9 +261,10 @@ class _StraightWalkingState extends State<StraightWalking> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            "1.Turn up your phone's volume so you can hear the instructions while you are walking\n\n"+
-            "2.Put your smartphone in your front pocket and  if you do not have pockets you can place the phone in your waist band of your pants\n\n"+
-            "3.Please stand up if you are sitting, please walk straight at least for 20 steps",
+            AppLocalizations.of(context)!.walking_test_straight_text,
+            // "1.Turn up your phone's volume so you can hear the instructions while you are walking\n\n"+
+            // "2.Put your smartphone in your front pocket and  if you do not have pockets you can place the phone in your waist band of your pants\n\n"+
+            // "3.Please stand up if you are sitting, please walk straight at least for 20 steps",
             style: TextStyle(fontSize: 15.0),
           ),
         ),
@@ -287,7 +293,8 @@ class _StraightWalkingState extends State<StraightWalking> {
       alignment: Alignment.bottomCenter,
       child: WideButton(
         color: isRecording ? Colors.red : Colors.blue,
-        buttonText: isRecording ? "Press to Stop" : "Press to Start",
+        buttonText: isRecording ? AppLocalizations.of(context)!.walking_test_straight_button1 : AppLocalizations.of(context)!.walking_test_straight_button2,
+        // buttonText: isRecording ? "Press to Stop" : "Press to Start",
         onPressed: OnStartStopButtonPressed,
       ),
     );
@@ -298,7 +305,7 @@ class _StraightWalkingState extends State<StraightWalking> {
       opacity: isRecording ? 1.0 : 0.0 ,
       child: Container(
           padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-          child: Text("Steps Taken: " + stepsTaken.toString(),
+          child: Text(AppLocalizations.of(context)!.walking_test_straight_step + stepsTaken.toString(),
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold))),
     );
   }

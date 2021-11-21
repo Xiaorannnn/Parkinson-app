@@ -8,6 +8,8 @@ import 'package:parkinsons_app/services/database.dart';
 import 'package:parkinsons_app/widgets/TileModel.dart';
 import 'package:quiver/async.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 CountdownTimer? _timer = null;
 List<TileModel> pairs = <TileModel>[];
 bool selected = false;
@@ -16,7 +18,9 @@ bool gameStarted = false;
 String correctImagePath = ""; //path to what the user will have to remember
 int difficulty = 0; //index of difficulty
 
-List<String> startButtonString = ["Start",  "Next Stage"];
+// List<String> startButtonString = ["Start",  "Next Stage"];
+
+
 
 class Memory extends StatefulWidget {
   String medicineAnswer;
@@ -47,7 +51,7 @@ class _MemoryState extends State<Memory> {
   late CountdownTimer sub;
   int score = 0;
 
-  String instructionText = "Remember where the shape is: ";
+  // String instructionText = "Remember where the shape is: ";
 
   AuthService _authService = AuthService();
 
@@ -81,12 +85,15 @@ class _MemoryState extends State<Memory> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> startButtonString = [AppLocalizations.of(context)!.memory_start, AppLocalizations.of(context)!.memory_nextstage];
+
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            "Visual Memory Test!",
+            AppLocalizations.of(context)!.memory_header,
+            // "Visual Memory Test!",
             style: TextStyle(fontSize: 15.0),
           ),
           centerTitle: true,
@@ -103,7 +110,7 @@ class _MemoryState extends State<Memory> {
                         Opacity(
                           opacity: correctShapeOpactity,
                           child: Text(
-                            instructionText,
+                            AppLocalizations.of(context)!.memory_title,
                             style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
@@ -115,15 +122,15 @@ class _MemoryState extends State<Memory> {
                           opacity: correctShapeOpactity,
                           child: Image.asset(
                             correctImagePath,
-                            height: size.width * 0.15,
-                            width: size.width * 0.15,
+                            height: size.width * 0.10,
+                            width: size.width * 0.10,
                           ),
                         )
                       ]),
                       Opacity(
                         opacity: youWonOpacity,
                         child: Text(
-                          "Great Job! Press " +
+                          AppLocalizations.of(context)!.memory_great +
                               startButtonString[difficulty] +
                               "!",
                           style: TextStyle(
@@ -138,7 +145,7 @@ class _MemoryState extends State<Memory> {
                           child: Container(
                               padding: EdgeInsets.all(size.height * 0.025),
                               child: Text(
-                                "Time Left: " + "$_countDownCurrent",
+                                AppLocalizations.of(context)!.memory_time + "$_countDownCurrent",
                                 style: TextStyle(
                                     fontSize: 20.0,
                                     color: Colors.black,
@@ -168,7 +175,7 @@ class _MemoryState extends State<Memory> {
                         ),
                       ),
                       Text(
-                        "Tries: " + "$score",
+                        AppLocalizations.of(context)!.memory_tries + "$score",
                         style: TextStyle(
                             fontSize: size.width * 0.05,
                             fontWeight: FontWeight.bold,
@@ -197,7 +204,8 @@ class _MemoryState extends State<Memory> {
                                     Future.delayed(const Duration(seconds: 5),
                                         () {
                                       setState(() {
-                                        instructionText = "Find where the shape is: ";
+                                        AppLocalizations.of(context)!.memory_find;
+                                        // instructionText = "Find where the shape is: ";
                                         visiblePairs =
                                             getQuestions(widget.gridDimension);
                                         correctShapeOpactity = 1.0;

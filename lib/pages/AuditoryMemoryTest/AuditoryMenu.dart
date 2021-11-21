@@ -3,6 +3,8 @@ import 'package:parkinsons_app/pages/AuditoryMemoryTest/AuditorMemory.dart';
 import 'package:parkinsons_app/services/Util.dart';
 import 'package:parkinsons_app/widgets/WideButton.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class AuditoryMenu extends StatefulWidget {
   String medicineAnswer;
@@ -20,7 +22,7 @@ class _AuditoryMenuState extends State<AuditoryMenu> {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Auditory Memory Test",style: TextStyle(fontSize: 15.0),),
+        title: Text(AppLocalizations.of(context)!.auditory_header,style: TextStyle(fontSize: 15.0),),
       ),
       body: SafeArea(
         child: Container(
@@ -31,7 +33,7 @@ class _AuditoryMenuState extends State<AuditoryMenu> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              WideButton(color: Colors.blue, buttonText: "Recall three words", onPressed: (){
+              WideButton(color: Colors.blue, buttonText: AppLocalizations.of(context)!.auditory_menu_choice1, onPressed: (){
 
                 //'/auditory3':(context) => AuditoryMemory(mp3Path: "three_words.mp3",recordActivityPath: "/recordauditory3"),
                 //'/auditory4':(context) => AuditoryMemory(mp3Path: "four_words.mp3",recordActivityPath: "/recordauditory4"),
@@ -39,10 +41,10 @@ class _AuditoryMenuState extends State<AuditoryMenu> {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => AuditoryMemory(medicineAnswer: widget.medicineAnswer , mp3Path:"three_words.mp3" ,activityTitle: "Auditory Memory Three Words")));
 
               }),
-              WideButton(color: Colors.blue, buttonText: "Recall four words", onPressed: (){
+              WideButton(color: Colors.blue, buttonText: AppLocalizations.of(context)!.auditory_menu_choice2, onPressed: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => AuditoryMemory(medicineAnswer: widget.medicineAnswer , mp3Path:"four_words.mp3" ,activityTitle: "Auditory Memory Four Words")));
               }),
-              WideButton(color: Colors.blue, buttonText: "Recall five words", onPressed: (){
+              WideButton(color: Colors.blue, buttonText: AppLocalizations.of(context)!.auditory_menu_choice3, onPressed: (){
 
                 Navigator.push(context, MaterialPageRoute(builder: (context) => AuditoryMemory(medicineAnswer: widget.medicineAnswer , mp3Path:"five_words.mp3" ,activityTitle: "Auditory Memory Five Words")));
               }),

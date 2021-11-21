@@ -9,6 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:record_mp3/record_mp3.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 // ignore: must_be_immutable
@@ -51,7 +52,9 @@ class _RecordActivityState extends State<RecordActivity> {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
-          title: Text("Follow the instructions below!"),
+          title: Text(AppLocalizations.of(context)!.voice_record_header
+              // "Follow the instructions below!"
+          ),
           centerTitle: true,
         ),
         body: SafeArea(
@@ -69,7 +72,8 @@ class _RecordActivityState extends State<RecordActivity> {
             SizedBox(height: screenSize.height * 0.025),
             Opacity(
               opacity: isRecording ? 1.0 : 0.0,
-              child: Text("RECORDING",
+              child: Text(
+                  AppLocalizations.of(context)!.voice_record_recording,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15.0,
@@ -138,7 +142,10 @@ class _RecordActivityState extends State<RecordActivity> {
       db.updateGeneric(widget.activityTitle, widget.medicineAnswer);
 
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Recording Submitted!")));
+          .showSnackBar(SnackBar(content: Text(
+          AppLocalizations.of(context)!.voice_record_submitted
+          // "Recording Submitted!"
+      )));
       Navigator.of(context).pop();
 
     }
@@ -148,7 +155,10 @@ class _RecordActivityState extends State<RecordActivity> {
   Widget buildSubmitButton() {
     return ElevatedButton(
       onPressed: () => onSubmitPressed(),
-      child: Text("Submit Recording"),
+      child: Text(
+          AppLocalizations.of(context)!.voice_record_submit
+          // "Submit Recording"
+      ),
       style: ButtonStyle(
           padding:
               MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(25)),
@@ -173,7 +183,9 @@ class _RecordActivityState extends State<RecordActivity> {
   Widget buildRetyButton() {
     return ElevatedButton(
       onPressed: () => onRetryPressed(),
-      child: Text("Retry Recording"),
+      child: Text(AppLocalizations.of(context)!.voice_record_retry
+          // "Retry Recording"
+      ),
       style: ButtonStyle(
           padding:
               MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(30)),
@@ -205,7 +217,10 @@ class _RecordActivityState extends State<RecordActivity> {
         isComplete = true;
         isRecording = false;
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Your recording is complete!")));
+            SnackBar(content: Text(
+                AppLocalizations.of(context)!.voice_record_complete
+                // "Your recording is complete!"
+            )));
       }
       else{
         isRecording = true;
@@ -219,7 +234,8 @@ class _RecordActivityState extends State<RecordActivity> {
   Widget buildRecordButton() {
     return ElevatedButton(
       onPressed: () async => onRecordPressed(),
-      child: Text(isRecording ? "Stop Recording" : "Start Recording"),
+      child: Text(isRecording ? AppLocalizations.of(context)!.voice_record_stop : AppLocalizations.of(context)!.voice_record_start),
+      // child: Text(isRecording ? "Stop Recording" : "Start Recording"),
       style: ButtonStyle(
           padding:
               MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(25)),

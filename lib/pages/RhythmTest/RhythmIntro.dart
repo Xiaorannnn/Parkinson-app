@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:parkinsons_app/pages/RhythmTest/rhythm.dart';
 import 'package:parkinsons_app/services/Util.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class RhythmIntro extends StatelessWidget {
   String medicineAnswer;
 
@@ -21,7 +23,7 @@ class RhythmIntro extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               child: Column(
                 children: [
-                  buildInstructions(screenSize),
+                  buildInstructions(screenSize, context),
                   buildImage(screenSize),
                   buildNextButton(context, screenSize)
                 ],
@@ -31,21 +33,24 @@ class RhythmIntro extends StatelessWidget {
     );
   }
 
-  Widget buildInstructions(Size screenSize) {
+  Widget buildInstructions(Size screenSize, context) {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       SizedBox(height: screenSize.height * 0.05),
       Text(
-        "INSTRUCTIONS",
+        AppLocalizations.of(context)!.rhythm_intro_title,
+        // "INSTRUCTIONS",
         style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
       ),
       SizedBox(height: screenSize.height * 0.05),
       Text(
-        "Rest your phone on a flat surface. Then use two fingers on the same hand to tap the buttons that appear. Keep tapping for 20 seconds",
+        AppLocalizations.of(context)!.rhythm_intro_text1,
+        // "Rest your phone on a flat surface. Then use two fingers on the same hand to tap the buttons that appear. Keep tapping for 20 seconds",
         style: TextStyle(fontSize: 15),
       ),
       SizedBox(height: screenSize.height * 0.05),
       Text(
-        "Tap Next to begin the test",
+        AppLocalizations.of(context)!.rhythm_intro_text2,
+        // "Tap Next to begin the test",
         style: TextStyle(fontSize: 15),
       )
     ]);
@@ -72,7 +77,9 @@ class RhythmIntro extends StatelessWidget {
               horizontal: screenSize.width * 0.2,
             ),
             side: BorderSide(color: Colors.red)),
-        child: Text("Next", style: TextStyle(fontSize: 15, color: Colors.red)),
+        child: Text(
+            AppLocalizations.of(context)!.rhythm_intro_next,
+            style: TextStyle(fontSize: 15, color: Colors.red)),
         onPressed: () {
           //Navigator.of(context).pushReplacementNamed('/rhythm');
 

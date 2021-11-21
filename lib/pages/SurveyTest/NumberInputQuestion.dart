@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 
 import 'Question.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class NumberInputQuestion extends StatefulWidget with Question {
   String question;
   int questionNumber;
@@ -28,7 +30,7 @@ class _NumberInputQuestionState extends State<NumberInputQuestion> {
           children: [
 
             Text(
-              "QUESTION " + QuestionNumber.toString(),
+              AppLocalizations.of(context)!.survey_question + QuestionNumber.toString(),
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
 
@@ -40,7 +42,7 @@ class _NumberInputQuestionState extends State<NumberInputQuestion> {
                 )),
 
             TextField(
-              decoration: new InputDecoration(labelText: "Enter your number here"),
+              decoration: new InputDecoration(labelText: AppLocalizations.of(context)!.survey_number),
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly

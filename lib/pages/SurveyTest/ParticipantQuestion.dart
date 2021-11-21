@@ -6,6 +6,8 @@ import 'package:parkinsons_app/pages/SurveyTest/MDS-UPDRS.dart';
 import 'package:parkinsons_app/services/Util.dart';
 import 'package:parkinsons_app/services/auth.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class ParticipantQuestion extends StatefulWidget {
   String routeNameOfNextWidget;
   ParticipantQuestion({required this.routeNameOfNextWidget});
@@ -38,7 +40,7 @@ class _ParticipantQuestionState extends State<ParticipantQuestion> {
                     buildInstructions(screenSize),
                     SizedBox(height: screenSize.height * 0.025),
                     Divider(thickness: 2.0,),
-                    buildQuestions(),
+                    buildQuestions(context),
                     Divider(
                       thickness: 2.0,
                     ),
@@ -59,19 +61,20 @@ class _ParticipantQuestionState extends State<ParticipantQuestion> {
           height: screenSize.height * 0.025,
         ),
         Text(
-          "Who is filing out this survey?",
+          AppLocalizations.of(context)!.survey_participant_title,
+          // "Who is filing out this survey?",
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ],
     );
   }
 
-  Widget buildQuestions() {
+  Widget buildQuestions(context) {
 
     //choices that the user can pick
-    String choice1 = "Patient";
-    String choice2 = "Caregiver";
-    String choice3 = "Patient and caregiver in equal proportion";
+    String choice1 = AppLocalizations.of(context)!.survey_participant_patient;
+    String choice2 = AppLocalizations.of(context)!.survey_participant_caregiver;
+    String choice3 = AppLocalizations.of(context)!.survey_participant_pc;
 
     return Column(
       children: [
@@ -118,7 +121,10 @@ class _ParticipantQuestionState extends State<ParticipantQuestion> {
               horizontal: screenSize.width * 0.2,
             ),
             side: BorderSide(color: Colors.red)),
-        child: Text("Next", style: TextStyle(fontSize: 15, color: Colors.red)),
+        child: Text(
+            AppLocalizations.of(context)!.survey_next,
+            // "Next",
+            style: TextStyle(fontSize: 15, color: Colors.red)),
         onPressed: handleNextPressed);
   }
 

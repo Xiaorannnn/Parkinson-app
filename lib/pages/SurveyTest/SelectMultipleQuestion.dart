@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parkinsons_app/pages/SurveyTest/Question.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class SelectMultipleQuestion extends StatefulWidget with Question {
@@ -37,7 +38,7 @@ class _SelectMultipleQuestionState extends State<SelectMultipleQuestion> {
       child: Column(
         children: [
           Text(
-            "QUESTION " + widget.questionNumber.toString(),
+            AppLocalizations.of(context)!.survey_question + widget.questionNumber.toString(),
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           Container(

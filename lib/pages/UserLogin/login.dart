@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:parkinsons_app/services/auth.dart';
@@ -38,10 +38,10 @@ class _LoginState extends State<Login> {
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
                       ),
                       Text("$error", style: TextStyle(color: Colors.red)),
-                      SizedBox(height: 50),
+                      SizedBox(height: 30),
                       buildEmail(context),
                       SizedBox(height: 20),
-                      buildPassword(),
+                      buildPassword(context),
                       buildLoginBtn(context,this),
                       buildAnonLoginBtn(context),
                       buildSignUpBtn(context)
@@ -72,7 +72,8 @@ class _LoginState extends State<Login> {
           ]),
           height: 60,
           child: TextFormField(
-            validator: (val) => val!.isEmpty ? "Enter a valid Email": null,
+            // validator: (val) => val!.isEmpty ? "Enter a valid Email": null,
+            validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.login_error_email: null,
             onChanged:(val)=> email = val ,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(color: Colors.black87),
@@ -83,7 +84,7 @@ class _LoginState extends State<Login> {
                   Icons.email,
                   color: Colors.blue,
                 ),
-                hintText: 'Email',
+                hintText: AppLocalizations.of(context)!.login_email,
                 hintStyle: TextStyle(color: Colors.black38)),
           ),
         )
@@ -91,12 +92,12 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget buildPassword() {
+  Widget buildPassword(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          "Password",
+          AppLocalizations.of(context)!.login_password,
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
@@ -111,7 +112,8 @@ class _LoginState extends State<Login> {
           child: TextFormField(
             validator: (val) {
               if(val!.isEmpty){
-                return "Please enter your password";
+                // return "Please enter your password";
+                return AppLocalizations.of(context)!.login_error_password;
               }
               else{
                 return null;
@@ -128,7 +130,7 @@ class _LoginState extends State<Login> {
                   Icons.lock,
                   color: Colors.blue,
                 ),
-                hintText: "Password",
+                hintText: AppLocalizations.of(context)!.login_password,
                 hintStyle: TextStyle(color: Colors.black38)),
           ),
         )
@@ -143,14 +145,15 @@ class _LoginState extends State<Login> {
       child: RaisedButton(
         elevation: 5,
         child: Text(
-          'Log in',
+          AppLocalizations.of(context)!.login_login,
           style: TextStyle(color: Colors.white),
         ),
         onPressed: () async {
           dynamic result = await _auth.signInWithEmailAndPassword(email, password);
           if (result == null) {
             parent.setState(() {
-              error = "Could not sign in with your credentials";
+              // error = "Could not sign in with your credentials";
+              error = AppLocalizations.of(context)!.login_failure;
               print("error signing in");
               print("RESULT: ${result.toString()}");
             });
@@ -176,7 +179,7 @@ Widget buildAnonLoginBtn(BuildContext context) {
     child: RaisedButton(
       elevation: 5,
       child: Text(
-        'Log in as a Guest',
+        AppLocalizations.of(context)!.login_as_guest,
         style: TextStyle(color: Colors.white),
       ),
       onPressed: () async {
@@ -206,7 +209,8 @@ Widget buildSignUpBtn(BuildContext context) {
       child: RaisedButton(
         elevation: 5,
         child: Text(
-          'Sign up',
+          AppLocalizations.of(context)!.login_signup,
+          // 'Sign up',
           style: TextStyle(color: Colors.black),
         ),
         onPressed: () {

@@ -12,6 +12,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quiver/async.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class Tremor extends StatefulWidget {
   String medicineAnswer;
   Tremor({required this.medicineAnswer});
@@ -77,7 +79,8 @@ class _TremorState extends State<Tremor> {
               ),
               if (testStarted)
                 Text(
-                  "Keep Still!",
+                  AppLocalizations.of(context)!.tremor_still,
+                  // "Keep Still!",
                   style: TextStyle(fontSize: 20),
                 ),
               SizedBox(
@@ -194,7 +197,10 @@ class _TremorState extends State<Tremor> {
 
   PreferredSizeWidget buildAppBar() {
     return AppBar(
-      title: Text("Tremor Test"),
+      title: Text(
+          AppLocalizations.of(context)!.tremor_header
+          // "Tremor Test"
+      ),
       centerTitle: true,
     );
   }
@@ -205,7 +211,8 @@ class _TremorState extends State<Tremor> {
         Container(
             padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
             child: Text(
-              "Instructions",
+              AppLocalizations.of(context)!.tremor_instructions,
+              // "Instructions",
               style: TextStyle(
                   fontSize: 30.0,
                   fontWeight: FontWeight.bold,
@@ -219,7 +226,8 @@ class _TremorState extends State<Tremor> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "Please sit down with your feet resting flat on the floor, and hold the phone still with your right hand in your lap for 30 seconds",
+                AppLocalizations.of(context)!.tremor_subinstructions,
+                // "Please sit down with your feet resting flat on the floor, and hold the phone still with your right hand in your lap for 30 seconds",
                 style: TextStyle(fontSize: 15.0),
               ),
             ),
@@ -276,7 +284,8 @@ class _TremorState extends State<Tremor> {
   Widget buildStartButton() {
     return WideButton(
         color: Colors.blue,
-        buttonText: "Start test",
+        buttonText: AppLocalizations.of(context)!.tremor_start,
+        // buttonText: "Start test",
         onPressed: () {
           if (!testStarted) {
             testStarted = true;

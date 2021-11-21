@@ -14,6 +14,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:csv/csv.dart';
 import 'package:quiver/async.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class Turning extends StatefulWidget {
   String medcineAnswer;
   Turning({required this.medcineAnswer});
@@ -211,7 +213,10 @@ class _TurningState extends State<Turning> {
 
   PreferredSizeWidget buildAppBar() {
     return AppBar(
-      title: Text("Turning Test"),
+      title: Text(
+          AppLocalizations.of(context)!.walking_menu_turning
+          // "Turning Test"
+      ),
       centerTitle: true,
     );
   }
@@ -221,7 +226,7 @@ class _TurningState extends State<Turning> {
         Container(
             padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
             child: Text(
-              "Instructions",
+              AppLocalizations.of(context)!.walking_test_instruction,
               style: TextStyle(
                   fontSize: 30.0,
                   fontWeight: FontWeight.bold,
@@ -235,9 +240,10 @@ class _TurningState extends State<Turning> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "1.Turn up your phone's volume so you can hear the instructions while you are walking\n\n"+
-                "2.Put your smartphone in your front pocket if you do not have pockets you can place the phone in the waist band of your pants\n\n"+
-                "3.Please stand up if you are sitting, please turn around and stand still for 30 seconds",
+                AppLocalizations.of(context)!.walking_test_turning_text,
+                // "1.Turn up your phone's volume so you can hear the instructions while you are walking\n\n"+
+                // "2.Put your smartphone in your front pocket if you do not have pockets you can place the phone in the waist band of your pants\n\n"+
+                // "3.Please stand up if you are sitting, please turn around and stand still for 30 seconds",
                 style: TextStyle(fontSize: 15.0),
               ),
             ),
@@ -272,7 +278,7 @@ class _TurningState extends State<Turning> {
   }
 
   Widget buildStartButton() {
-    return WideButton(color: testStarted?Colors.red:Colors.blue, buttonText: testStarted?"Stop Test":"Start test", onPressed: (){
+    return WideButton(color: testStarted?Colors.red:Colors.blue, buttonText: testStarted?AppLocalizations.of(context)!.walking_test_turning_stop:AppLocalizations.of(context)!.walking_test_turning_start, onPressed: (){
       if(!testStarted){
         testStarted = true;
 

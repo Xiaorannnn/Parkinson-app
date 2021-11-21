@@ -3,5 +3,9 @@
     "@login_welcome": {
       "description": "Welcome message"
     },
-    "login_email": "Email"
+    "login_email": "Email",
+    "login_password": "Password",
+    "login_login": "Sign in",
+    "login_as_guest": "Sign in as a guest",
+    "login_signup": "Register"
 }

@@ -10,6 +10,9 @@ import 'package:quiver/async.dart';
 import 'package:csv/csv.dart';
 import 'dart:io';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+
 class Rhythm extends StatefulWidget {
 
   String medicineAnswer;
@@ -67,7 +70,8 @@ class _RhythmState extends State<Rhythm> {
     return new Scaffold(
       appBar: AppBar(
         title: Text(
-          "Rhythm game!",
+          AppLocalizations.of(context)!.rhythm_header,
+          // "Rhythm game!",
           style: TextStyle(fontSize: 15.0),
         ),
         centerTitle: true,
@@ -79,18 +83,25 @@ class _RhythmState extends State<Rhythm> {
               child: Container(
                   padding:
                   EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
-                  child: Text("Press start to start the game",
+                  child: Text(
+                      AppLocalizations.of(context)!.rhythm_title1,
+                      // "Press start to start the game",
                       style: TextStyle(fontSize: 15.0)))),
           Center(
               child: Container(
-                  child: Text("Tap the buttons when they turn red!",
+                  child: Text(
+                      AppLocalizations.of(context)!.rhythm_title2,
+                      // "Tap the buttons when they turn red!",
                       style: TextStyle(fontSize: 15.0)))),
           Container(
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
               child: Opacity(
                   opacity: _countDownOpacity,
                   child:
-                  Text("Time Left", style: TextStyle(fontSize: 20.0)))),
+                  Text(
+                      AppLocalizations.of(context)!.rhythm_time,
+                      // "Time Left",
+                      style: TextStyle(fontSize: 20.0)))),
           Container(
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
               child: Opacity(
@@ -104,7 +115,7 @@ class _RhythmState extends State<Rhythm> {
           Opacity(
               opacity: _readyTimerOpacity,
               child: Text(
-                "Get Ready! " + " $_readyTimerCurrent",
+                AppLocalizations.of(context)!.rhythm_ready + " $_readyTimerCurrent",
                 style: TextStyle(fontSize: 20.0),
               )),
           Row(
@@ -118,23 +129,28 @@ class _RhythmState extends State<Rhythm> {
           Center(
               child: Container(
                   padding:
-                  EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
+                  EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
                   child: ElevatedButton(
                       onPressed: () {
                         if (!(_countdownCommenced) && !(_gamesCommenced)) {
                           startReadyTimer();
                         }
                       },
-                      child: Text("Start Test")))),
+                      child: Text(AppLocalizations.of(context)!.rhythm_start)))),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
             Container(
                 padding:
                 EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                child: Text("Score", style: TextStyle(fontSize: 15.0))),
+                child: Text(
+                    AppLocalizations.of(context)!.rhythm_score,
+                    // "Score",
+                    style: TextStyle(fontSize: 15.0))),
             Container(
                 padding:
                 EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                child: Text("Total Pixels from center",
+                child: Text(
+                    AppLocalizations.of(context)!.rhythm_pixel,
+                    // "Total Pixels from center",
                     style: TextStyle(fontSize: 15.0))),
           ]),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[

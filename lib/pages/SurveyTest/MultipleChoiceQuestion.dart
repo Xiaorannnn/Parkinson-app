@@ -2,6 +2,8 @@ import "package:flutter/material.dart";
 import 'package:parkinsons_app/pages/SurveyTest/Question.dart';
 import 'package:parkinsons_app/pages/VisualMemoryTest/memory.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class MultipleChoiceQuestion extends StatefulWidget with Question {
   String question;
   List<String> choices;
@@ -26,7 +28,7 @@ class _MultipleChoiceQuestionState extends State<MultipleChoiceQuestion> {
       child: Column(
         children: [
           Text(
-            "QUESTION " + widget.questionNumber.toString(),
+            AppLocalizations.of(context)!.survey_question + widget.questionNumber.toString(),
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           Container(

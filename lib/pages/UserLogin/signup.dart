@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:parkinsons_app/services/auth.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+
 String name = "";
 String email = "";
 String password = "";
@@ -19,7 +22,9 @@ class _SignUpState extends State<SignUp> {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
         appBar:AppBar(
-          title:Text("Sign Up!",
+          title:Text(
+            AppLocalizations.of(context)!.signup_header,
+            // "Sign Up!",
             style: TextStyle(
                 fontSize: 15.0
             ),
@@ -38,20 +43,22 @@ class _SignUpState extends State<SignUp> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "Sign Up",
+                      // "Sign Up",
+                      AppLocalizations.of(context)!.signup_title,
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     SizedBox(height: 10),
                     Text(
-                      "Please Enter all Credentials",
+                      // "Please Enter all Credentials",
+                      AppLocalizations.of(context)!.signup_title_2,
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                     ),
                     SizedBox(height: 35),
-                    buildName(),
+                    buildName(context),
                     SizedBox(height: 20),
-                    buildEmail(),
+                    buildEmail(context),
                     SizedBox(height: 20),
-                    buildPassword(),
+                    buildPassword(context),
                     Text("$error",style: TextStyle(color: Colors.red)),
                     buildSignUpBtn(context ,this)
                   ],
@@ -65,12 +72,13 @@ class _SignUpState extends State<SignUp> {
 }
 
 
-Widget buildName() {
+Widget buildName(context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
       Text(
-        "Name",
+        // "Name",
+        AppLocalizations.of(context)!.signup_name,
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
       SizedBox(height: 10),
@@ -94,19 +102,19 @@ Widget buildName() {
                 Icons.accessibility,
                 color: Colors.blue,
               ),
-              hintText: 'Name',
+              hintText: AppLocalizations.of(context)!.signup_name,
               hintStyle: TextStyle(color: Colors.black38)),
         ),
       )
     ],
   );
 }
-Widget buildEmail() {
+Widget buildEmail(BuildContext context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
       Text(
-        "Email",
+        AppLocalizations.of(context)!.login_email,
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
       SizedBox(height: 10),
@@ -130,7 +138,7 @@ Widget buildEmail() {
                 Icons.email,
                 color: Colors.blue,
               ),
-              hintText: 'Email',
+              hintText: AppLocalizations.of(context)!.login_email,
               hintStyle: TextStyle(color: Colors.black38)),
         ),
       )
@@ -138,12 +146,12 @@ Widget buildEmail() {
   );
 }
 
-Widget buildPassword() {
+Widget buildPassword(BuildContext context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
       Text(
-        "Password",
+        AppLocalizations.of(context)!.login_password,
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
       SizedBox(height: 10),
@@ -168,7 +176,7 @@ Widget buildPassword() {
                 Icons.lock,
                 color: Colors.blue,
               ),
-              hintText: "Password",
+              hintText: AppLocalizations.of(context)!.login_password,
               hintStyle: TextStyle(color: Colors.black38)),
         ),
       )
@@ -183,7 +191,7 @@ Widget buildSignUpBtn(BuildContext context,_SignUpState parent) {
     child: RaisedButton(
       elevation: 5,
       child: Text(
-        'Sign up',
+        AppLocalizations.of(context)!.signup_header,
         style: TextStyle(color: Colors.white),
       ),
       onPressed: () async{

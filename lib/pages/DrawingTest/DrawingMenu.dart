@@ -9,6 +9,8 @@ import 'package:parkinsons_app/widgets/WideButton.dart';
 
 import 'JoinCircles.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class DrawingMenu extends StatefulWidget {
   final AuthService _auth = AuthService();
   String medicineAnswer;
@@ -30,7 +32,7 @@ class _DrawingMenuState extends State<DrawingMenu> {
           children: [
             Center(
               child: Text(
-                "Drawing Test!",
+        AppLocalizations.of(context)!.drawing_menu_header,
                 style: TextStyle(fontSize: 12.0),
               ),
             ),
@@ -48,11 +50,11 @@ class _DrawingMenuState extends State<DrawingMenu> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
 
-                        WideButton(color: Colors.blue, buttonText: "Clock Drawing", onPressed: (){
+                        WideButton(color: Colors.blue, buttonText: AppLocalizations.of(context)!.drawing_menu_clock, onPressed: (){
                           Navigator.push(context, MaterialPageRoute(builder: (context) => ClockDraw(medicineAnswer: widget.medicineAnswer,)));
                         }),
 
-                        WideButton(color: Colors.blue, buttonText: "Join the circles", onPressed: (){
+                        WideButton(color: Colors.blue, buttonText: AppLocalizations.of(context)!.drawing_menu_circles, onPressed: (){
                           Navigator.push(context, MaterialPageRoute(builder: (context) => JoinCircles(medicineAnswer: widget.medicineAnswer,)));
                         }),
                       ],

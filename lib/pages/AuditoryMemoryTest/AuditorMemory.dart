@@ -9,6 +9,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record_mp3/record_mp3.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 // ignore: must_be_immutable
 class AuditoryMemory extends StatefulWidget {
   String medicineAnswer;
@@ -53,7 +55,8 @@ class _AuditoryMemoryState extends State<AuditoryMemory> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Auditory Memory Test",
+          AppLocalizations.of(context)!.auditory_header,
+          // "Auditory Memory Test",
           style: TextStyle(fontSize: 15.0),
         ),
         centerTitle: true,
@@ -67,7 +70,8 @@ class _AuditoryMemoryState extends State<AuditoryMemory> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Press the play button below to play the audio. Memorize the words you hear. After 5 seconds recall the words and speak them into the microphone.",
+                AppLocalizations.of(context)!.auditory_memory_instruction,
+                // "Press the play button below to play the audio. Memorize the words you hear. After 5 seconds recall the words and speak them into the microphone.",
                 style: TextStyle(fontSize: 20.0),
               ),
               SizedBox(height: screenSize.height * 0.05),
@@ -146,7 +150,9 @@ class _AuditoryMemoryState extends State<AuditoryMemory> {
         opacity: recordingFinished ? 0.0 : 1.0,
         child: ElevatedButton(
           onPressed: onAudioPlayButtonPressed,
-          child: Text("Play Audio"),
+          child: Text(
+              AppLocalizations.of(context)!.auditory_memory_play
+          ),
           style: ButtonStyle(
               padding:
                   MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(25)),
@@ -211,7 +217,7 @@ class _AuditoryMemoryState extends State<AuditoryMemory> {
     });
     sub.onDone(() {
       if(seconds== 0) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RecordActivity(medicineAnswer: widget.medicineAnswer, activityTitle: widget.activityTitle, instructionText: "Speak clearly and recall the words you just heard", subInstructionsText: "")));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RecordActivity(medicineAnswer: widget.medicineAnswer, activityTitle: widget.activityTitle, instructionText: AppLocalizations.of(context)!.auditory_memory_speak, subInstructionsText: "")));
 
       }
     });

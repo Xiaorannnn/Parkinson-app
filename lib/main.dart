@@ -22,6 +22,7 @@ import 'package:parkinsons_app/pages/UserLogin/signup.dart';
 import 'package:parkinsons_app/pages/WalkingTest/StraightWalking.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();

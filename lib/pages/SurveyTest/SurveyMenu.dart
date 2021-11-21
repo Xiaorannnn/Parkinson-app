@@ -3,7 +3,7 @@ import 'package:parkinsons_app/pages/SurveyTest/MMSE.dart';
 import 'package:parkinsons_app/pages/SurveyTest/ParticipantQuestion.dart';
 import 'package:parkinsons_app/widgets/WideButton.dart';
 
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class SurveyMenu extends StatefulWidget {
@@ -20,7 +20,10 @@ class _SurveyMenuState extends State<SurveyMenu> {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Surveys'),
+        title: Text(
+            AppLocalizations.of(context)!.survey_header
+            // 'Surveys'
+        ),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -34,20 +37,20 @@ class _SurveyMenuState extends State<SurveyMenu> {
             children: [
               WideButton(
                   color: Colors.blue,
-                  buttonText: "MDS-UPDRS Survey",
+                  buttonText: AppLocalizations.of(context)!.survey_menu_choice1,
                   onPressed: () {
                     Navigator.push(context,MaterialPageRoute(builder: (context) => ParticipantQuestion(routeNameOfNextWidget: '/MDS-UPRDS',) ));
                   }),
               WideButton(
                   color: Colors.blue,
-                  buttonText: "MMSE Survey",
+                  buttonText: AppLocalizations.of(context)!.survey_menu_choice2,
                   onPressed: () {
 
                     Navigator.push(context,MaterialPageRoute(builder: (context) => MMSE()));
                   }),
               WideButton(
                   color: Colors.blue,
-                  buttonText: "Demographic Survey",
+                  buttonText: AppLocalizations.of(context)!.survey_menu_choice3,
                   onPressed: () {
 
                     Navigator.push(context,MaterialPageRoute(builder: (context) => ParticipantQuestion(routeNameOfNextWidget: '/DemoGraphicSurvey',) ));
