@@ -11,9 +11,13 @@ import 'JoinCircles.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+
 class DrawingMenu extends StatefulWidget {
+  //connect to the amplify auth service
   final AuthService _auth = AuthService();
+  //set basic variables
   String medicineAnswer;
+  //constructor function
   DrawingMenu({required this.medicineAnswer});
 
   @override
@@ -21,8 +25,7 @@ class DrawingMenu extends StatefulWidget {
 }
 
 class _DrawingMenuState extends State<DrawingMenu> {
-
-
+  //build the context
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -64,7 +67,6 @@ class _DrawingMenuState extends State<DrawingMenu> {
       ),
     );
   }
-
 
   Widget buildLogout() {
     return FlatButton.icon(

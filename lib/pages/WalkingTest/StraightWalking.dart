@@ -14,8 +14,9 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:csv/csv.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:amplify_flutter/amplify.dart';
 
-
+//build the straight walking menu
 class StraightWalking extends StatefulWidget {
   String medicineAnswer;
   StraightWalking({required this.medicineAnswer});
@@ -25,6 +26,7 @@ class StraightWalking extends StatefulWidget {
 }
 
 class _StraightWalkingState extends State<StraightWalking> {
+  //set variables
   bool isRecording = false;
   bool isDone = false;
   int stepsTaken = 0;
@@ -65,6 +67,7 @@ class _StraightWalkingState extends State<StraightWalking> {
     }
   }
 
+  //build the context
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -134,6 +137,7 @@ class _StraightWalkingState extends State<StraightWalking> {
     }
   }
 
+  //write the data to a csv file
   void writeDataToCsv() async {
     String csv = const ListToCsvConverter().convert(_sensorDataArray);
 
@@ -143,13 +147,14 @@ class _StraightWalkingState extends State<StraightWalking> {
     File file = File(pathOfTheFileToWrite);
     await file.writeAsString(csv);
 
-    //Upload to firebase
-    String uid = AuthService().getCurrentUser().uid;
+    //Upload to AWS Amplify
+    String timestamp = createTimeStamp();
+    final user = await Amplify.Auth.getCurrentUser();
+    String uid = user.userId;
     DataBaseService db = DataBaseService(uid: uid);
-    db.uploadFile(file, "Straight Walking Test",".csv");
-    db.updateGeneric("Straight Walking Test", widget.medicineAnswer);
+    db.uploadFile(file, "Straight Walking Test" + timestamp,".csv");
+    db.updateStraightWalkingTest(widget.medicineAnswer);
     resetData();
-
 
     print("written to csv!");
     print(csv);
@@ -157,7 +162,6 @@ class _StraightWalkingState extends State<StraightWalking> {
 
   /**--- Funcions for Pedometer---**/
   void onStepCount(StepCount event) {
-
     _steps = event.steps.toString();
     setState(() {
       if (isRecording && stepsTaken < maxSteps) {
@@ -168,12 +172,11 @@ class _StraightWalkingState extends State<StraightWalking> {
           isRecording = false;
           if(stepsTaken == maxSteps) {
             ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Good Job! Walking data recorded")));
+                SnackBar(content: Text("干得好，你的行走数据已经被成功记录！")));
             writeDataToCsv();
             audioCache!.play("RecordingFinished.mp3");
           }
       }
-
     });
   }
 
@@ -234,18 +237,15 @@ class _StraightWalkingState extends State<StraightWalking> {
       updateSensorDataArray();
     });
   }
-
   void onAccelerometerEvent(UserAccelerometerEvent event) {
     setState(() {
       _userAccelerometerValues = <double>[event.x, event.y, event.z];
       updateSensorDataArray();
     });
   }
-
   void onMagnetometerEvent(MagnetometerEvent event) {
     setState(() {
       _magnetometerValues = <double>[event.x, event.y, event.z];
-
       updateSensorDataArray();
       print(_magnetometerValues);
     });
@@ -277,13 +277,9 @@ class _StraightWalkingState extends State<StraightWalking> {
       if (isRecording) {
         audioCache!.play('RecordingCanceled.mp3');
         resetData();
-
-
-
       } else {
         audioCache!.play('RecordingStarted.mp3');
       }
-
       isRecording = !isRecording;
     });
   }

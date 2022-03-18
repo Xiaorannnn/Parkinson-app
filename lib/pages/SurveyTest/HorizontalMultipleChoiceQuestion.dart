@@ -5,11 +5,12 @@ import 'Question.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HorizontalMultipleChoiceQuestion extends StatefulWidget with Question {
+  //set variables
   String question;
   List<String> choices;
   int selected = -1;
   int questionNumber;
-
+  //constructor function
   HorizontalMultipleChoiceQuestion(
       {required this.question,
         required this.questionNumber,
@@ -20,6 +21,7 @@ class HorizontalMultipleChoiceQuestion extends StatefulWidget with Question {
   _HorizontalMultipleChoiceQuestionState createState() => _HorizontalMultipleChoiceQuestionState();
 }
 
+//build the context
 class _HorizontalMultipleChoiceQuestionState extends State<HorizontalMultipleChoiceQuestion> {
   @override
   Widget build(BuildContext context) {

@@ -1,0 +1,6 @@
+{
+  "AppSyncApiName": "pdappbackendfi",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthModeLastUpdated": "2022-01-28T09:20:37.907Z"
+}

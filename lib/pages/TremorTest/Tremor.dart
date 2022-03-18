@@ -13,6 +13,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:quiver/async.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:amplify_flutter/amplify.dart';
+
 
 class Tremor extends StatefulWidget {
   String medicineAnswer;
@@ -22,11 +24,14 @@ class Tremor extends StatefulWidget {
   _TremorState createState() => _TremorState();
 }
 
+//build the tremor test
 class _TremorState extends State<Tremor> {
+  //set variables
   static const maxSeconds = 30;
   int seconds = maxSeconds;
   CountdownTimer? _timer = null;
   bool testStarted = false;
+  bool _canShowButton = true;
 
   List<List<dynamic>>? _sensorDataArray = [
     [
@@ -56,6 +61,13 @@ class _TremorState extends State<Tremor> {
     initSensorSate();
   }
 
+  void hideWidget() {
+    setState(() {
+      _canShowButton = false;
+    });
+  }
+
+  //build the context for tremor test
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -73,7 +85,8 @@ class _TremorState extends State<Tremor> {
               SizedBox(
                 height: screenSize.height * 0.025,
               ),
-              buildStartButton(),
+              if (_canShowButton)
+                buildStartButton(),
               SizedBox(
                 height: screenSize.height * 0.025,
               ),
@@ -140,6 +153,7 @@ class _TremorState extends State<Tremor> {
     }
   }
 
+  //function that write data to a csv file
   void writeDataToCsv() async {
     String csv = const ListToCsvConverter().convert(_sensorDataArray);
 
@@ -149,11 +163,14 @@ class _TremorState extends State<Tremor> {
     File file = File(pathOfTheFileToWrite);
     await file.writeAsString(csv);
 
-    //Upload to firebase
-    String uid = AuthService().getCurrentUser().uid;
+    //Upload to amplify
+    String timestamp = createTimeStamp();
+    final user = await Amplify.Auth.getCurrentUser();
+    String uid = user.userId;
     DataBaseService db = DataBaseService(uid: uid);
-    await db.uploadFile(file, "Tremor Test", ".csv");
-    db.updateGeneric("Tremor Test", widget.medicineAnswer);
+    await db.uploadFile(file, "Tremor Test" + timestamp, ".csv");
+    db.updateTremorTest(widget.medicineAnswer);
+    // db.updateGeneric("Tremor Test", widget.medicineAnswer);
     resetData();
   }
 
@@ -255,7 +272,7 @@ class _TremorState extends State<Tremor> {
       seconds = maxSeconds;
       testStarted = false;
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Tremor Test completed!")));
+          .showSnackBar(SnackBar(content: Text("震颤测试已完成！")));
     });
   }
 
@@ -288,13 +305,10 @@ class _TremorState extends State<Tremor> {
         // buttonText: "Start test",
         onPressed: () {
           if (!testStarted) {
+            hideWidget();
             testStarted = true;
             startCountDownTimer();
           }
         });
-    //return ElevatedButton(
-    //  child: Text("Start Test"),
-    //  onPressed: startCountDownTimer,
-    //);
   }
 }

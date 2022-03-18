@@ -2,16 +2,20 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_painter/image_painter.dart';
+import 'package:parkinsons_app/services/Util.dart';
 import 'package:parkinsons_app/services/auth.dart';
 import 'package:parkinsons_app/services/database.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:amplify_flutter/amplify.dart';
+
 
 class JoinCircles extends StatefulWidget {
+  //variables
   String medicineAnswer;
-
+  //constructor function
   JoinCircles({required this.medicineAnswer});
 
   @override
@@ -75,7 +79,7 @@ class _JoinCirclesState extends State<JoinCircles> {
     );
   }
 
-
+  //a function to submit the image that the users have drawn
   void submitImage() async {
     final storageStatus = await Permission.storage.request();
     final image = await _imageKey.currentState!.exportImage();
@@ -86,14 +90,19 @@ class _JoinCirclesState extends State<JoinCircles> {
         .millisecondsSinceEpoch}.png';
     final imgFile = File('$fullPath');
     imgFile.writeAsBytes(image!);
-    String uid = AuthService()
-        .getCurrentUser()
-        .uid;
+
+    // upload to Amplify
+    final user = await Amplify.Auth.getCurrentUser();
+    String uid = user.userId;
     DataBaseService db = DataBaseService(uid: uid);
-    db.updateGeneric("Join Circles Test", widget.medicineAnswer);
-    db.uploadFile(imgFile, "Join Circles Test", '.png');
+    db.updateJoinCirclesTest(widget.medicineAnswer);
+    // db.updateGeneric("Join Circles Test", widget.medicineAnswer);
+
+    //upload to AWS amplify
+    String timestamp = createTimeStamp();
+    db.uploadFile(imgFile, "Join Circles Test" + timestamp, '.png');
     ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("image uploaded sucessfully!")));
+        SnackBar(content: Text("图片上传成功!")));
   }
 }
 

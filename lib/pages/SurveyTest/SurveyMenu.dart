@@ -12,9 +12,8 @@ class SurveyMenu extends StatefulWidget {
   _SurveyMenuState createState() => _SurveyMenuState();
 }
 
+//build the survey menu
 class _SurveyMenuState extends State<SurveyMenu> {
-
-
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;

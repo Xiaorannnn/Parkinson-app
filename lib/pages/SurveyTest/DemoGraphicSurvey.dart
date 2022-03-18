@@ -4,15 +4,22 @@ import 'package:parkinsons_app/pages/SurveyTest/MultipleChoiceQuestion.dart';
 import 'package:parkinsons_app/pages/SurveyTest/NumberInputQuestion.dart';
 import 'package:parkinsons_app/pages/SurveyTest/Question.dart';
 import 'package:parkinsons_app/pages/SurveyTest/SelectMultipleQuestion.dart';
+import 'package:parkinsons_app/pages/SurveyTest/StringInputQuestion.dart';
 import 'package:parkinsons_app/services/Util.dart';
 import 'package:parkinsons_app/services/auth.dart';
 import 'package:parkinsons_app/services/database.dart';
+import 'package:parkinsons_app/services/database.dart';
+
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:amplify_flutter/amplify.dart';
+
 
 class DemoGraphicSurvey extends StatefulWidget {
+  //set variables
   String participantAnswer;
 
+  //constructor function
   DemoGraphicSurvey({required this.participantAnswer});
 
   @override
@@ -55,6 +62,7 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
   //   "Has a doctor ever told you that you have any of the following conditions? Please check all that apply. ",
   // ];
 
+  //the choices that users would answer
   List<String> questions = [
     "你几岁了?",
     "你的性别是?",
@@ -71,11 +79,11 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
     "你曾经使用互联网在网上寻找健康或医疗信息吗?",
     "你是否曾使用智能手机参与视频通话或视频聊天?",
     "你是否被医学专家诊断为帕金森病?",
-    "你的运动症状是从哪一年开始的?",
+    "你的运动障碍是从哪一年开始的?",
     "哪一年你被诊断患有帕金森症?",
     "你是哪一年开始服用帕金森病药物的?如果你还没有开始服用帕金森药物，请输入0。",
     "什么样的医疗保健提供者目前照顾你的帕金森病?",
-    "你受过深层大脑刺激吗?",
+    "您接受过脑深层刺激手术吗吗?",
     "除了脑起搏器之外，你是否做过帕金森病的手术?",
     "你是否被医学专家诊断患有阿尔茨海默氏症?",
     "你的认知相关症状是从哪一年开始的?",
@@ -209,21 +217,10 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
   //   ],
   // ];
 
+    //answers patients would choose
     ["integer"],
     ["女性", "男性", "不想回答"],
-    [
-      "",
-      "黑人或非洲人",
-      "西班牙裔或拉丁裔",
-      "印第安人",
-      "太平洋岛民",
-      "中东",
-      "加勒比人",
-      "南亚",
-      "东亚",
-      "白种人",
-      "混血"
-    ],
+    ["string"],
     [
       "2年制大学学位",
       "4年制大学学位",
@@ -249,11 +246,11 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
       "其他",
       "分居",
       "单身，从未结婚",
-      "寡妇"
+      "丧偶"
     ],
-    ["正确", "错误"],
-    ["正确", "错误"],
-    ["正确", "错误"],
+    ["是", "否"],
+    ["是", "否"],
+    ["是", "否"],
     [
       "困难",
       "简单",
@@ -261,11 +258,11 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
       "非常困难",
       "非常简单"
     ],
-    ["正确", "错误", "不确定"],
-    ["正确", "错误"],
-    ["正确", "错误"],
-    ["正确", "错误"],
-    ["正确", "错误"],
+    ["是", "否", "不确定"],
+    ["是", "否"],
+    ["是", "否"],
+    ["是", "否"],
+    ["是", "否"],
     ["integer"],
     ["integer"],
     ["integer"],
@@ -277,9 +274,9 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
       "帕金森病/运动障碍专家",
       "主治医生"
     ],
-    ["正确", "错误"],
-    ["正确", "错误"],
-    ["正确", "错误"],
+    ["是", "否"],
+    ["是", "否"],
+    ["是", "否"],
     ["integer"],
     ["integer"],
     ["integer"],
@@ -291,7 +288,7 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
       "帕金森病/运动障碍专家",
       "主治医生"
     ],
-    ["正确", "错误"],
+    ["是", "否"],
     ["integer"],
     ["1", "2", "3", "4", "5"],
     ["integer"],
@@ -335,9 +332,11 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
     // TODO: implement initState
     super.initState();
     widget_array = List.generate(questions.length, (index) {
-      if (choices_array[index][0] == "integer") {
-        NumberInputQuestion question = NumberInputQuestion(
-            question: questions[index], questionNumber: index + 1);
+      if (choices_array[index][0] == 'string'){
+        StringInputQuestion question = StringInputQuestion(question: questions[index], questionNumber: index +1);
+        return question;
+      } else if (choices_array[index][0] == "integer") {
+        NumberInputQuestion question = NumberInputQuestion(question: questions[index], questionNumber: index + 1);
         return question;
       } else if (choices_array[index][0] == "") {
         choices_array[index].removeAt(0);
@@ -382,6 +381,7 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
         ));
   }
 
+  //submission entrance
   void onSubmitPressed() async {
     List<String> answers = [];
     for (int i = 0; i < widget_array.length; i++) {
@@ -389,26 +389,24 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
       String answer = question.getAnswer();
       if (answer == "") {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Please answer all Questions")));
+            SnackBar(content: Text("请完成所有测试后提交！")));
         return;
       }
       answers.add(answer);
     }
-    String uid = AuthService().getCurrentUser().uid;
+    final user = await Amplify.Auth.getCurrentUser();
+    String uid = user.userId;
     String timestamp = createTimeStamp();
     Map<String, dynamic> map = {};
     for (int i = 0; i < answers.length; i++) {
       map["Question " + (i + 1).toString()] = answers[i];
     }
     map["Survey Participant"] = widget.participantAnswer;
-    await DataBaseService(uid: uid)
-        .userCollection
-        .doc(uid)
-        .collection(AppLocalizations.of(context)!.survey_menu_choice3)
-        .doc(timestamp)
-        .set(map);
+    //upload data to the database
+    DataBaseService db = DataBaseService(uid: uid);
+    db.updateDemographicSurvey(answers, widget.participantAnswer);
     ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text("Submission recorded")));
+        .showSnackBar(SnackBar(content: Text("提交已记录")));
   }
 
   Widget buildSubmitButton(Size screenSize, context) {

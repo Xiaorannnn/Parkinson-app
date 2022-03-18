@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'Turning.dart';
 
+//build the menu for the walking test
 class WalkingMenu extends StatefulWidget {
   String medicineAnswer;
   WalkingMenu({required this.medicineAnswer});

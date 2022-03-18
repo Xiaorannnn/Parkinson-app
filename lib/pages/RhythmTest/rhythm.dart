@@ -11,6 +11,7 @@ import 'package:csv/csv.dart';
 import 'dart:io';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:amplify_flutter/amplify.dart';
 
 
 class Rhythm extends StatefulWidget {
@@ -23,6 +24,7 @@ class Rhythm extends StatefulWidget {
 }
 
 class _RhythmState extends State<Rhythm> {
+  //set variables
   late Size screenSize;
   GlobalKey leftKey = GlobalKey();
   GlobalKey rightKey = GlobalKey();
@@ -62,8 +64,7 @@ class _RhythmState extends State<Rhythm> {
     checkPermissions();
   }
 
-
-
+  //build the context for rhythm
   @override
   Widget build(BuildContext context) {
     screenSize = MediaQuery.of(context).size;
@@ -140,14 +141,14 @@ class _RhythmState extends State<Rhythm> {
           Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
             Container(
                 padding:
-                EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
                 child: Text(
                     AppLocalizations.of(context)!.rhythm_score,
                     // "Score",
                     style: TextStyle(fontSize: 15.0))),
             Container(
                 padding:
-                EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
                 child: Text(
                     AppLocalizations.of(context)!.rhythm_pixel,
                     // "Total Pixels from center",
@@ -248,10 +249,10 @@ class _RhythmState extends State<Rhythm> {
       _leftActivated = false;
       _rightActivated = false;
 
-      //sub.cancel();
-      //send up to firebase firestore
-      DataBaseService(uid: AuthService().getCurrentUser().uid).updateUserRythmGame(_amountPressed, _totalDistance,widget.medicineAnswer);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("You have completed the Rythm game good job!")));
+      //get the user id
+      final user = await Amplify.Auth.getCurrentUser();
+      DataBaseService(uid: user.userId).updateUserRythmGame(_amountPressed, _totalDistance,widget.medicineAnswer);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("你已经完成测试，结果已被记录！")));
       writeDataToCsv();
     });
   }
@@ -335,10 +336,10 @@ class _RhythmState extends State<Rhythm> {
     File file = File(pathOfTheFileToWrite);
     await file.writeAsString(csv);
 
-    //Upload to firebase
-    String uid = AuthService().getCurrentUser().uid;
-    DataBaseService(uid:uid).uploadFile(file, "Rhythm Test",".csv");
-
+    //Upload to Amplify
+    String timestamp = createTimeStamp();
+    final user = await Amplify.Auth.getCurrentUser();
+    DataBaseService(uid:user.userId).uploadFile(file, "Rhythm Test" + timestamp,".csv");
 
     print("written to csv!");
     print(csv);

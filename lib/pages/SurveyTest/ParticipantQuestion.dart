@@ -17,10 +17,11 @@ class ParticipantQuestion extends StatefulWidget {
   _ParticipantQuestionState createState() => _ParticipantQuestionState();
 }
 
+//build a class for participant questions
 class _ParticipantQuestionState extends State<ParticipantQuestion> {
+  //set basic variables
   int selectedRadio = 0;
   String participantAnswer = "";
-
 
   @override
   Widget build(BuildContext context) {

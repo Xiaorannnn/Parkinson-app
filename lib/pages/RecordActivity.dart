@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:parkinsons_app/services/SoundRecorder.dart';
+import 'package:parkinsons_app/services/Util.dart';
 import 'package:parkinsons_app/services/auth.dart';
 import 'package:parkinsons_app/services/database.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,10 +11,11 @@ import 'package:record_mp3/record_mp3.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'package:amplify_flutter/amplify.dart';
 
 // ignore: must_be_immutable
 class RecordActivity extends StatefulWidget {
+  //set variables
   String medicineAnswer;
   String activityTitle;
   String instructionText;
@@ -131,15 +133,28 @@ class _RecordActivityState extends State<RecordActivity> {
 
     /**--- Functions for building UI---**/
   void onSubmitPressed() async {
+    final user = await Amplify.Auth.getCurrentUser();
+    String uid = user.userId;
     if (recordFilePath != null && File(recordFilePath).existsSync()) {
       //AudioPlayer audioPlayer = AudioPlayer();
       //audioPlayer.play(recordFilePath, isLocal: true);
-      String uid = AuthService().getCurrentUser().uid.toString();
       File file = File(recordFilePath);
       DataBaseService db = DataBaseService(uid: uid);
-
-      db.uploadFile(file, widget.activityTitle, ".mp3");
-      db.updateGeneric(widget.activityTitle, widget.medicineAnswer);
+      String timestamp = createTimeStamp();
+      //upload to AWS amplify
+      db.uploadFile(file, widget.activityTitle + timestamp, ".mp3");
+      if (widget.activityTitle == "Record Vowel Test"){
+        db.updateRecordVowelTest(widget.medicineAnswer);}
+      else if (widget.activityTitle == "Record Breath Test"){
+        db.updateRecordBreathTest(widget.medicineAnswer);}
+      else if (widget.activityTitle == "Record Sentence Test"){
+        db.updateRecordSentenceTest(widget.medicineAnswer);}
+      else if (widget.activityTitle ==  "Auditory Memory Three Words"){
+        db.updateAuditoryMemoryThreeWords(widget.medicineAnswer);}
+      else if (widget.activityTitle == "Auditory Memory Four Words"){
+        db.updateAuditoryMemoryFourWords(widget.medicineAnswer);}
+      else{
+        db.updateAuditoryMemoryFiveWords(widget.medicineAnswer);}
 
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(

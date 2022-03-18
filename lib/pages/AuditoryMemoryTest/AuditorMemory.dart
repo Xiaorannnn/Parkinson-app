@@ -13,10 +13,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // ignore: must_be_immutable
 class AuditoryMemory extends StatefulWidget {
+  //set variables
   String medicineAnswer;
   String mp3Path;
   String activityTitle;
-
+  //the constructor function
   AuditoryMemory( {required this.medicineAnswer,required this.mp3Path,required this.activityTitle});
 
   @override
@@ -24,7 +25,7 @@ class AuditoryMemory extends StatefulWidget {
 }
 
 class _AuditoryMemoryState extends State<AuditoryMemory> {
-
+  //set variables
   static const maxSeconds = 5;
   int seconds = maxSeconds;
   CountdownTimer? _timer = null;
@@ -103,6 +104,7 @@ class _AuditoryMemoryState extends State<AuditoryMemory> {
     return true;
   }
 
+  //return the path of file (for saving to the database)
   Future<String> getFilePath() async {
     Directory storageDirectory = await getApplicationDocumentsDirectory();
     String sdPath = storageDirectory.path + "/record";
@@ -130,9 +132,6 @@ class _AuditoryMemoryState extends State<AuditoryMemory> {
   }
 
 
-
-
-
     void onAudioPlayButtonPressed() async{
       //x = await _getDuration();
     setState(() {
@@ -140,8 +139,6 @@ class _AuditoryMemoryState extends State<AuditoryMemory> {
         audioCache.play(widget.mp3Path);
         recordingPlaying = true;
       }
-
-
     });
   }
 

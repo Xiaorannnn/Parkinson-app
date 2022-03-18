@@ -15,7 +15,9 @@ import 'package:csv/csv.dart';
 import 'package:quiver/async.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:amplify_flutter/amplify.dart';
 
+//build menu for the turning test
 class Turning extends StatefulWidget {
   String medcineAnswer;
   Turning({required this.medcineAnswer});
@@ -40,14 +42,10 @@ class _TurningState extends State<Turning> {
   List<int> waitTimes= [5,30];
   int masterIndex = 0;
 
-
-
   AudioPlayer? audioPlayer;
   AudioCache? audioCache;
 
-
-
-
+  //counting down the time
   void startCountDownTimer() {
     _timer = new CountdownTimer(
       new Duration(seconds: maxSeconds),
@@ -75,7 +73,7 @@ class _TurningState extends State<Turning> {
         seconds = maxSeconds;
         testStarted = false;
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Turning Test completed!")));
+            SnackBar(content: Text("转弯测试已完成!")));
         masterIndex = 0;
       }
     });
@@ -163,12 +161,14 @@ class _TurningState extends State<Turning> {
     final pathOfTheFileToWrite = directory.path + "/tremor_test.csv";
     File file = File(pathOfTheFileToWrite);
     await file.writeAsString(csv);
-
-    //Upload to firebase
-    String uid = AuthService().getCurrentUser().uid;
+    String timestamp = createTimeStamp();
+    //upload to amplify
+    final user = await Amplify.Auth.getCurrentUser();
+    String uid = user.userId;
     DataBaseService db = DataBaseService(uid: uid);
-    db.uploadFile(file, "Turning Test",".csv");
-    db.updateGeneric('Turning Test', widget.medcineAnswer);
+    db.uploadFile(file, "Turning Test" + timestamp, ".csv");
+    db.updateTurningTest(widget.medcineAnswer);
+    // db.updateGeneric('Turning Test', widget.medcineAnswer);
     resetData();
 
   }
@@ -210,7 +210,6 @@ class _TurningState extends State<Turning> {
   }
 
   /**--- Funcions for building UI---**/
-
   PreferredSizeWidget buildAppBar() {
     return AppBar(
       title: Text(
@@ -253,8 +252,7 @@ class _TurningState extends State<Turning> {
     );
   }
 
-
-
+  //build the time box
   Widget buildTime() {
     return SizedBox(
       width: 100,
@@ -287,9 +285,5 @@ class _TurningState extends State<Turning> {
 
       }
     });
-    //return ElevatedButton(
-    //  child: Text("Start Test"),
-    //  onPressed: startCountDownTimer,
-    //);
   }
 }

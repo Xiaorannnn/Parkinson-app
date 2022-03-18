@@ -7,14 +7,17 @@ import 'package:parkinsons_app/widgets/WideButton.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+//the home page
 class Home extends StatefulWidget {
   final AuthService _auth = AuthService();
 
+  //create the home state
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  //build the context in the home state
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -54,6 +57,7 @@ class _HomeState extends State<Home> {
                   children: [
 
 
+                    //build buttons for all the tests
                     WideButton(color: Colors.blue, buttonText: AppLocalizations.of(context)!.home_rhythm, onPressed: (){
                       Navigator.push(context, MaterialPageRoute(builder: (context) => MedicineQuestion(routeNameOfNextWidget: '/RhythmIntro')));
                       //Navigator.pushNamed(context, '/rhythmIntro');
@@ -108,6 +112,7 @@ class _HomeState extends State<Home> {
   }
 
 
+  //build the logout button
   Widget buildLogout() {
     return FlatButton.icon(
       onPressed: () async {

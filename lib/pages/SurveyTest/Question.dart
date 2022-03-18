@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 
 
 
-
-
-
 abstract class Question{
 
   String answer = "";

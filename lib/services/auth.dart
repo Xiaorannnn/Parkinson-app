@@ -3,52 +3,64 @@ import 'package:flutter/cupertino.dart';
 import 'package:parkinsons_app/models/UserModel.dart';
 import 'package:parkinsons_app/services/database.dart';
 
-class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  //create user object based on Firebase User
-  UserModel? _userModelFromFirebaseUser(User? user) {
-    if (user != null) {
-      return UserModel(uid: user.uid);
+import 'package:amplify_flutter/amplify.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:flutter/material.dart';
+import 'package:parkinsons_app/amplifyconfiguration.dart';
+
+
+//create a class called authservice to handle all authentication related activities
+class AuthService {
+
+  UserModel? _userModelFromAmplify(String? identityId) {
+    if (identityId !=null){
+      return UserModel(uid: identityId);
     }
     return null;
   }
 
-  //sign in with anon
+  //sign in with anon Amplify
   Future signInAnon() async {
     try {
-      UserCredential result = await _auth.signInAnonymously();
-      User? user = result.user;
-      return _userModelFromFirebaseUser(user);
-    } catch (e) {
-      print(e.toString());
+      AuthSession result = await Amplify.Auth.fetchAuthSession(
+          options: CognitoSessionOptions(getAWSCredentials: true)
+      );
+      String identityId = (result as CognitoAuthSession).identityId!;
+      return _userModelFromAmplify(identityId);
+    } on AuthException catch (e) {
+      print(e.message);
       return null;
     }
   }
 
-//sign in with email and password
-  Future signInWithEmailAndPassword(String email, String password) async {
+
+//sign in with email and password Amplify
+  Future signInWithEmailAndPassword(String username, String password) async {
     try {
-      UserCredential? result = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      User? user = result.user;
-      await DataBaseService(uid:user!.uid).updateUserData(email, password);
-      return _userModelFromFirebaseUser(user);
-    } catch (e) {
-      print(e.toString());
+      SignInResult result = await Amplify.Auth.signIn(
+          username: username,
+          password: password);
+      final user = await Amplify.Auth.getCurrentUser();
+      // final user_global = user;
+      String uid = user.userId;
+      await DataBaseService(uid: uid).updateUserData(username, password);
+      return _userModelFromAmplify(uid);
+    } on AuthException catch (e) {
+      print(e.message);
     }
   }
 
-//register with email and password
-  Future registerWithEmailAndPassword(String email, String password) async {
+//register with email and password Amplify
+  Future registerWithEmailAndPassword(String name, String password) async {
     try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      User? user = result.user;
-      await DataBaseService(uid:user!.uid).updateUserData(email, password);
-      return _userModelFromFirebaseUser(user);
-    } catch (e) {
-      print("EXCEPTION BBBBB ${e.toString()}");
+       SignUpResult result = await Amplify.Auth.signUp(
+         username: name,
+         password: password,
+         );
+      return result.isSignUpComplete;
+    } on AuthException catch (e) {
+      print("EXCEPTION BBBBB ${e.message}");
       return null;
     }
   }
@@ -56,14 +68,15 @@ class AuthService {
 //sign out
   Future signOut() async {
     try{
-      return _auth.signOut();
-    }catch(e){
-      print(e.toString());
+      await Amplify.Auth.signOut();
+    } on AuthException catch(e){
+      print(e.message);
       return null;
     }
   }
 
-  User getCurrentUser(){
-    return _auth.currentUser!;
+  getCurrentUser(){
+    final user = Amplify.Auth.getCurrentUser();
+    return user;
   }
 }

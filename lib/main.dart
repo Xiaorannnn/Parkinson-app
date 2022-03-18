@@ -23,12 +23,25 @@ import 'package:parkinsons_app/pages/WalkingTest/StraightWalking.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:amplify_datastore/amplify_datastore.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:amplify_flutter/amplify.dart';
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_analytics_pinpoint/amplify_analytics_pinpoint.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:parkinsons_app/amplifyconfiguration.dart';
+
+
+//main function
 void main() async {
+  //initialize the app
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  //start the app
   runApp(MyApp());
 }
 
+//structure of the app
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -45,6 +58,7 @@ class MyApp extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
+        //language modes: Chinese and English
         supportedLocales: [
           Locale('zh', 'CN'),
           Locale('en', ''),
@@ -52,6 +66,7 @@ class MyApp extends StatelessWidget {
         initialRoute: '/login',
         onGenerateRoute: _getRoute,
         routes: {
+      //create three main pages: login, signup and home
       '/login': (context) => Login(),
      '/signup': (context) => SignUp(),
       '/home': (context) => Home(),
@@ -66,6 +81,7 @@ class MyApp extends StatelessWidget {
       builder: (context) => builder,
     );
   }
+  //leading to different tests
   Route<dynamic>? _getRoute(RouteSettings settings) {
 
     if (settings.name == '/MDS-UPRDS') {

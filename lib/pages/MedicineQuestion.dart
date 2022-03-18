@@ -7,7 +7,9 @@ import 'package:parkinsons_app/services/auth.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+//a class for medicine questions
 class MedicineQuestion extends StatefulWidget {
+  //set the variables
   String routeNameOfNextWidget;
 
   MedicineQuestion({required this.routeNameOfNextWidget});
@@ -27,6 +29,7 @@ class _MedicineQuestionState extends State<MedicineQuestion> {
     super.initState();
   }
 
+  //build the interface
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -59,6 +62,7 @@ class _MedicineQuestionState extends State<MedicineQuestion> {
     );
   }
 
+  //build the instructions for medicine questions
   Widget buildInstructions(Size screenSize) {
     return Column(
       children: [
@@ -82,7 +86,6 @@ class _MedicineQuestionState extends State<MedicineQuestion> {
   }
 
   Widget buildQuestions() {
-
     //choices that the user can pick
     String choice1 = AppLocalizations.of(context)!.medicine_choice1;
     String choice2 = AppLocalizations.of(context)!.medicine_choice2;
@@ -135,8 +138,10 @@ class _MedicineQuestionState extends State<MedicineQuestion> {
     );
   }
 
+  //build buttion
   Widget buildNextButton(BuildContext context, Size screenSize) {
     return ElevatedButton(
+        //settings of the buttion
         style: ElevatedButton.styleFrom(
             primary: Colors.white,
             padding: EdgeInsets.symmetric(

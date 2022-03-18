@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:amplify_flutter/amplify.dart';
 
 class ClockDraw extends StatefulWidget {
 
@@ -190,11 +191,17 @@ class _ClockDrawState extends State<ClockDraw> {
       final directory = await getApplicationDocumentsDirectory();
       final image = File('${directory.path}/clock.png');
       image.writeAsBytes(imageBytes);
-      String uid = AuthService().getCurrentUser().uid;
+
+      final user = await Amplify.Auth.getCurrentUser();
+      String uid = user.userId;
       DataBaseService db = DataBaseService(uid: uid);
-      db.updateGeneric("Clock Drawing Test", widget.medicineAnswer);
-      db.uploadFile(image,"Clock Drawing Test",'.png');
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("image uploaded sucessfully!")));
+      db.updateClockDrawingTest(widget.medicineAnswer);
+      // db.updateGeneric("Clock Drawing Test", widget.medicineAnswer);
+
+      //upload to AWS amplify
+      String timestamp = createTimeStamp();
+      db.uploadFile(image,"Clock Drawing Test" + timestamp,'.png');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("图片上传成功!")));
     }
     else{
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Storage Permission not granted")));

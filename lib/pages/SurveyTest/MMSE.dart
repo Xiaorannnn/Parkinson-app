@@ -4,28 +4,30 @@ import 'package:parkinsons_app/pages/SurveyTest/MultipleChoiceQuestion.dart';
 import 'package:parkinsons_app/services/Util.dart';
 import 'package:parkinsons_app/services/auth.dart';
 import 'package:parkinsons_app/services/database.dart';
-
 import 'Question.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:amplify_flutter/amplify.dart';
 
+//build a class for the mmse test
 class MMSE extends StatefulWidget {
   @override
   _MMSEState createState() => _MMSEState();
 }
 
 class _MMSEState extends State<MMSE> {
+  //the choices
   List<String> questions = [
-    "“现在的年份是多少？季节是什么？月份是多少？日期是几号？今天是周几？”",
-    "“我们现在在哪里？在哪个省？哪个市？哪个区？哪所医院？第几层？”",
-    "检查者清楚而缓慢地命名三个不相关的物体，然后指导员让患者说出所有三个物体的名字。患者的反应用于评分。如果可能的话，检查者重复它们直到患者掌握所有这些物体",
-    "“我希望你从 100 倒数 7。” (93, 86, 79,72, 65, ...) \n替代：“向后拼写WORLD。” (D-L-R-O-W)",
-    "“之前我告诉过你三样东西的名字。你能告诉我那些是什么吗?”",
+    "现在是（星期几）（几号）（几月）（什么季节）（哪一年）？",
+    "现在我们在哪里：（省市）（区或县）（街道或乡）（什么地方）（第几层楼）？",
+    "现在我要说三样东西的名称，在我讲完以后，请您重复说一遍。（请仔细说清楚，每样东西一秒钟）。\"皮球\"\"国旗\"\"树木\" 请您把这三样东西说一遍（以第一次的答案记分）",
+    "请您算一算100减7，然后从所得的数目再减去7，如此一直计算下去，请您将每减一个7后的答案告诉我，直到我说停为止。（若某一答案错误，但下一答案正确，只记一次错误）",
+    "现在请您说出刚才我让您记住的三样东西？ \"皮球\"，\"国旗\"，\"树木\"",
     "向患者展示两个简单的物体，例如手表和铅笔，并让患者说出它们的名字。",
-    "“重复这句话：‘没有如果、和、或但是。’”",
-    "“拿右手拿纸，对折，放在地上。”\n（考官递给病人一张白纸。）",
-    "“请阅读此内容并按照其说的去做。” （书面说明是“闭上眼睛”。）",
-    "编造一个关于任何事情的句子。”\n（这句话必须包含一个名词和一个动词。）"
+    "现在我要说一句话，请您跟着我清楚的重复一遍。 \"四十四只石狮子\"",
+    "我给您一张纸请您按我说的去做，现在开始：\"用右手拿着这张纸，用两只手将它对折起来，放在您的大腿上\"。（不要重复说明，也不要示范）",
+    "请您念一念这句话，并且按它的意思去做。闭上你的眼睛",
+    "编造一个关于任何事情的句子。\n（这句话必须包含一个名词和一个动词。）"
   ];
   // List<String> questions = [
   //   "“What is the year? Season? Date? Day? Month?”",
@@ -40,7 +42,7 @@ class _MMSEState extends State<MMSE> {
   //   "Make up and write a sentence about anything.”\n(This sentence must contain a noun and a verb.)"
   // ];
 
-
+  //basic variables
   List<List<String>> choices = [
     ['0', '1', '2', '3', '4', '5'],
     ['0', '1', '2', '3', '4', '5'],
@@ -68,6 +70,7 @@ class _MMSEState extends State<MMSE> {
     });
   }
 
+  //build the text
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -94,6 +97,7 @@ class _MMSEState extends State<MMSE> {
         ));
   }
 
+  //build the instructions for the MMSE test
   Widget buildInstructions() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -119,25 +123,22 @@ class _MMSEState extends State<MMSE> {
       String answer = question.getAnswer();
       if (answer == "") {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Please answer all Questions")));
+            SnackBar(content: Text("请回答所有问题！")));
         return;
       }
       answers.add(answer);
     }
-    String uid = AuthService().getCurrentUser().uid;
+    final user = await Amplify.Auth.getCurrentUser();
+    String uid = user.userId;
     String timestamp = createTimeStamp();
     Map<String, dynamic> map = {};
     for (int i = 0; i < answers.length; i++) {
       map["Question " + (i + 1).toString()] = answers[i];
     }
-    await DataBaseService(uid: uid)
-        .userCollection
-        .doc(uid)
-        .collection("MMSE")
-        .doc(timestamp)
-        .set(map);
+    DataBaseService db = DataBaseService(uid: uid);
+    db.updateMMSE(answers);
     ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text("Submission recorded")));
+        .showSnackBar(SnackBar(content: Text("记录已提交！")));
   }
 
   Widget buildSubmitButton(Size screenSize) {

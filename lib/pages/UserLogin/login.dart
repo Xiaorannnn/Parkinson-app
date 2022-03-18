@@ -1,16 +1,28 @@
 import 'dart:math';
 // import 'package:firebase_core/firebase_core.dart';
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:parkinsons_app/services/auth.dart';
 import 'package:crypt/crypt.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+// Amplify Flutter Packages
+import 'package:amplify_flutter/amplify.dart';
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_analytics_pinpoint/amplify_analytics_pinpoint.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:parkinsons_app/models/ModelProvider.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 
+// Generated in previous step
+import 'package:parkinsons_app/amplifyconfiguration.dart';
 
+//set basic variables
 String email = "";
 String password = "";
 String error = "";
+//connect to Amplify auth service
 final AuthService _auth = AuthService();
 
 class Login extends StatefulWidget {
@@ -19,7 +31,31 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  //initialize the Amplify configuration
+  @override
+  initState() {
+    super.initState();
+    _configureAmplify();
+  }
 
+  void _configureAmplify() async {
+    // Add Pinpoint and Cognito Plugins
+    AmplifyAnalyticsPinpoint analyticsPlugin = AmplifyAnalyticsPinpoint();
+    AmplifyAuthCognito authPlugin = AmplifyAuthCognito();
+    AmplifyAPI apiPlugin = AmplifyAPI();
+    AmplifyDataStore datastorePlugin = AmplifyDataStore(modelProvider: ModelProvider.instance);
+    //connect to the Amplify plugin service
+    await Amplify.addPlugins([authPlugin, analyticsPlugin, apiPlugin, datastorePlugin, AmplifyStorageS3()]);
+    //if fail to configure, print errors
+    try {
+      await Amplify.configure(amplifyconfig);
+    } on AmplifyAlreadyConfiguredException {
+      print("Tried to reconfigure Amplify; this can occur when your app restarts on Android.");
+    }
+    print("configure finished");
+  }
+
+    //build the context for the login page
     @override
     Widget build(BuildContext context) {
       Size screenSize = MediaQuery.of(context).size;
@@ -43,7 +79,7 @@ class _LoginState extends State<Login> {
                       SizedBox(height: 20),
                       buildPassword(context),
                       buildLoginBtn(context,this),
-                      buildAnonLoginBtn(context),
+                      // buildAnonLoginBtn(context),
                       buildSignUpBtn(context)
                     ],
                   ),
@@ -54,6 +90,7 @@ class _LoginState extends State<Login> {
     }
   }
 
+  //build the email box
   Widget buildEmail(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,7 +118,7 @@ class _LoginState extends State<Login> {
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.only(top: 14),
                 prefixIcon: Icon(
-                  Icons.email,
+                  Icons.accessibility,
                   color: Colors.blue,
                 ),
                 hintText: AppLocalizations.of(context)!.login_email,
@@ -92,6 +129,7 @@ class _LoginState extends State<Login> {
     );
   }
 
+  //build the password box
   Widget buildPassword(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,6 +176,7 @@ class _LoginState extends State<Login> {
     );
   }
 
+  //build the login buttion
   Widget buildLoginBtn(BuildContext context,_LoginState parent) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25),
@@ -149,15 +188,17 @@ class _LoginState extends State<Login> {
           style: TextStyle(color: Colors.white),
         ),
         onPressed: () async {
+          await _auth.signOut();
           dynamic result = await _auth.signInWithEmailAndPassword(email, password);
+          
           if (result == null) {
             parent.setState(() {
-              // error = "Could not sign in with your credentials";
-              error = AppLocalizations.of(context)!.login_failure;
+              error = "登录信息有误";
+              // error = " not sign in with your credentials";
+              // error = AppLocalizations.of(context)!.login_failure;
               print("error signing in");
               print("RESULT: ${result.toString()}");
             });
-
           }
           else {
               Navigator.pushReplacementNamed(context, '/home');
@@ -172,36 +213,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-Widget buildAnonLoginBtn(BuildContext context) {
-  return Container(
-    padding: EdgeInsets.symmetric(vertical: 25),
-    width: double.infinity,
-    child: RaisedButton(
-      elevation: 5,
-      child: Text(
-        AppLocalizations.of(context)!.login_as_guest,
-        style: TextStyle(color: Colors.white),
-      ),
-      onPressed: () async {
-        dynamic result = await _auth.signInAnon();
-        if (result == null) {
-          print("error signing in");
-        }
-        else {
-          print("signed in");
-          print(result.uid);
-          Navigator.pushReplacementNamed(context, '/home');
-        }
-      },
-      padding: EdgeInsets.all(15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      color: Colors.blue,
-    ),
-  );
-}
-
+//build the signup button
 Widget buildSignUpBtn(BuildContext context) {
   return Container(
 

@@ -13,10 +13,12 @@ const theSource = AudioSource.microphone;
 //TODO: try using record_mp3
 /***Using record_mp3 ***/
 class SoundRecorder {
-
+  //check the permissions
   Future<bool> checkPermissions() async {
+    //get the request of microphone and storage
     final micStatus = await Permission.microphone.request();
     final storageStatus = await Permission.storage.request();
+    //print errors when permission gets denied
     if (micStatus != PermissionStatus.granted) {
       throw RecordingPermissionException('Microphone Permission denied');
     }
@@ -26,6 +28,7 @@ class SoundRecorder {
     return true;
   }
 
+  //get the path of the file
   Future<String> getFilePath() async {
     Directory storageDirectory = await getApplicationDocumentsDirectory();
     String sdPath = storageDirectory.path + "/record";

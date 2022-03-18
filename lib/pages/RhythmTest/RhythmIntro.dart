@@ -6,10 +6,12 @@ import 'package:parkinsons_app/services/Util.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RhythmIntro extends StatelessWidget {
+  //set variables
   String medicineAnswer;
-
+  //the constructor function
   RhythmIntro({required this.medicineAnswer});
 
+  //build context for rhythm introduction
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -33,6 +35,7 @@ class RhythmIntro extends StatelessWidget {
     );
   }
 
+  //build the instructions
   Widget buildInstructions(Size screenSize, context) {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       SizedBox(height: screenSize.height * 0.05),
@@ -56,6 +59,7 @@ class RhythmIntro extends StatelessWidget {
     ]);
   }
 
+  //create an image
   Widget buildImage(Size screenSize) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.05),
@@ -68,6 +72,7 @@ class RhythmIntro extends StatelessWidget {
     );
   }
 
+  //create a next button for users to continue
   Widget buildNextButton(BuildContext context, Size screenSize) {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
@@ -81,7 +86,6 @@ class RhythmIntro extends StatelessWidget {
             AppLocalizations.of(context)!.rhythm_intro_next,
             style: TextStyle(fontSize: 15, color: Colors.red)),
         onPressed: () {
-          //Navigator.of(context).pushReplacementNamed('/rhythm');
 
           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Rhythm(medicineAnswer: medicineAnswer,)));
         });

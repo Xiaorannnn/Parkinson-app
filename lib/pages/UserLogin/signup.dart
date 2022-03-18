@@ -3,12 +3,15 @@ import 'package:parkinsons_app/services/auth.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
-String name = "";
+//set basic variables
+String username = "";
 String email = "";
 String password = "";
 String error = "";
+//connect to Amplify auth service
 final AuthService _auth = AuthService();
 final _formKey = GlobalKey<FormState>();
+
 
 class SignUp extends StatefulWidget {
 
@@ -16,6 +19,7 @@ class SignUp extends StatefulWidget {
   _SignUpState createState() => _SignUpState();
 }
 
+//build the signup page
 class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
@@ -71,8 +75,8 @@ class _SignUpState extends State<SignUp> {
   }
 }
 
-
-Widget buildName(context) {
+//build the name box for typing users' names
+Widget buildName(BuildContext context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -91,9 +95,9 @@ Widget buildName(context) {
         ]),
         height: 60,
         child: TextFormField(
-          validator: (val)=>val!.isEmpty ? "Enter your name ": null,
-          onChanged:(val){email = val;} ,
-          keyboardType: TextInputType.name,
+          validator: (val) => val!.isEmpty ? " 输入名字": null,
+          onChanged:(val){username = val;} ,
+          keyboardType: TextInputType.emailAddress,
           style: TextStyle(color: Colors.black87),
           decoration: InputDecoration(
               border: InputBorder.none,
@@ -109,12 +113,14 @@ Widget buildName(context) {
     ],
   );
 }
+
+//build the name box for typing users' emails
 Widget buildEmail(BuildContext context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
       Text(
-        AppLocalizations.of(context)!.login_email,
+        AppLocalizations.of(context)!.signup_email,
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
       SizedBox(height: 10),
@@ -127,9 +133,8 @@ Widget buildEmail(BuildContext context) {
         ]),
         height: 60,
         child: TextFormField(
-          validator: (val) => val!.isEmpty ? " Enter an Email!": null,
           onChanged:(val){email = val;} ,
-          keyboardType: TextInputType.emailAddress,
+          keyboardType: TextInputType.text,
           style: TextStyle(color: Colors.black87),
           decoration: InputDecoration(
               border: InputBorder.none,
@@ -138,7 +143,7 @@ Widget buildEmail(BuildContext context) {
                 Icons.email,
                 color: Colors.blue,
               ),
-              hintText: AppLocalizations.of(context)!.login_email,
+              hintText: AppLocalizations.of(context)!.signup_email,
               hintStyle: TextStyle(color: Colors.black38)),
         ),
       )
@@ -146,6 +151,7 @@ Widget buildEmail(BuildContext context) {
   );
 }
 
+//build the name box for typing users' passwords
 Widget buildPassword(BuildContext context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,7 +170,7 @@ Widget buildPassword(BuildContext context) {
         ]),
         height: 60,
         child: TextFormField(
-          validator: (val)=> val!.length < 6 ? "Password must be 6 chars long": null,
+          validator: (val)=> val!.length < 6 ? "密码至少需要六位": null,
           onChanged: (val){password = val;},
           keyboardType: TextInputType.visiblePassword,
           obscureText: true,
@@ -184,6 +190,7 @@ Widget buildPassword(BuildContext context) {
   );
 }
 
+//build the sign up buttion
 Widget buildSignUpBtn(BuildContext context,_SignUpState parent) {
   return Container(
     padding: EdgeInsets.symmetric(vertical: 25),
@@ -197,16 +204,17 @@ Widget buildSignUpBtn(BuildContext context,_SignUpState parent) {
       onPressed: () async{
         //Navigator.pop(context);
         if(_formKey.currentState!.validate()){
-          dynamic result = await _auth.registerWithEmailAndPassword(email, password);
-          if(result!=null){
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Account created succesfully!")));
+          dynamic result = await _auth.registerWithEmailAndPassword(username, password);
+          if(result==true){
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("注册成功!")));
           }
           else {
             parent.setState(() {
-              error = "Couldn't sign up with credentials";
+              // error = "Couldn't sign up with credentials";
+              error = "";
             });
             ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Error while creating account")));
+                SnackBar(content: Text("注册时发生错误")));
           }
         }
       },

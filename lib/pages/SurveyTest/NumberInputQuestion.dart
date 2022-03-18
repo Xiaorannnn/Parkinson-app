@@ -5,20 +5,20 @@ import 'Question.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+//build a class for number input questions
 class NumberInputQuestion extends StatefulWidget with Question {
+  //set variables
   String question;
   int questionNumber;
+  //constructor function
   NumberInputQuestion({required this.question,required this.questionNumber});
-
-
 
   @override
   _NumberInputQuestionState createState() => _NumberInputQuestionState();
-
 }
 
 class _NumberInputQuestionState extends State<NumberInputQuestion> {
-
+  //build the context
   @override
   Widget build(BuildContext context) {
 

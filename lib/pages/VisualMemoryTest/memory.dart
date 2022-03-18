@@ -9,28 +9,31 @@ import 'package:parkinsons_app/widgets/TileModel.dart';
 import 'package:quiver/async.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:amplify_flutter/amplify.dart';
 
+//set basic variables
 CountdownTimer? _timer = null;
 List<TileModel> pairs = <TileModel>[];
 bool selected = false;
 bool gameStarted = false;
+// bool isButtonClickable = true;
 
 String correctImagePath = ""; //path to what the user will have to remember
 int difficulty = 0; //index of difficulty
 
-// List<String> startButtonString = ["Start",  "Next Stage"];
-
-
-
+//create a memory class
 class Memory extends StatefulWidget {
+  //set variables
   String medicineAnswer;
   int gridDimension;
 
+  //constructor functions
   Memory({required this.medicineAnswer,required this.gridDimension});
 
   @override
   _MemoryState createState() => _MemoryState();
 }
+
 
 class _MemoryState extends State<Memory> {
   List<int> activeIndexes = []; // holds indexes of tiles with images in them
@@ -51,7 +54,6 @@ class _MemoryState extends State<Memory> {
   late CountdownTimer sub;
   int score = 0;
 
-  // String instructionText = "Remember where the shape is: ";
 
   AuthService _authService = AuthService();
 
@@ -67,13 +69,6 @@ class _MemoryState extends State<Memory> {
     correctImagePath = "assets/green_triangle.png";
     difficulty = 0;
 
-
-    // Future.delayed(const Duration(seconds: 5), () {
-    //   setState(() {
-    //     visiblePairs = getQuestions();
-    //   });
-    // });
-
     // selected = false;
   }
   @override
@@ -83,11 +78,20 @@ class _MemoryState extends State<Memory> {
     gameStarted = false;
   }
 
+  //build the context for memory menu
   @override
   Widget build(BuildContext context) {
     List<String> startButtonString = [AppLocalizations.of(context)!.memory_start, AppLocalizations.of(context)!.memory_nextstage];
 
     final Size size = MediaQuery.of(context).size;
+
+    Widget getWidget(){
+      if (gameStarted){
+        return Text("${startButtonString[difficulty]}");
+      } else{
+        return Text("${startButtonString[difficulty]}");
+      }
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -182,58 +186,112 @@ class _MemoryState extends State<Memory> {
                             fontFamily: "Helvetica",
                             color: Colors.black),
                       ),
+
                       Container(
                         child: Center(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (!gameStarted) {
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Visibility(
+                                  visible: !gameStarted,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      if (!gameStarted) {
+                                        if (difficulty < 1) {
+                                          setState(() {
+                                            gameStarted = true;
+                                            correctShapeOpactity = 1.0;
+                                            youWonOpacity = 0.0;
+                                            pairs = getPairs(widget.gridDimension);
+                                            pairs.shuffle();
+                                            visiblePairs = pairs;
+                                            selected = true;
+                                            Random random = Random();
+                                            correctImagePath =
+                                            "assets/green_triangle.png";
 
-                                if (difficulty < 1) {
-                                  setState(() {
-                                    gameStarted = true;
-                                    correctShapeOpactity = 1.0;
-                                    youWonOpacity = 0.0;
-                                    pairs = getPairs(widget.gridDimension);
-                                    pairs.shuffle();
-                                    visiblePairs = pairs;
-                                    selected = true;
-                                    Random random = Random();
-                                    correctImagePath =
-                                        "assets/green_triangle.png";
-
-                                    Future.delayed(const Duration(seconds: 5),
-                                        () {
-                                      setState(() {
-                                        AppLocalizations.of(context)!.memory_find;
-                                        // instructionText = "Find where the shape is: ";
-                                        visiblePairs =
-                                            getQuestions(widget.gridDimension);
-                                        correctShapeOpactity = 1.0;
-                                        score = 0;
-                                        startCountDownTimer();
-                                      });
-                                    });
-                                    selected = false;
-                                  });
-                                } else {
-                                  if (widget.gridDimension < 6) {
-                                    Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Memory(medicineAnswer: widget.medicineAnswer, gridDimension: widget.gridDimension+1)));
-                                  } else {
-                                    Navigator.pop(context);
-                                  }
-                                }
-                              }
-                            },
-                            child: Text("${startButtonString[difficulty]}"),
+                                            Future.delayed(const Duration(seconds: 5),
+                                                    () {
+                                                  setState(() {
+                                                    AppLocalizations.of(context)!.memory_find;
+                                                    // instructionText = "Find where the shape is: ";
+                                                    visiblePairs =
+                                                        getQuestions(widget.gridDimension);
+                                                    correctShapeOpactity = 1.0;
+                                                    score = 0;
+                                                    startCountDownTimer();
+                                                  });
+                                                });
+                                            selected = false;
+                                          });
+                                        } else {
+                                          if (widget.gridDimension < 6) {
+                                            Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Memory(medicineAnswer: widget.medicineAnswer, gridDimension: widget.gridDimension+1)));
+                                          } else {
+                                            Navigator.pop(context);
+                                          }
+                                        }
+                                      }
+                                    },
+                                    child: Text("${startButtonString[difficulty]}"),
+                                  ),
+                              ),
+                            ],
+                          )
+                          // child: ElevatedButton(
+                          //   onPressed: () {
+                          //     if (isButtonClickable) {
+                          //       ButtonClicked();
+                          //     }
+                          //     if (!gameStarted) {
+                          //       if (difficulty < 1) {
+                          //         setState(() {
+                          //           gameStarted = true;
+                          //           correctShapeOpactity = 1.0;
+                          //           youWonOpacity = 0.0;
+                          //           pairs = getPairs(widget.gridDimension);
+                          //           pairs.shuffle();
+                          //           visiblePairs = pairs;
+                          //           selected = true;
+                          //           Random random = Random();
+                          //           correctImagePath =
+                          //               "assets/green_triangle.png";
+                          //
+                          //           Future.delayed(const Duration(seconds: 5),
+                          //               () {
+                          //             setState(() {
+                          //               AppLocalizations.of(context)!.memory_find;
+                          //               // instructionText = "Find where the shape is: ";
+                          //               visiblePairs =
+                          //                   getQuestions(widget.gridDimension);
+                          //               correctShapeOpactity = 1.0;
+                          //               score = 0;
+                          //               startCountDownTimer();
+                          //             });
+                          //           });
+                          //           selected = false;
+                          //         });
+                          //       } else {
+                          //         if (widget.gridDimension < 6) {
+                          //           Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Memory(medicineAnswer: widget.medicineAnswer, gridDimension: widget.gridDimension+1)));
+                          //         } else {
+                          //           Navigator.pop(context);
+                          //         }
+                          //       }
+                          //     }
+                          //   },
+                          //   child: Text("${startButtonString[difficulty]}"),
                           ),
                         ),
-                      )
                     ]),
               )),
         ));
   }
 
-  void startCountDownTimer() {
+  //build counting down timer
+  void startCountDownTimer() async {
+    final user = await Amplify.Auth.getCurrentUser();
+    String uid = user.userId;
     _countDownOpacity = 1.0;
     _countDownCurrent = 30;
     _timer = new CountdownTimer(
@@ -249,15 +307,15 @@ class _MemoryState extends State<Memory> {
     });
     sub.onDone(() {
       if(_countDownCurrent == 0) {
-        DataBaseService(uid: _authService
-            .getCurrentUser()
-            .uid).updateUserMemoryGame(score, widget.gridDimension - 1, false,widget.medicineAnswer);
+        DataBaseService(uid: uid)
+            .updateUserMemoryGame(score, widget.gridDimension - 1, false, widget.medicineAnswer);
       }
       gameStarted = false;
     });
   }
 }
 
+//build the title
 class Tile extends StatefulWidget {
   String imageAssetPath;
   int index;
@@ -300,7 +358,7 @@ class _TileState extends State<Tile> {
     );
   }
 
-  bool checkForWin() {
+  Future<bool> checkForWin() async {
     for (var i = 0; i < pairs.length; i++) {
       if (pairs[i].getImageAssetPath() == correctImagePath &&
           pairs[i].getisSelected() == false) {
@@ -314,13 +372,19 @@ class _TileState extends State<Tile> {
       difficulty = 0;
     }
     selected = false;
-    //widget.parent._countDownCurrent = 0;
     gameStarted = false;
     _timer!.cancel();
-    DataBaseService(uid:widget.parent._authService.getCurrentUser().uid).updateUserMemoryGame(widget.parent.score,widget.parent.widget.gridDimension - 1,true,widget.parent.widget.medicineAnswer);
+
+    final user = await Amplify.Auth.getCurrentUser();
+    String uid = user.userId;
+    DataBaseService(uid: uid)
+        .updateUserMemoryGame(widget.parent.score,
+        widget.parent.widget.gridDimension - 1, true,
+        widget.parent.widget.medicineAnswer);
     return true;
   }
 }
+
 
 List<TileModel> getPairs(int gridDimension) {
   List<TileModel> pairs = [];

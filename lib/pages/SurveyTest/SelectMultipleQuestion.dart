@@ -11,13 +11,11 @@ class SelectMultipleQuestion extends StatefulWidget with Question {
   bool selected = true;
   SelectMultipleQuestion({required this.question, required this.questionNumber,required this.choices});
 
-
-
-
   @override
   _SelectMultipleQuestionState createState() => _SelectMultipleQuestionState();
 }
 
+//build multiple question class
 class _SelectMultipleQuestionState extends State<SelectMultipleQuestion> {
 
   List<bool> radioSates= [];

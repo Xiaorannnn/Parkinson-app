@@ -5,7 +5,9 @@ import 'package:parkinsons_app/services/auth.dart';
 import 'package:parkinsons_app/services/database.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:amplify_flutter/amplify.dart';
 
+//build the class for MDSUPDRS test
 class MDSUPDRS extends StatefulWidget {
   String participantAnswer;
   MDSUPDRS({required this.participantAnswer});
@@ -111,10 +113,10 @@ class _MDSUPDRSState extends State<MDSUPDRS> {
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: Column(
         children: [
-          Text("THANK YOU",
+          Text("谢谢！",
               style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold)),
           Text(
-              "Answer the questions carefully and honestly and press the submit button!")
+              "请仔细如实回答所有问题并点击提交按钮！")
         ],
       ),
     );
@@ -452,19 +454,23 @@ class _MDSUPDRSState extends State<MDSUPDRS> {
   }
 
  void onSubmitPressed() async {
-    String uid = AuthService().getCurrentUser().uid;
+    final user = await Amplify.Auth.getCurrentUser();
+    String uid = user.userId;
     String timestamp = createTimeStamp();
     Map<String,dynamic> map= {};
     for(int i = 0;i < answers.length ; i++){
       if(answers[i] == -1){
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please answer all questions")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("请回答所有问题！")));
         return;
       }
       map["Question "+(i+1).toString()] = answers[i];
     }
     map["Survey Participant"] = widget.participantAnswer;
-    await DataBaseService(uid:uid).userCollection.doc(uid).collection("MDS-UPDRS").doc(timestamp).set(map);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Submission recorded")));
+    DataBaseService db = DataBaseService(uid: uid);
+    db.updateMDSUPDRS(answers, widget.participantAnswer);
+
+    // await DataBaseService(uid:uid).userCollection.doc(uid).collection("MDS-UPDRS").doc(timestamp).set(map);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("提交已被记录")));
  }
 
 

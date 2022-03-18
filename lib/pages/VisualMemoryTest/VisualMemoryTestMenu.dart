@@ -3,7 +3,9 @@ import 'package:parkinsons_app/pages/VisualMemoryTest/memory.dart';
 import 'package:parkinsons_app/services/Util.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+//build a class for visual memory test meno
 class VisualMemoryTestMenu extends StatefulWidget {
+  //variables and constructor function
   String medicineAnswer;
   VisualMemoryTestMenu({required this.medicineAnswer});
   @override
@@ -12,6 +14,7 @@ class VisualMemoryTestMenu extends StatefulWidget {
 
 class _VisualMemoryTestMenuState extends State<VisualMemoryTestMenu> {
 
+  //build the context for visual memory test
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -48,7 +51,7 @@ class _VisualMemoryTestMenuState extends State<VisualMemoryTestMenu> {
                     ]))));
   }
 
-
+  //build the difficulty box
   Widget buildDifficultyBtn(BuildContext context, int difficulty) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 20),

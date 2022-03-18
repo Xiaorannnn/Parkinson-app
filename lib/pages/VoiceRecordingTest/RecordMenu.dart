@@ -7,8 +7,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class RecordMenu extends StatefulWidget {
+  //set variables
   String medicineAnswer;
-
+  //constructor function
   RecordMenu({required this.medicineAnswer});
 
   @override
@@ -16,6 +17,7 @@ class RecordMenu extends StatefulWidget {
 }
 
 class _RecordMenuState extends State<RecordMenu> {
+  //build the context
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -51,8 +53,6 @@ class _RecordMenuState extends State<RecordMenu> {
                                     AppLocalizations.of(context)!.voice_vowel_instruction,
                                     // "Pronounce 'a' and hold for 5 seconds",
                                 subInstructionsText: "")));
-                    // '/recordbreath': (context) => RecordActivity(activityTitle: "Record Breath Test",instructionText:"Take a deep breath three times",subInstructionsText: "Inhale for four seconds each breath!"),
-                    // '/recordsentence': (context) => RecordActivity(activityTitle:"Record Sentence Test",instructionText:"Read the following sentence:",subInstructionsText: "When the sunlight strikes raindrops in the air they act as a prism and form a rainbow. The rainbow is a division of white light into many beautiful colors."),
                   }),
               WideButton(
                   color: Colors.blue,

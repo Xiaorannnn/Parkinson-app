@@ -7,9 +7,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class AuditoryMenu extends StatefulWidget {
+  //set basic variables
   String medicineAnswer;
+  //the constructor function
   AuditoryMenu({required this.medicineAnswer});
-
 
   @override
   _AuditoryMenuState createState() => _AuditoryMenuState();

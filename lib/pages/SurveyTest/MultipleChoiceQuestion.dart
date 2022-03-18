@@ -4,12 +4,15 @@ import 'package:parkinsons_app/pages/VisualMemoryTest/memory.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+//build the class for multiple choice questions
 class MultipleChoiceQuestion extends StatefulWidget with Question {
+  //set basic variables
   String question;
   List<String> choices;
   int selected = -1;
   int questionNumber;
 
+  //constructor function
   MultipleChoiceQuestion(
       {required this.question,
       required this.questionNumber,
@@ -20,6 +23,7 @@ class MultipleChoiceQuestion extends StatefulWidget with Question {
   _MultipleChoiceQuestionState createState() => _MultipleChoiceQuestionState();
 }
 
+//build the context
 class _MultipleChoiceQuestionState extends State<MultipleChoiceQuestion> {
   @override
   Widget build(BuildContext context) {
