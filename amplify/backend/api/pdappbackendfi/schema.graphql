@@ -1,14 +1,11 @@
-input AMPLIFY {
-  globalAuthRule: AuthRule = {allow: public}
-}
-
-type UserAccount @model {
+type UserAccount @model @auth(rules: [{allow: public}]) {
   id: ID!
   Username: String!
   Password: String!
+  uid: String!
 }
 
-type RhythmTest @model {
+type RhythmTest @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   MedicineAnswer: String!
@@ -16,7 +13,7 @@ type RhythmTest @model {
   TotalPixelsFromCenter: Float!
 }
 
-type MemoryGame @model {
+type MemoryGame @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   MedicineAnswer: String!
@@ -25,73 +22,73 @@ type MemoryGame @model {
   GameFinished: Boolean!
 }
 
-type AuditoryMemoryThreeWords @model {
+type AuditoryMemoryThreeWords @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   MedicineAnswer: String!
 }
 
-type AuditoryMemoryFourWords @model {
+type AuditoryMemoryFourWords @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   MedicineAnswer: String!
 }
 
-type AuditoryMemoryFiveWords @model {
+type AuditoryMemoryFiveWords @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   MedicineAnswer: String!
 }
 
-type ClockDrawingTest @model {
+type ClockDrawingTest @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   MedicineAnswer: String!
 }
 
-type JoinCirclesTest @model {
+type JoinCirclesTest @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   MedicineAnswer: String!
 }
 
-type TremorTest @model {
+type TremorTest @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   MedicineAnswer: String!
 }
 
-type RecordVowelTest @model {
+type RecordVowelTest @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   MedicineAnswer: String!
 }
 
-type RecordBreathTest @model {
+type RecordBreathTest @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   MedicineAnswer: String!
 }
 
-type RecordSentenceTest @model {
+type RecordSentenceTest @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   MedicineAnswer: String!
 }
 
-type StraightWalkingTest @model {
+type StraightWalkingTest @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   MedicineAnswer: String!
 }
 
-type TurningTest @model {
+type TurningTest @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   MedicineAnswer: String!
 }
 
-type DemographicSurvey @model {
+type DemographicSurvey @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   Question1: String!
@@ -128,7 +125,7 @@ type DemographicSurvey @model {
   SurveyParticipant: String!
 }
 
-type MDSUPDRS @model {
+type MDSUPDRS @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   Question1: Int!
@@ -155,7 +152,7 @@ type MDSUPDRS @model {
   SurveyParticipant: String!
 }
 
-type MMSE @model {
+type MMSE @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   Question1: String!
@@ -169,4 +166,4 @@ type MMSE @model {
   Question9: String!
   Question10: String!
 }
-  
+ 

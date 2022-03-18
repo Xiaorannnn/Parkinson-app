@@ -20,10 +20,12 @@ class DataBaseService {
   DataBaseService({required this.uid});
 
   //update user's information as a table to the database
-  Future updateUserData(String email, String password) async {
+  Future updateUserData(String email, String password, String uid) async {
     UserAccount user = UserAccount(
         Username: email,
-        Password: password);
+        Password: password,
+        uid: uid);
+    print("%%%%%%%%%%%%%");
     return await Amplify.DataStore.save(user);
   }
 

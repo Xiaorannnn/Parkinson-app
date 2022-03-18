@@ -43,7 +43,12 @@ class RecordBreathTest extends Model {
     try {
       return _uid!;
     } catch(e) {
-      throw new DataStoreException(DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage, recoverySuggestion: DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion, underlyingException: e.toString());
+      throw new DataStoreException(
+          DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
     }
   }
   
@@ -51,7 +56,12 @@ class RecordBreathTest extends Model {
     try {
       return _MedicineAnswer!;
     } catch(e) {
-      throw new DataStoreException(DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage, recoverySuggestion: DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion, underlyingException: e.toString());
+      throw new DataStoreException(
+          DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
     }
   }
   
@@ -115,6 +125,17 @@ class RecordBreathTest extends Model {
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "RecordBreathTest";
     modelSchemaDefinition.pluralName = "RecordBreathTests";
+    
+    modelSchemaDefinition.authRules = [
+      AuthRule(
+        authStrategy: AuthStrategy.PUBLIC,
+        operations: [
+          ModelOperation.CREATE,
+          ModelOperation.UPDATE,
+          ModelOperation.DELETE,
+          ModelOperation.READ
+        ])
+    ];
     
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
     

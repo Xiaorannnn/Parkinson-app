@@ -58,7 +58,7 @@ export 'UserAccount.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "c83ba311971460b65e94c6d4661d0363";
+  String version = "8a2cddd564ce98cb177283e87902c8b8";
   @override
   List<ModelSchema> modelSchemas = [AuditoryMemoryFiveWords.schema, AuditoryMemoryFourWords.schema, AuditoryMemoryThreeWords.schema, ClockDrawingTest.schema, DemographicSurvey.schema, JoinCirclesTest.schema, MDSUPDRS.schema, MMSE.schema, MemoryGame.schema, RecordBreathTest.schema, RecordSentenceTest.schema, RecordVowelTest.schema, RhythmTest.schema, StraightWalkingTest.schema, TremorTest.schema, TurningTest.schema, UserAccount.schema];
   static final ModelProvider _instance = ModelProvider();
@@ -67,77 +67,42 @@ class ModelProvider implements ModelProviderInterface {
   
   ModelType getModelTypeByModelName(String modelName) {
     switch(modelName) {
-    case "AuditoryMemoryFiveWords": {
-    return AuditoryMemoryFiveWords.classType;
-    }
-    break;
-    case "AuditoryMemoryFourWords": {
-    return AuditoryMemoryFourWords.classType;
-    }
-    break;
-    case "AuditoryMemoryThreeWords": {
-    return AuditoryMemoryThreeWords.classType;
-    }
-    break;
-    case "ClockDrawingTest": {
-    return ClockDrawingTest.classType;
-    }
-    break;
-    case "DemographicSurvey": {
-    return DemographicSurvey.classType;
-    }
-    break;
-    case "JoinCirclesTest": {
-    return JoinCirclesTest.classType;
-    }
-    break;
-    case "MDSUPDRS": {
-    return MDSUPDRS.classType;
-    }
-    break;
-    case "MMSE": {
-    return MMSE.classType;
-    }
-    break;
-    case "MemoryGame": {
-    return MemoryGame.classType;
-    }
-    break;
-    case "RecordBreathTest": {
-    return RecordBreathTest.classType;
-    }
-    break;
-    case "RecordSentenceTest": {
-    return RecordSentenceTest.classType;
-    }
-    break;
-    case "RecordVowelTest": {
-    return RecordVowelTest.classType;
-    }
-    break;
-    case "RhythmTest": {
-    return RhythmTest.classType;
-    }
-    break;
-    case "StraightWalkingTest": {
-    return StraightWalkingTest.classType;
-    }
-    break;
-    case "TremorTest": {
-    return TremorTest.classType;
-    }
-    break;
-    case "TurningTest": {
-    return TurningTest.classType;
-    }
-    break;
-    case "UserAccount": {
-    return UserAccount.classType;
-    }
-    break;
-    default: {
-    throw Exception("Failed to find model in model provider for model name: " + modelName);
-    }
+      case "AuditoryMemoryFiveWords":
+        return AuditoryMemoryFiveWords.classType;
+      case "AuditoryMemoryFourWords":
+        return AuditoryMemoryFourWords.classType;
+      case "AuditoryMemoryThreeWords":
+        return AuditoryMemoryThreeWords.classType;
+      case "ClockDrawingTest":
+        return ClockDrawingTest.classType;
+      case "DemographicSurvey":
+        return DemographicSurvey.classType;
+      case "JoinCirclesTest":
+        return JoinCirclesTest.classType;
+      case "MDSUPDRS":
+        return MDSUPDRS.classType;
+      case "MMSE":
+        return MMSE.classType;
+      case "MemoryGame":
+        return MemoryGame.classType;
+      case "RecordBreathTest":
+        return RecordBreathTest.classType;
+      case "RecordSentenceTest":
+        return RecordSentenceTest.classType;
+      case "RecordVowelTest":
+        return RecordVowelTest.classType;
+      case "RhythmTest":
+        return RhythmTest.classType;
+      case "StraightWalkingTest":
+        return StraightWalkingTest.classType;
+      case "TremorTest":
+        return TremorTest.classType;
+      case "TurningTest":
+        return TurningTest.classType;
+      case "UserAccount":
+        return UserAccount.classType;
+      default:
+        throw Exception("Failed to find model in model provider for model name: " + modelName);
     }
   }
 }

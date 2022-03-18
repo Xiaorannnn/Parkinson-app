@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:parkinsons_app/models/UserModel.dart';
 import 'package:parkinsons_app/services/database.dart';
@@ -44,7 +44,9 @@ class AuthService {
       final user = await Amplify.Auth.getCurrentUser();
       // final user_global = user;
       String uid = user.userId;
-      await DataBaseService(uid: uid).updateUserData(username, password);
+      print("#############");
+      print(uid);
+      await DataBaseService(uid: uid).updateUserData(username, password, uid);
       return _userModelFromAmplify(uid);
     } on AuthException catch (e) {
       print(e.message);

@@ -30,6 +30,7 @@ class UserAccount extends Model {
   final String id;
   final String? _Username;
   final String? _Password;
+  final String? _uid;
 
   @override
   getInstanceType() => classType;
@@ -43,7 +44,12 @@ class UserAccount extends Model {
     try {
       return _Username!;
     } catch(e) {
-      throw new DataStoreException(DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage, recoverySuggestion: DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion, underlyingException: e.toString());
+      throw new DataStoreException(
+          DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
     }
   }
   
@@ -51,17 +57,36 @@ class UserAccount extends Model {
     try {
       return _Password!;
     } catch(e) {
-      throw new DataStoreException(DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage, recoverySuggestion: DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion, underlyingException: e.toString());
+      throw new DataStoreException(
+          DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
     }
   }
   
-  const UserAccount._internal({required this.id, required Username, required Password}): _Username = Username, _Password = Password;
+  String get uid {
+    try {
+      return _uid!;
+    } catch(e) {
+      throw new DataStoreException(
+          DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
+  }
   
-  factory UserAccount({String? id, required String Username, required String Password}) {
+  const UserAccount._internal({required this.id, required Username, required Password, required uid}): _Username = Username, _Password = Password, _uid = uid;
+  
+  factory UserAccount({String? id, required String Username, required String Password, required String uid}) {
     return UserAccount._internal(
       id: id == null ? UUID.getUUID() : id,
       Username: Username,
-      Password: Password);
+      Password: Password,
+      uid: uid);
   }
   
   bool equals(Object other) {
@@ -74,7 +99,8 @@ class UserAccount extends Model {
     return other is UserAccount &&
       id == other.id &&
       _Username == other._Username &&
-      _Password == other._Password;
+      _Password == other._Password &&
+      _uid == other._uid;
   }
   
   @override
@@ -87,34 +113,49 @@ class UserAccount extends Model {
     buffer.write("UserAccount {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("Username=" + "$_Username" + ", ");
-    buffer.write("Password=" + "$_Password");
+    buffer.write("Password=" + "$_Password" + ", ");
+    buffer.write("uid=" + "$_uid");
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  UserAccount copyWith({String? id, String? Username, String? Password}) {
+  UserAccount copyWith({String? id, String? Username, String? Password, String? uid}) {
     return UserAccount(
       id: id ?? this.id,
       Username: Username ?? this.Username,
-      Password: Password ?? this.Password);
+      Password: Password ?? this.Password,
+      uid: uid ?? this.uid);
   }
   
   UserAccount.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _Username = json['Username'],
-      _Password = json['Password'];
+      _Password = json['Password'],
+      _uid = json['uid'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'Username': _Username, 'Password': _Password
+    'id': id, 'Username': _Username, 'Password': _Password, 'uid': _uid
   };
 
   static final QueryField ID = QueryField(fieldName: "userAccount.id");
   static final QueryField USERNAME = QueryField(fieldName: "Username");
   static final QueryField PASSWORD = QueryField(fieldName: "Password");
+  static final QueryField UID = QueryField(fieldName: "uid");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "UserAccount";
     modelSchemaDefinition.pluralName = "UserAccounts";
+    
+    modelSchemaDefinition.authRules = [
+      AuthRule(
+        authStrategy: AuthStrategy.PUBLIC,
+        operations: [
+          ModelOperation.CREATE,
+          ModelOperation.UPDATE,
+          ModelOperation.DELETE,
+          ModelOperation.READ
+        ])
+    ];
     
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
     
@@ -126,6 +167,12 @@ class UserAccount extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: UserAccount.PASSWORD,
+      isRequired: true,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: UserAccount.UID,
       isRequired: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));

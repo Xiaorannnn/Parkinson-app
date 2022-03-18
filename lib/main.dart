@@ -16,7 +16,7 @@ import 'package:parkinsons_app/pages/WalkingTest/WalkingMenu.dart';
 import 'package:parkinsons_app/pages/home.dart';
 import 'package:parkinsons_app/pages/VisualMemoryTest/memory.dart';
 import 'package:parkinsons_app/pages/RhythmTest/rhythm.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:parkinsons_app/pages/UserLogin/login.dart';
 import 'package:parkinsons_app/pages/UserLogin/signup.dart';
 import 'package:parkinsons_app/pages/WalkingTest/StraightWalking.dart';
