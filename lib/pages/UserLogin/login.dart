@@ -196,11 +196,12 @@ class _LoginState extends State<Login> {
               error = "登录信息有误";
               // error = " not sign in with your credentials";
               // error = AppLocalizations.of(context)!.login_failure;
-              print("error signing in");
-              print("RESULT: ${result.toString()}");
+              print("登录时发生错误");
+              print("结果: ${result.toString()}");
             });
           }
           else {
+              error = '';
               Navigator.pushReplacementNamed(context, '/home');
           }
         },

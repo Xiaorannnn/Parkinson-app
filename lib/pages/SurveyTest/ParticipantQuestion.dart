@@ -134,7 +134,7 @@ class _ParticipantQuestionState extends State<ParticipantQuestion> {
       Navigator.of(context).pushReplacementNamed(widget.routeNameOfNextWidget,arguments: {'participantAnswer':participantAnswer});
     }
     else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please answer the question"),));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("请回答上述问题"),));
     }
   }
 

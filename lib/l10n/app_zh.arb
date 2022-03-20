@@ -16,7 +16,7 @@
     "signup_name": "姓名",
     "signup_email": "邮箱（选填）",
 
-    "home_header": "帕金森症状应用软件",
+    "home_header": "神经系统疾病测试软件",
     "home_title": "选择一个测试",
     "home_rhythm": "节奏测试",
     "home_visual_memory": "视觉记忆测试",
@@ -58,7 +58,8 @@
 
     "memory_start": "开始",
     "memory_nextstage": "下一阶段",
-    "memory_header": "视觉记忆测试！",
+    "memory_end": "结束",
+    "memory_header": "视觉记忆测试",
     "memory_title": "请记住这个形状: ",
     "memory_time": "剩余时间: ",
     "memory_tries": "尝试次数",
@@ -70,7 +71,7 @@
     "voice_vowel_instruction": "发'a'的音并坚持五秒",
     "voice_deep_breath": "深呼吸",
     "voice_deep_breath_instruction": "深呼吸三次",
-    "voice_deep_breath_subinstruction": "每次吸气四秒钟",
+    "voice_deep_breath_subinstruction": "",
     "voice_read": "朗读句子",
     "voice_read_instruction": "朗读以下句子",
     "voice_read_subinstruction": "当阳光照射到空气中的雨滴时，雨滴就像棱镜一样形成了彩虹。彩虹是把白光分割成许多美丽的颜色。",
@@ -100,7 +101,7 @@
     "auditory_menu_choice1": "回忆三个单词",
     "auditory_menu_choice2": "回忆四个单词",
     "auditory_menu_choice3": "回忆五个单词",
-    "auditory_memory_instruction": "按下播放按钮来播放音频。记住你听到的单词。5秒钟后回忆这些话并对着麦克风说出来。",
+    "auditory_memory_instruction": "按下播放按钮来播放音频。记住你听到的单词。5秒钟后回忆这些词组并对着麦克风说出来。",
     "auditory_memory_play": "播放音频",
     "auditory_memory_speak": "清晰地说出刚才听到的单词",
 

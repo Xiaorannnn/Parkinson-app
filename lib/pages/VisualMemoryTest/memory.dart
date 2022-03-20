@@ -16,7 +16,6 @@ CountdownTimer? _timer = null;
 List<TileModel> pairs = <TileModel>[];
 bool selected = false;
 bool gameStarted = false;
-// bool isButtonClickable = true;
 
 String correctImagePath = ""; //path to what the user will have to remember
 int difficulty = 0; //index of difficulty
@@ -26,7 +25,6 @@ class Memory extends StatefulWidget {
   //set variables
   String medicineAnswer;
   int gridDimension;
-
   //constructor functions
   Memory({required this.medicineAnswer,required this.gridDimension});
 
@@ -40,14 +38,14 @@ class _MemoryState extends State<Memory> {
   List<TileModel> visiblePairs = []; //holds whats actually visible to user
   int maxActive = 8; //how many tiles will be active
   double correctShapeOpactity =
-      1.0; //controls weather the correct shape shows at top
-  double youWonOpacity = 0.0;
-
+      0.0; //controls weather the correct shape shows at top
+  double youWonOpacity = 1.0;
+  double timeOpacity = 0.0;
   double _countDownOpacity = 0.0;
-
+  String instruction = '请点击开始按钮!';
   /* to display time left*/
   int _countDownStart = 30;
-  int _countDownCurrent = 30;
+  int _countDownCurrent = 0;
 
   int timeLeftCurrent = 30;
   int timeLeftMax = 30;
@@ -81,7 +79,10 @@ class _MemoryState extends State<Memory> {
   //build the context for memory menu
   @override
   Widget build(BuildContext context) {
-    List<String> startButtonString = [AppLocalizations.of(context)!.memory_start, AppLocalizations.of(context)!.memory_nextstage];
+    List<String> startButtonString = [
+      AppLocalizations.of(context)!.memory_start,
+      AppLocalizations.of(context)!.memory_nextstage,
+      AppLocalizations.of(context)!.memory_end];
 
     final Size size = MediaQuery.of(context).size;
 
@@ -134,9 +135,7 @@ class _MemoryState extends State<Memory> {
                       Opacity(
                         opacity: youWonOpacity,
                         child: Text(
-                          AppLocalizations.of(context)!.memory_great +
-                              startButtonString[difficulty] +
-                              "!",
+                          instruction,
                           style: TextStyle(
                               fontSize: size.width * 0.05,
                               fontWeight: FontWeight.bold,
@@ -145,7 +144,7 @@ class _MemoryState extends State<Memory> {
                         ),
                       ),
                       Opacity(
-                          opacity: 1.0,
+                          opacity: timeOpacity,
                           child: Container(
                               padding: EdgeInsets.all(size.height * 0.025),
                               child: Text(
@@ -209,19 +208,46 @@ class _MemoryState extends State<Memory> {
                                             Random random = Random();
                                             correctImagePath =
                                             "assets/green_triangle.png";
-
-                                            Future.delayed(const Duration(seconds: 5),
-                                                    () {
-                                                  setState(() {
-                                                    AppLocalizations.of(context)!.memory_find;
-                                                    // instructionText = "Find where the shape is: ";
-                                                    visiblePairs =
-                                                        getQuestions(widget.gridDimension);
-                                                    correctShapeOpactity = 1.0;
-                                                    score = 0;
-                                                    startCountDownTimer();
-                                                  });
+                                            _countDownCurrent = 5;
+                                            timeOpacity = 1.0;
+                                            _timer = new CountdownTimer(
+                                              new Duration(seconds: 5),
+                                              new Duration(seconds: 1),
+                                            );
+                                            var sub = _timer!.listen(null);
+                                            sub.onData((duration) {
+                                              setState(() {
+                                                _countDownCurrent = 5 - duration.elapsed.inSeconds;
+                                              });
+                                            });
+                                            sub.onDone(() {
+                                              if(_countDownCurrent == 0) {
+                                                setState(() {
+                                                  AppLocalizations.of(context)!.memory_find;
+                                                  // instructionText = "Find where the shape is: ";
+                                                  visiblePairs =
+                                                      getQuestions(widget.gridDimension);
+                                                  correctShapeOpactity = 1.0;
+                                                  youWonOpacity = 1.0;
+                                                  instruction = '请找到你刚才看到的图形！';
+                                                  score = 0;
+                                                  startCountDownTimer();
                                                 });
+                                              }
+                                            });
+                                            // Future.delayed(const Duration(seconds: 5),
+                                            //         () {
+                                            //       setState(() {
+                                            //         AppLocalizations.of(context)!.memory_find;
+                                            //         // instructionText = "Find where the shape is: ";
+                                            //         visiblePairs =
+                                            //             getQuestions(widget.gridDimension);
+                                            //         correctShapeOpactity = 1.0;
+                                            //         score = 0;
+                                            //         startCountDownTimer();
+                                            //       });
+                                            //     });
+
                                             selected = false;
                                           });
                                         } else {
@@ -234,53 +260,12 @@ class _MemoryState extends State<Memory> {
                                       }
                                     },
                                     child: Text("${startButtonString[difficulty]}"),
+                                    // child: Text("$difficulty"),
+                                    // child: Text("${widget.gridDimension}"),
                                   ),
                               ),
                             ],
                           )
-                          // child: ElevatedButton(
-                          //   onPressed: () {
-                          //     if (isButtonClickable) {
-                          //       ButtonClicked();
-                          //     }
-                          //     if (!gameStarted) {
-                          //       if (difficulty < 1) {
-                          //         setState(() {
-                          //           gameStarted = true;
-                          //           correctShapeOpactity = 1.0;
-                          //           youWonOpacity = 0.0;
-                          //           pairs = getPairs(widget.gridDimension);
-                          //           pairs.shuffle();
-                          //           visiblePairs = pairs;
-                          //           selected = true;
-                          //           Random random = Random();
-                          //           correctImagePath =
-                          //               "assets/green_triangle.png";
-                          //
-                          //           Future.delayed(const Duration(seconds: 5),
-                          //               () {
-                          //             setState(() {
-                          //               AppLocalizations.of(context)!.memory_find;
-                          //               // instructionText = "Find where the shape is: ";
-                          //               visiblePairs =
-                          //                   getQuestions(widget.gridDimension);
-                          //               correctShapeOpactity = 1.0;
-                          //               score = 0;
-                          //               startCountDownTimer();
-                          //             });
-                          //           });
-                          //           selected = false;
-                          //         });
-                          //       } else {
-                          //         if (widget.gridDimension < 6) {
-                          //           Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Memory(medicineAnswer: widget.medicineAnswer, gridDimension: widget.gridDimension+1)));
-                          //         } else {
-                          //           Navigator.pop(context);
-                          //         }
-                          //       }
-                          //     }
-                          //   },
-                          //   child: Text("${startButtonString[difficulty]}"),
                           ),
                         ),
                     ]),
@@ -365,12 +350,19 @@ class _TileState extends State<Tile> {
         return false;
       }
     }
+    widget.parent.instruction = '做得好，下一阶段！';
     widget.parent.youWonOpacity = 1.0;
     if (difficulty < 1) {
       difficulty++;
+      // print("12345678");
+      print(widget.parent.widget.gridDimension);
     } else {
       difficulty = 0;
     }
+    if(widget.parent.widget.gridDimension == 6) {
+      difficulty = 2;
+    }
+
     selected = false;
     gameStarted = false;
     _timer!.cancel();

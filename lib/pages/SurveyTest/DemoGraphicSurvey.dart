@@ -282,7 +282,7 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
     ["integer"],
     [
       "不知道",
-      "普通神经科医师(非帕金森病专家)",
+      "普通神经科医师(非阿兹海默病专家)",
       "执业护士或医生助理",
       "其他",
       "帕金森病/运动障碍专家",

@@ -25,7 +25,6 @@ class DataBaseService {
         Username: email,
         Password: password,
         uid: uid);
-    print("%%%%%%%%%%%%%");
     return await Amplify.DataStore.save(user);
   }
 

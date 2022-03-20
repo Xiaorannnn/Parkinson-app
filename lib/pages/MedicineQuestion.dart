@@ -159,7 +159,7 @@ class _MedicineQuestionState extends State<MedicineQuestion> {
       Navigator.of(context).pushReplacementNamed(widget.routeNameOfNextWidget,arguments: {'medicineAnswer':medicineAnswer});
     }
     else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please answer the question"),));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("请回答上述问题"),));
     }
   }
 

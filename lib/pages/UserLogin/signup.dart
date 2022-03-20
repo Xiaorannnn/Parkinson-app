@@ -207,6 +207,8 @@ Widget buildSignUpBtn(BuildContext context,_SignUpState parent) {
           dynamic result = await _auth.registerWithEmailAndPassword(username, password);
           if(result==true){
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("注册成功!")));
+            Future.delayed(const Duration(seconds: 2));
+            Navigator.pop(context);
           }
           else {
             parent.setState(() {
