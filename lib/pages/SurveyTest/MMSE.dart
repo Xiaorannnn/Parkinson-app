@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:parkinsons_app/pages/SurveyTest/HorizontalMultipleChoiceQuestion.dart';
+//import 'package:parkinsons_app/pages/SurveyTest/HorizontalMultipleChoiceQuestion.dart';
 import 'package:parkinsons_app/pages/SurveyTest/MultipleChoiceQuestion.dart';
 import 'package:parkinsons_app/services/Util.dart';
-import 'package:parkinsons_app/services/auth.dart';
+//import 'package:parkinsons_app/services/auth.dart';
 import 'package:parkinsons_app/services/database.dart';
 import 'Question.dart';
 
@@ -11,6 +11,8 @@ import 'package:amplify_flutter/amplify.dart';
 
 //build a class for the mmse test
 class MMSE extends StatefulWidget {
+  static bool MMSECompleted = false;
+
   @override
   _MMSEState createState() => _MMSEState();
 }
@@ -70,31 +72,50 @@ class _MMSEState extends State<MMSE> {
     });
   }
 
+  Future<bool?> showWarning(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text("您确定想要退出吗？"),
+            actions: [
+              ElevatedButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text("取消")),
+              ElevatedButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: Text("确认"))
+            ],
+          ));
+
   //build the text
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("MMSE"),
-          centerTitle: true,
-        ),
-        body: SafeArea(
-          child: Container(
-            width: double.infinity,
-            height: screenSize.height,
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            child: ListView(
-              children: [
-                buildInstructions(),
-                    Column(
-                  children: widget_array,
-                ),
-                buildSubmitButton(screenSize)
-              ],
+    return WillPopScope(
+        onWillPop: () async {
+          final shouldPop = await showWarning(context);
+          return shouldPop ?? false;
+        },
+        child: Scaffold(
+            appBar: AppBar(
+              title: Text("MMSE"),
+              centerTitle: true,
             ),
-          ),
-        ));
+            body: SafeArea(
+              child: Container(
+                width: double.infinity,
+                height: screenSize.height,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: ListView(
+                  children: [
+                    buildInstructions(),
+                    Column(
+                      children: widget_array,
+                    ),
+                    buildSubmitButton(screenSize)
+                  ],
+                ),
+              ),
+            )));
   }
 
   //build the instructions for the MMSE test
@@ -122,8 +143,8 @@ class _MMSEState extends State<MMSE> {
       Question question = widget_array[i] as Question;
       String answer = question.getAnswer();
       if (answer == "") {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("请回答所有问题！")));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("请回答所有问题！")));
         return;
       }
       answers.add(answer);
@@ -136,9 +157,11 @@ class _MMSEState extends State<MMSE> {
       map["Question " + (i + 1).toString()] = answers[i];
     }
     DataBaseService db = DataBaseService(uid: uid);
+    MMSE.MMSECompleted = true;
     db.updateMMSE(answers);
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text("记录已提交！")));
+    Navigator.pop(context);
   }
 
   Widget buildSubmitButton(Size screenSize) {

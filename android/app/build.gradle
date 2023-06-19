@@ -8,7 +8,7 @@ if (localPropertiesFile.exists()) {
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+    throw new FileNotFoundException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -29,14 +29,20 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     signingConfigs {
-        release {
-            storeFile file('C:\\Users\\antma\\Desktop\\REU internship\\parkinsons_releases_keystore.jks')
-            storePassword 'Astro17#'
-            keyAlias 'key0'
-            keyPassword 'Astro17#'
+//        release {
+//            storeFile file('C:\\Users\\antma\\Desktop\\REU internship\\parkinsons_releases_keystore.jks')
+//            storePassword 'Astro17#'
+//            keyAlias 'key0'
+//            keyPassword 'Astro17#'
+//        }
+        debug {
+            storeFile rootProject.file('debug.keystore')
+            keyAlias 'testalias'
+            keyPassword 'jwd123'
+            storePassword 'jwd123'
         }
     }
-    compileSdkVersion 30
+    compileSdkVersion 33
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -46,16 +52,37 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.parkinsons_app"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
 
     buildTypes {
-        release {
+//        release {
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            // TODO: Add your own signing config for the release build.
+//            // Signing with the debug keys for now, so `flutter run --release` works.
+//            //signingConfig signingConfigs.release
+//        }
+        applicationVariants.all{
+                // this method is use to rename your all apk weather
+                // it may be signed or unsigned(debug apk)
+            variant ->
+                variant.outputs.each{
+                        // on below line we are setting a
+                        // name to our apk as GFG.apk
+                    output->
+                        def name = "纽蓝.apk"
+                        // on below line we are setting the
+                        // outputFile Name to our apk file.
+                        output.outputFileName = name
+                }
+        }
+        debug {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
         }
     }
 }

@@ -2,15 +2,16 @@ import 'dart:io';
 
 // import 'package:firebase_storage/firebase_storage.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
-import 'package:crypt/crypt.dart';
+/*import 'package:crypt/crypt.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:parkinsons_app/pages/InformationTest/Information.dart';*/
 import 'package:parkinsons_app/services/Util.dart';
 
 import 'package:parkinsons_app/models/ModelProvider.dart';
-import 'package:amplify_datastore/amplify_datastore.dart';
+//import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify.dart';
 
-import 'package:path_provider/path_provider.dart';
+//import 'package:path_provider/path_provider.dart';
 
 //a database class for all database activities
 class DataBaseService {
@@ -21,11 +22,27 @@ class DataBaseService {
 
   //update user's information as a table to the database
   Future updateUserData(String email, String password, String uid) async {
-    UserAccount user = UserAccount(
-        Username: email,
-        Password: password,
-        uid: uid);
+    UserAccount user =
+        UserAccount(Username: email, Password: password, uid: uid);
     return await Amplify.DataStore.save(user);
+  }
+
+  Future updateSubmitTime(String time) async {
+    SubmitTime submit = SubmitTime(uid: uid, time: time);
+    return await Amplify.DataStore.save(submit);
+  }
+
+  Future updateInformation(List answer) async {
+    InformationTest info = InformationTest(
+        uid: uid,
+        number: answer[0],
+        age: answer[1],
+        gender: answer[2],
+        symptom: answer[3],
+        testtime: answer[4],
+        medicinetype: answer[5],
+        medicinefreq: answer[6]);
+    return await Amplify.DataStore.save(info);
   }
 
   //update the result of ryhthm game to the database
@@ -53,41 +70,35 @@ class DataBaseService {
 
   //update the result of ClockDrawingTest to the database
   Future updateClockDrawingTest(String medicineAnswer) async {
-    ClockDrawingTest clockDrawing = ClockDrawingTest(
-        uid: uid,
-        MedicineAnswer: medicineAnswer);
+    ClockDrawingTest clockDrawing =
+        ClockDrawingTest(uid: uid, MedicineAnswer: medicineAnswer);
     return await Amplify.DataStore.save(clockDrawing);
   }
 
   //update the result of JoinCirclesTest to the database
   Future updateJoinCirclesTest(String medicineAnswer) async {
-    JoinCirclesTest joinCircles = JoinCirclesTest(
-        uid: uid,
-        MedicineAnswer: medicineAnswer);
+    JoinCirclesTest joinCircles =
+        JoinCirclesTest(uid: uid, MedicineAnswer: medicineAnswer);
     return await Amplify.DataStore.save(joinCircles);
   }
 
   //update the result of TremorTest to the database
   Future updateTremorTest(String medicineAnswer) async {
-    TremorTest tremor = TremorTest(
-        uid: uid,
-        MedicineAnswer: medicineAnswer);
+    TremorTest tremor = TremorTest(uid: uid, MedicineAnswer: medicineAnswer);
     return await Amplify.DataStore.save(tremor);
   }
 
   //update the result of StraightWalkingTest to the database
-  Future updateStraightWalkingTest(String medicineAnswer) async {
+  Future updateStraightWalkingTest(
+      String medicineAnswer, String stepcount) async {
     StraightWalkingTest straight = StraightWalkingTest(
-        uid: uid,
-        MedicineAnswer: medicineAnswer);
+        uid: uid, MedicineAnswer: medicineAnswer, stepcount: stepcount);
     return await Amplify.DataStore.save(straight);
   }
 
   //update the result of TurningTest to the database
   Future updateTurningTest(String medicineAnswer) async {
-    TurningTest turning = TurningTest(
-        uid: uid,
-        MedicineAnswer: medicineAnswer);
+    TurningTest turning = TurningTest(uid: uid, MedicineAnswer: medicineAnswer);
     return await Amplify.DataStore.save(turning);
   }
 
@@ -173,54 +184,49 @@ class DataBaseService {
         Question8: Answer[7],
         Question9: Answer[8],
         Question10: Answer[9]);
+    print(mmse);
     return await Amplify.DataStore.save(mmse);
   }
 
   //update the result of AuditoryMemoryThreeWords to the database
   Future updateAuditoryMemoryThreeWords(String medicineAnswer) async {
-    AuditoryMemoryThreeWords auditoryThree = AuditoryMemoryThreeWords(
-        uid: uid,
-        MedicineAnswer: medicineAnswer);
+    AuditoryMemoryThreeWords auditoryThree =
+        AuditoryMemoryThreeWords(uid: uid, MedicineAnswer: medicineAnswer);
     return await Amplify.DataStore.save(auditoryThree);
   }
 
   //update the result of AuditoryMemoryFourWords to the database
   Future updateAuditoryMemoryFourWords(String medicineAnswer) async {
-    AuditoryMemoryFourWords auditoryFour = AuditoryMemoryFourWords(
-        uid: uid,
-        MedicineAnswer: medicineAnswer);
+    AuditoryMemoryFourWords auditoryFour =
+        AuditoryMemoryFourWords(uid: uid, MedicineAnswer: medicineAnswer);
     return await Amplify.DataStore.save(auditoryFour);
   }
 
   //update the result of AuditoryMemoryFiveWords to the database
   Future updateAuditoryMemoryFiveWords(String medicineAnswer) async {
-    AuditoryMemoryFiveWords auditoryFive = AuditoryMemoryFiveWords(
-        uid: uid,
-        MedicineAnswer: medicineAnswer);
+    AuditoryMemoryFiveWords auditoryFive =
+        AuditoryMemoryFiveWords(uid: uid, MedicineAnswer: medicineAnswer);
     return await Amplify.DataStore.save(auditoryFive);
   }
 
   //update the result of RecordVowelTest to the database
   Future updateRecordVowelTest(String medicineAnswer) async {
-    RecordVowelTest vowel = RecordVowelTest(
-        uid: uid,
-        MedicineAnswer: medicineAnswer);
+    RecordVowelTest vowel =
+        RecordVowelTest(uid: uid, MedicineAnswer: medicineAnswer);
     return await Amplify.DataStore.save(vowel);
   }
 
   //update the result of RecordBreathTest to the database
   Future updateRecordBreathTest(String medicineAnswer) async {
-    RecordBreathTest breath = RecordBreathTest(
-        uid: uid,
-        MedicineAnswer: medicineAnswer);
+    RecordBreathTest breath =
+        RecordBreathTest(uid: uid, MedicineAnswer: medicineAnswer);
     return await Amplify.DataStore.save(breath);
   }
 
   //update the result of RecordSentenceTest to the database
   Future updateRecordSentenceTest(String medicineAnswer) async {
-    RecordSentenceTest sentence = RecordSentenceTest(
-        uid: uid,
-        MedicineAnswer: medicineAnswer);
+    RecordSentenceTest sentence =
+        RecordSentenceTest(uid: uid, MedicineAnswer: medicineAnswer);
     return await Amplify.DataStore.save(sentence);
   }
 
@@ -229,12 +235,12 @@ class DataBaseService {
     String timeStamp = createTimeStamp();
     try {
       final UploadFileResult result = await Amplify.Storage.uploadFile(
-        local: file,
-        key: uid + '/' + folderName + filetype,
-        onProgress: (progress) {
-          print("Fraction completed: " + progress.getFractionCompleted().toString());
-        }
-      );
+          local: file,
+          key: uid + '/' + folderName + filetype,
+          onProgress: (progress) {
+            print("Fraction completed: " +
+                progress.getFractionCompleted().toString());
+          });
       print('Successfully uploaded file: ${result.key}');
     } on StorageException catch (e) {
       print('Error uploading file: $e');

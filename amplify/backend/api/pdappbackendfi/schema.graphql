@@ -1,3 +1,21 @@
+type SubmitTime @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  uid: String!
+  time: String!
+}
+
+type InformationTest @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  uid: String!
+  number: String!
+  age: String!
+  gender: String!
+  testtime: String!
+  medicinetype: String!
+  medicinefreq: String!
+  symptom: String!
+}
+
 type UserAccount @model @auth(rules: [{allow: public}]) {
   id: ID!
   Username: String!
@@ -80,6 +98,7 @@ type StraightWalkingTest @model @auth(rules: [{allow: public}]) {
   id: ID!
   uid: String!
   MedicineAnswer: String!
+  stepcount: String!
 }
 
 type TurningTest @model @auth(rules: [{allow: public}]) {

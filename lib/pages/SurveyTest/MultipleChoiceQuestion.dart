@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:parkinsons_app/pages/SurveyTest/Question.dart';
-import 'package:parkinsons_app/pages/VisualMemoryTest/memory.dart';
+//import 'package:parkinsons_app/pages/VisualMemoryTest/memory.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -18,7 +18,6 @@ class MultipleChoiceQuestion extends StatefulWidget with Question {
       required this.questionNumber,
       required this.choices});
 
-
   @override
   _MultipleChoiceQuestionState createState() => _MultipleChoiceQuestionState();
 }
@@ -32,7 +31,8 @@ class _MultipleChoiceQuestionState extends State<MultipleChoiceQuestion> {
       child: Column(
         children: [
           Text(
-            AppLocalizations.of(context)!.survey_question + widget.questionNumber.toString(),
+            AppLocalizations.of(context)!.survey_question +
+                widget.questionNumber.toString(),
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           Container(

@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:parkinsons_app/pages/MedicineQuestion.dart';
+/*import 'package:parkinsons_app/pages/MedicineQuestion.dart';
 import 'package:parkinsons_app/pages/SurveyTest/MDS-UPDRS.dart';
 import 'package:parkinsons_app/pages/SurveyTest/SurveyMenu.dart';
-import 'package:parkinsons_app/services/Util.dart';
+import 'package:parkinsons_app/services/Util.dart';*/
 import 'package:parkinsons_app/services/auth.dart';
 import 'package:parkinsons_app/widgets/WideButton.dart';
 
@@ -35,10 +35,9 @@ class _TremorMenuState extends State<TremorMenu> {
 
   FutureOr onGoBackPosturalPressed(dynamic value) {
     setState(() {
-      staticTremorCompleted = Tremor.tremorCompleted;
+      posturalTremorCompleted = PosturalTremor.posturalTremorCompleted;
     });
   }
-
 
   //build the context
   @override
@@ -50,8 +49,8 @@ class _TremorMenuState extends State<TremorMenu> {
           children: [
             Center(
               child: Text(
-                AppLocalizations.of(context)!.drawing_menu_header,
-                style: TextStyle(fontSize: 12.0),
+                AppLocalizations.of(context)!.tremor_header,
+                style: TextStyle(fontSize: 20.0),
               ),
             ),
           ],
@@ -69,16 +68,24 @@ class _TremorMenuState extends State<TremorMenu> {
               children: [
                 WideButton(
                     color: staticTremorCompleted ? Colors.grey : Colors.blue,
-                    buttonText: "静止性震颤",
+                    buttonText:
+                        staticTremorCompleted ? "静止性震颤" + " ✅" : "静止性震颤",
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => Tremor())).then(onGoBackStaticPressed);
+                      Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Tremor()))
+                          .then(onGoBackStaticPressed);
                       // Navigator.push(context, MaterialPageRoute(builder: (context) => ClockDraw(medicineAnswer: widget.medicineAnswer,)));
                     }),
                 WideButton(
                     color: posturalTremorCompleted ? Colors.grey : Colors.blue,
-                    buttonText: "姿势性震颤",
+                    buttonText:
+                        posturalTremorCompleted ? "姿势性震颤" + " ✅" : "姿势性震颤",
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => PosturalTremor())).then(onGoBackPosturalPressed);
+                      Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PosturalTremor()))
+                          .then(onGoBackPosturalPressed);
                       // Navigator.push(context, MaterialPageRoute(builder: (context) => ClockDraw(medicineAnswer: widget.medicineAnswer,)));
                     }),
               ],
@@ -88,7 +95,7 @@ class _TremorMenuState extends State<TremorMenu> {
   }
 
   Widget buildLogout() {
-    return FlatButton.icon(
+    return TextButton.icon(
       onPressed: () async {
         await widget._auth.signOut();
         Navigator.pushReplacementNamed(context, '/login');

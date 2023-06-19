@@ -195,8 +195,7 @@ Widget buildSignUpBtn(BuildContext context,_SignUpState parent) {
   return Container(
     padding: EdgeInsets.symmetric(vertical: 25),
     width: double.infinity,
-    child: RaisedButton(
-      elevation: 5,
+    child: ElevatedButton(
       child: Text(
         AppLocalizations.of(context)!.signup_header,
         style: TextStyle(color: Colors.white),
@@ -220,11 +219,13 @@ Widget buildSignUpBtn(BuildContext context,_SignUpState parent) {
           }
         }
       },
-      padding: EdgeInsets.all(15),
-      shape: RoundedRectangleBorder(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.blue,
+        padding: EdgeInsets.all(15),
+        shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
-      ),
-      color: Colors.blue,
+        )
+      )
     ),
   );
 }

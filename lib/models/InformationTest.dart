@@ -28,13 +28,14 @@ import 'package:flutter/foundation.dart';
 class InformationTest extends Model {
   static const classType = const _InformationTestModelType();
   final String id;
-  final String? _name;
+  final String? _uid;
   final String? _number;
-  final int? _age;
+  final String? _age;
   final String? _gender;
   final String? _testtime;
   final String? _medicinetype;
   final String? _medicinefreq;
+  final String? _symptom;
 
   @override
   getInstanceType() => classType;
@@ -44,9 +45,9 @@ class InformationTest extends Model {
     return id;
   }
   
-  String get name {
+  String get uid {
     try {
-      return _name!;
+      return _uid!;
     } catch(e) {
       throw new DataStoreException(
           DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
@@ -70,7 +71,7 @@ class InformationTest extends Model {
     }
   }
   
-  int get age {
+  String get age {
     try {
       return _age!;
     } catch(e) {
@@ -135,18 +136,32 @@ class InformationTest extends Model {
     }
   }
   
-  const InformationTest._internal({required this.id, required name, required number, required age, required gender, required testtime, required medicinetype, required medicinefreq}): _name = name, _number = number, _age = age, _gender = gender, _testtime = testtime, _medicinetype = medicinetype, _medicinefreq = medicinefreq;
+  String get symptom {
+    try {
+      return _symptom!;
+    } catch(e) {
+      throw new DataStoreException(
+          DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
+  }
   
-  factory InformationTest({String? id, required String name, required String number, required int age, required String gender, required String testtime, required String medicinetype, required String medicinefreq}) {
+  const InformationTest._internal({required this.id, required uid, required number, required age, required gender, required testtime, required medicinetype, required medicinefreq, required symptom}): _uid = uid, _number = number, _age = age, _gender = gender, _testtime = testtime, _medicinetype = medicinetype, _medicinefreq = medicinefreq, _symptom = symptom;
+  
+  factory InformationTest({String? id, required String uid, required String number, required String age, required String gender, required String testtime, required String medicinetype, required String medicinefreq, required String symptom}) {
     return InformationTest._internal(
       id: id == null ? UUID.getUUID() : id,
-      name: name,
+      uid: uid,
       number: number,
       age: age,
       gender: gender,
       testtime: testtime,
       medicinetype: medicinetype,
-      medicinefreq: medicinefreq);
+      medicinefreq: medicinefreq,
+      symptom: symptom);
   }
   
   bool equals(Object other) {
@@ -158,13 +173,14 @@ class InformationTest extends Model {
     if (identical(other, this)) return true;
     return other is InformationTest &&
       id == other.id &&
-      _name == other._name &&
+      _uid == other._uid &&
       _number == other._number &&
       _age == other._age &&
       _gender == other._gender &&
       _testtime == other._testtime &&
       _medicinetype == other._medicinetype &&
-      _medicinefreq == other._medicinefreq;
+      _medicinefreq == other._medicinefreq &&
+      _symptom == other._symptom;
   }
   
   @override
@@ -176,52 +192,56 @@ class InformationTest extends Model {
     
     buffer.write("InformationTest {");
     buffer.write("id=" + "$id" + ", ");
-    buffer.write("name=" + "$_name" + ", ");
+    buffer.write("uid=" + "$_uid" + ", ");
     buffer.write("number=" + "$_number" + ", ");
-    buffer.write("age=" + (_age != null ? _age!.toString() : "null") + ", ");
+    buffer.write("age=" + "$_age" + ", ");
     buffer.write("gender=" + "$_gender" + ", ");
     buffer.write("testtime=" + "$_testtime" + ", ");
     buffer.write("medicinetype=" + "$_medicinetype" + ", ");
-    buffer.write("medicinefreq=" + "$_medicinefreq");
+    buffer.write("medicinefreq=" + "$_medicinefreq" + ", ");
+    buffer.write("symptom=" + "$_symptom");
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  InformationTest copyWith({String? id, String? name, String? number, int? age, String? gender, String? testtime, String? medicinetype, String? medicinefreq}) {
+  InformationTest copyWith({String? id, String? uid, String? number, String? age, String? gender, String? testtime, String? medicinetype, String? medicinefreq, String? symptom}) {
     return InformationTest(
       id: id ?? this.id,
-      name: name ?? this.name,
+      uid: uid ?? this.uid,
       number: number ?? this.number,
       age: age ?? this.age,
       gender: gender ?? this.gender,
       testtime: testtime ?? this.testtime,
       medicinetype: medicinetype ?? this.medicinetype,
-      medicinefreq: medicinefreq ?? this.medicinefreq);
+      medicinefreq: medicinefreq ?? this.medicinefreq,
+      symptom: symptom ?? this.symptom);
   }
   
   InformationTest.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
-      _name = json['name'],
+      _uid = json['uid'],
       _number = json['number'],
-      _age = (json['age'] as num?)?.toInt(),
+      _age = json['age'],
       _gender = json['gender'],
       _testtime = json['testtime'],
       _medicinetype = json['medicinetype'],
-      _medicinefreq = json['medicinefreq'];
+      _medicinefreq = json['medicinefreq'],
+      _symptom = json['symptom'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'number': _number, 'age': _age, 'gender': _gender, 'testtime': _testtime, 'medicinetype': _medicinetype, 'medicinefreq': _medicinefreq
+    'id': id, 'uid': _uid, 'number': _number, 'age': _age, 'gender': _gender, 'testtime': _testtime, 'medicinetype': _medicinetype, 'medicinefreq': _medicinefreq, 'symptom': _symptom
   };
 
   static final QueryField ID = QueryField(fieldName: "informationTest.id");
-  static final QueryField NAME = QueryField(fieldName: "name");
+  static final QueryField UID = QueryField(fieldName: "uid");
   static final QueryField NUMBER = QueryField(fieldName: "number");
   static final QueryField AGE = QueryField(fieldName: "age");
   static final QueryField GENDER = QueryField(fieldName: "gender");
   static final QueryField TESTTIME = QueryField(fieldName: "testtime");
   static final QueryField MEDICINETYPE = QueryField(fieldName: "medicinetype");
   static final QueryField MEDICINEFREQ = QueryField(fieldName: "medicinefreq");
+  static final QueryField SYMPTOM = QueryField(fieldName: "symptom");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "InformationTest";
     modelSchemaDefinition.pluralName = "InformationTests";
@@ -240,7 +260,7 @@ class InformationTest extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
-      key: InformationTest.NAME,
+      key: InformationTest.UID,
       isRequired: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
@@ -254,7 +274,7 @@ class InformationTest extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: InformationTest.AGE,
       isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.int)
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
@@ -277,6 +297,12 @@ class InformationTest extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: InformationTest.MEDICINEFREQ,
+      isRequired: true,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: InformationTest.SYMPTOM,
       isRequired: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));

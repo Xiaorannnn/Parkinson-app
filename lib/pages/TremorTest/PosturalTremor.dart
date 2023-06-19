@@ -5,16 +5,16 @@ import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:motion_sensors/motion_sensors.dart';
 import 'package:parkinsons_app/services/Util.dart';
-import 'package:parkinsons_app/services/auth.dart';
+//import 'package:parkinsons_app/services/auth.dart';
 import 'package:parkinsons_app/services/database.dart';
 import 'package:parkinsons_app/widgets/WideButton.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:quiver/async.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:amplify_flutter/amplify.dart';
-
 
 class PosturalTremor extends StatefulWidget {
   // String medicineAnswer;
@@ -31,11 +31,22 @@ class _PosturalTremorState extends State<PosturalTremor> {
   // static const maxSeconds = 30;
   static int maxSeconds = 3;
   int masterIndex = 0;
-
+  bool cancel = false;
   int seconds = maxSeconds;
   CountdownTimer? _timer = null;
   bool testStarted = false;
   bool _canShowButton = true;
+
+  bool testCompleted = false;
+
+  AudioPlayer? audioPlayer;
+  AudioCache? audioCache;
+
+  AudioPlayer? audioPlayer1;
+  AudioCache? audioCache1;
+
+  AudioPlayer? audioPlayer2;
+  AudioCache? audioCache2;
 
   List<List<dynamic>>? _sensorDataArray = [
     [
@@ -71,46 +82,93 @@ class _PosturalTremorState extends State<PosturalTremor> {
     });
   }
 
+  Future<bool?> showWarning(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text("您确定想要退出吗？"),
+            actions: [
+              ElevatedButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text("取消")),
+              ElevatedButton(
+                  onPressed: () {
+                    if (testStarted) {
+                      maxSeconds = 3;
+                      masterIndex = 0;
+                      Navigator.pop(context, true);
+                      cancel = true;
+                      // _timer!.cancel();
+                      audioPlayer1!.dispose();
+                      audioPlayer2!.dispose();
+                      audioPlayer!.dispose();
+                    } else {
+                      Navigator.pop(context, true);
+                    }
+                  },
+                  child: Text("确认"))
+            ],
+          ));
+
   //build the context for tremor test
   @override
   Widget build(BuildContext context) {
+    BuildContext pageContext = context;
     Size screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: buildAppBar(),
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          height: screenSize.height,
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-          child: Column(
-            children: [
-              buildInstructions(screenSize),
-              SizedBox(
-                height: screenSize.height * 0.025,
-              ),
-              Image.asset('assets/postural_tremor.png',fit:BoxFit.fitHeight,height:250),
-              if (_canShowButton)
-                buildStartButton(),
-              SizedBox(
-                height: screenSize.height * 0.0025,
-              ),
-              if (testStarted)
-                Text(
-                  AppLocalizations.of(context)!.tremor_still,
-                  // "Keep Still!",
-                  style: TextStyle(fontSize: 20),
-                ),
-              SizedBox(
-                height: screenSize.height * 0.025,
-              ),
-              if (testStarted) buildTime(),
-
-            ],
+    return WillPopScope(
+        onWillPop: () async {
+          final shouldPop = await showWarning(context);
+          return shouldPop ?? false;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              "姿势性震颤测试",
+              style: TextStyle(fontSize: 15.0),
+              // "Tremor Test"
+            ),
+            centerTitle: true,
           ),
-        ),
-      ),
-    );
+          resizeToAvoidBottomInset: false,
+          body: SafeArea(
+            child: Container(
+              width: double.infinity,
+              height: screenSize.height,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              child: Column(
+                children: [
+                  buildInstructions(screenSize),
+                  SizedBox(
+                    height: screenSize.height * 0.025,
+                  ),
+                  Image.asset('assets/postural_tremor.png',
+                      fit: BoxFit.fitHeight, height: 250),
+                  if (_canShowButton) buildStartButton(),
+                  SizedBox(
+                    height: screenSize.height * 0.0025,
+                  ),
+                  if (testStarted)
+                    Text(
+                      AppLocalizations.of(context)!.tremor_still,
+                      // "Keep Still!",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  SizedBox(
+                    height: screenSize.height * 0.025,
+                  ),
+                  if (testStarted) buildTime(),
+                  if (testCompleted)
+                    Text(
+                      "恭喜你完成测试！🎉",
+                      style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.red,
+                          fontFamily: "Helvetica"),
+                    )
+                ],
+              ),
+            ),
+          ),
+        ));
   }
 
   Future<bool> checkPermissions() async {
@@ -175,7 +233,7 @@ class _PosturalTremorState extends State<PosturalTremor> {
     final user = await Amplify.Auth.getCurrentUser();
     String uid = user.userId;
     DataBaseService db = DataBaseService(uid: uid);
-    await db.uploadFile(file, "Tremor Test" + timestamp, ".csv");
+    await db.uploadFile(file, "Postural Tremor Test" + timestamp, ".csv");
     db.updateTremorTest("");
     // db.updateTremorTest(widget.medicineAnswer);
     resetData();
@@ -221,10 +279,9 @@ class _PosturalTremorState extends State<PosturalTremor> {
 
   PreferredSizeWidget buildAppBar() {
     return AppBar(
-      title: Text(
-          AppLocalizations.of(context)!.tremor_postural_header
-        // "Tremor Test"
-      ),
+      title: Text("姿势性震颤测试"
+          // "Tremor Test"
+          ),
       centerTitle: true,
     );
   }
@@ -250,7 +307,8 @@ class _PosturalTremorState extends State<PosturalTremor> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                AppLocalizations.of(context)!.tremor_postural_subinstructions,
+                // AppLocalizations.of(context)!.tremor_postural_subinstructions,
+                "请将双手手臂前伸，手腕伸直，手心向下并（右手）握住手机，保持不动10秒",
                 // "Please sit down with your feet resting flat on the floor, and hold the phone still with your right hand in your lap for 30 seconds",
                 style: TextStyle(fontSize: 15.0),
               ),
@@ -270,15 +328,35 @@ class _PosturalTremorState extends State<PosturalTremor> {
     var sub = _timer!.listen(null);
     sub.onData((duration) {
       setState(() {
+        if (cancel) {
+          audioPlayer!.pause();
+          audioPlayer1!.pause();
+          audioPlayer2!.pause();
+          _timer!.cancel();
+        }
         seconds = maxSeconds - duration.elapsed.inSeconds;
       });
     });
     sub.onDone(() {
-      if (masterIndex == 0){
+      if (cancel) {
+        _timer!.cancel();
+      } else if (masterIndex == 0) {
+        audioPlayer1 = AudioPlayer();
+        audioCache1 = AudioCache(fixedPlayer: audioPlayer1);
+        audioCache1!.play("starttest.mp3");
+
+        audioPlayer2 = AudioPlayer();
+        audioCache2 = AudioCache(fixedPlayer: audioPlayer2);
+        audioCache2!.play("10s.mp3");
+
         maxSeconds = 10;
-        masterIndex ++;
+        masterIndex++;
         startCountDownTimer();
-      }  else {
+      } else {
+        audioCache!.play('testcompleted.mp3');
+        setState(() {
+          testCompleted = true;
+        });
         writeDataToCsv();
         seconds = maxSeconds;
         testStarted = false;
@@ -313,7 +391,7 @@ class _PosturalTremorState extends State<PosturalTremor> {
   //   });
   // }
 
-  void cancelStream(){
+  void cancelStream() {
     _streamSubscriptions.forEach((subscription) {
       subscription.cancel();
     });
@@ -341,6 +419,11 @@ class _PosturalTremorState extends State<PosturalTremor> {
     );
   }
 
+  void initAudio() {
+    audioPlayer = AudioPlayer();
+    audioCache = AudioCache(fixedPlayer: audioPlayer);
+  }
+
   Widget buildStartButton() {
     return WideButton(
         color: Colors.blue,
@@ -348,6 +431,9 @@ class _PosturalTremorState extends State<PosturalTremor> {
         // buttonText: "Start test",
         onPressed: () {
           if (!testStarted) {
+            cancel = false;
+            initAudio();
+            audioCache!.play('321.mp3');
             hideWidget();
             testStarted = true;
             initSensorSate();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:parkinsons_app/pages/SurveyTest/SurveyMenu.dart';
 import 'package:parkinsons_app/services/Util.dart';
 import 'package:parkinsons_app/services/auth.dart';
 import 'package:parkinsons_app/services/database.dart';
@@ -12,40 +13,44 @@ class MDSUPDRS extends StatefulWidget {
   String participantAnswer;
   MDSUPDRS({required this.participantAnswer});
 
+  static bool MDSUPDRSCompleted = false;
+
   @override
   _MDSUPDRSState createState() => _MDSUPDRSState();
 }
 
 class _MDSUPDRSState extends State<MDSUPDRS> {
 
-  // List<String> questions = [
-  //   "今天你的健康状况是好是坏(0表示你能想象到的最糟糕的健康状况，100表示你能想象到的最好的健康状况)?",
-  //   "在过去的一周中，你有多少次做以下运动超过15分钟?剧烈运动(心跳加快)",
-  //   "在过去的一周中，你有多少次做以下运动超过15分钟?适度运动(不累)",
-  //   "在过去的一周中，你有多少次做以下运动超过15分钟?最少的工作",
-  //   "在过去一周的闲暇时间里，你有多久做一次能让你出汗(心跳加快)的有规律的活动?",
-  //   "在过去的一周中，你是否有记忆问题、跟不上对话、注意力不集中、思维不清晰，或者在家里或镇上找路的问题?",
-  //   "在过去的一周里，你是否感到情绪低落、悲伤、绝望或无法享受事物?",
-  //   "在过去的一周中，你是否感到紧张、担心或紧张?",
-  //   "在过去的一周里，你是否对活动或与人在一起感到漠不关心?",
-  //   "在过去的一周中，你是否有晚上难以入睡或整晚无法入睡的问题?想想早上醒来后你有多放松。",
-  //   "在过去的一周中，你是否在白天难以保持清醒?",
-  //   "在过去的一周中，你的演讲有问题吗?",
-  //   "在过去的一周里，你是否经常在处理食物和使用餐具时遇到麻烦?例如，你用手拿食物或使用叉子、刀子、勺子、筷子时有困难吗?",
-  //   "在过去的一周中，你是否经常出现穿衣问题?例如，你是否反应迟钝，或者在扣扣子、拉拉链、穿或脱衣服或珠宝方面需要帮助?",
-  //   "在过去的一周里，你是否经常行动迟缓，或者在洗漱、洗澡、刮胡子、刷牙、梳头发或其他个人卫生方面需要帮助?",
-  //   "在过去的一周里，人们读你的笔迹时有困难吗?",
-  //   "在过去的一周中，你是否经常在你的爱好或其他你喜欢做的事情上遇到困难?",
-  //   "在过去的一周里，你在床上翻身时有困难吗?",
-  //   "在过去的一周里，你是否经常感到身体摇晃或颤抖?",
-  //   "在过去的一周里，你是否经常有平衡和行走方面的问题?",
-  //   "在过去的一周里，在你平常走路的时候，你会突然停下来或者像你的脚粘在地板上一样僵住吗?"
-  // ];
+  List<String> questions = [
+    "今天你的健康状况是好是坏(0表示你能想象到的最糟糕的健康状况，100表示你能想象到的最好的健康状况)?",
+    "在过去的一周中，你有多少次做以下运动超过15分钟?剧烈运动(心跳加快)",
+    "在过去的一周中，你有多少次做以下运动超过15分钟?适度运动(不累)",
+    "在过去的一周中，你有多少次做以下运动超过15分钟?最少的工作",
+    "在过去一周的闲暇时间里，你多久做一次能让你出汗(心跳加快)的有规律的活动?",
+    "在过去的一周中，你是否有记忆问题、跟不上对话、注意力不集中、思维不清晰，或者在家里或镇上找路的问题?",
+    "在过去的一周里，你是否感到情绪低落、悲伤、绝望或无法享受事物?",
+    "在过去的一周中，你是否感到紧张、担心或紧张?",
+    "在过去的一周里，你是否对活动或与人在一起感到漠不关心?",
+    "在过去的一周中，你是否有晚上难以入睡或整晚无法入睡的问题?想想早上醒来后你有多放松。",
+    "在过去的一周中，你是否在白天难以保持清醒?",
+    "在过去的一周中，你的讲话有问题吗?",
+    "在过去的一周里，你是否经常在处理食物和使用餐具时遇到麻烦?例如，你用手拿食物或使用叉子、刀子、勺子、筷子时有困难吗?",
+    "在过去的一周中，你是否经常出现穿衣问题?例如，你是否反应迟钝，或者在扣扣子、拉拉链、穿或脱衣服或珠宝方面需要帮助?",
+    "在过去的一周里，你是否经常行动迟缓，或者在洗漱、洗澡、刮胡子、刷牙、梳头发或其他个人卫生方面需要帮助?",
+    "在过去的一周里，人们读你的笔迹时有困难吗?",
+    "在过去的一周中，你是否经常在你的爱好或其他你喜欢做的事情上遇到困难?",
+    "在过去的一周里，你在床上翻身时有困难吗?",
+    "在过去的一周里，你是否经常感到身体摇晃或颤抖?",
+    "在过去的一周里，你是否经常有平衡和行走方面的问题?",
+    "在过去的一周里，在你平常走路的时候，你会突然停下来或者像你的脚粘在地板上一样僵住吗?"
+  ];
 
   List<int>numInputSelected = [];
 
   List<int> selected = [];
   List<int> answers = [];
+
+
 
   @override
   void initState() {
@@ -56,17 +61,37 @@ class _MDSUPDRSState extends State<MDSUPDRS> {
       answers.add(-1);
     }
     answers[0] = 0;
-
   }
+
+  Future<bool?> showWarning(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("您确定想要退出吗？"),
+        actions: [
+          ElevatedButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text("取消")
+          ),
+          ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text("确认")
+          )
+        ],
+      ));
 
   @override
   Widget build(BuildContext context) {
 
-
     Size screenSize = MediaQuery
         .of(context)
         .size;
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () async {
+          final shouldPop = await showWarning(context);
+          return shouldPop ?? false;
+        },
+
+    child: Scaffold(
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context)!.survey_menu_choice1,
@@ -80,9 +105,12 @@ class _MDSUPDRSState extends State<MDSUPDRS> {
           children: [
             //buildInstructions(),
             buildSliderQuestion(screenSize,0,context),
-            buildNumInputQuestion(1,context),
-            buildNumInputQuestion(2,context),
-            buildNumInputQuestion(3,context),
+            // buildNumInputQuestion(1,context),
+            // buildNumInputQuestion(2,context),
+            // buildNumInputQuestion(3,context),
+            buildDropDownQuestion1(1, context),
+            buildDropDownQuestion2(2, context),
+            buildDropDownQuestion3(3, context),
             buildGELTQuestion(4,context),
             buildMDSQuestion(5,context),
             buildMDSQuestion(6,context),
@@ -104,6 +132,7 @@ class _MDSUPDRSState extends State<MDSUPDRS> {
           ],
         ),
       ),
+    )
     );
   }
 
@@ -123,29 +152,7 @@ class _MDSUPDRSState extends State<MDSUPDRS> {
   }
 
   Widget buildSliderQuestion(Size screenSize,int index,BuildContext context) {
-    List<String> questions = [
-      AppLocalizations.of(context)!.survey_MDS_Q1,
-      AppLocalizations.of(context)!.survey_MDS_Q2,
-      AppLocalizations.of(context)!.survey_MDS_Q3,
-      AppLocalizations.of(context)!.survey_MDS_Q4,
-      AppLocalizations.of(context)!.survey_MDS_Q5,
-      AppLocalizations.of(context)!.survey_MDS_Q6,
-      AppLocalizations.of(context)!.survey_MDS_Q7,
-      AppLocalizations.of(context)!.survey_MDS_Q8,
-      AppLocalizations.of(context)!.survey_MDS_Q9,
-      AppLocalizations.of(context)!.survey_MDS_Q10,
-      AppLocalizations.of(context)!.survey_MDS_Q11,
-      AppLocalizations.of(context)!.survey_MDS_Q12,
-      AppLocalizations.of(context)!.survey_MDS_Q13,
-      AppLocalizations.of(context)!.survey_MDS_Q14,
-      AppLocalizations.of(context)!.survey_MDS_Q15,
-      AppLocalizations.of(context)!.survey_MDS_Q16,
-      AppLocalizations.of(context)!.survey_MDS_Q17,
-      AppLocalizations.of(context)!.survey_MDS_Q18,
-      AppLocalizations.of(context)!.survey_MDS_Q19,
-      AppLocalizations.of(context)!.survey_MDS_Q20,
-      AppLocalizations.of(context)!.survey_MDS_Q21,
-    ];
+
 
     String Question = questions[index];
     int QuestionNumber = index + 1;
@@ -201,43 +208,145 @@ class _MDSUPDRSState extends State<MDSUPDRS> {
     );
   }
 
+  int dropdownvalue1 = 1;
+  Widget buildDropDownQuestion1(int index, BuildContext context) {
+    String Question = questions[index];
+    int QuestionNumber = index + 1;
+    List<int> choices = [0,1,2,3,4,5,6,
+      7,8,9,10,11,12,13,14,15,16,17,18,19,20,];
+    return new Container(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      child: Column(
+        children: [
+          Text(
+            AppLocalizations.of(context)!.survey_question +
+                QuestionNumber.toString(),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          Container(
+              padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 5),
+              child: Text(
+                Question,
+                style: TextStyle(fontSize: 15),
+              )),
+          new DropdownButton<int>(
+              value: dropdownvalue1,
+              items: choices.map((int choice) {
+                return new DropdownMenuItem<int>(
+                  value: choice,
+                  child: new Text(choice.toString()),
+                );
+              }).toList(),
+              onChanged: (int? newValue) {
+                setState(() {
+                  answers[index] = newValue!.toInt();
+                  dropdownvalue1 = newValue;
+                  print(answers[index]);
+                });
+              }
+          )
+        ],
+      ),
+    );
+  }
+
+  int dropdownvalue2 = 1;
+  Widget buildDropDownQuestion2(int index, BuildContext context) {
+    String Question = questions[index];
+    int QuestionNumber = index + 1;
+    List<int> choices = [0,1,2,3,4,5,6,
+      7,8,9,10,11,12,13,14,15,16,17,18,19,20,];
+    return new Container(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      child: Column(
+        children: [
+          Text(
+            AppLocalizations.of(context)!.survey_question +
+                QuestionNumber.toString(),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          Container(
+              padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 5),
+              child: Text(
+                Question,
+                style: TextStyle(fontSize: 15),
+              )),
+          new DropdownButton<int>(
+              value: dropdownvalue2,
+              items: choices.map((int choice) {
+                return new DropdownMenuItem<int>(
+                  value: choice,
+                  child: new Text(choice.toString()),
+                );
+              }).toList(),
+              onChanged: (int? newValue) {
+                setState(() {
+                  answers[index] = newValue!.toInt();
+                  dropdownvalue2 = newValue;
+                  print(answers[index]);
+                });
+              }
+          )
+        ],
+      ),
+    );
+  }
+
+  int dropdownvalue3 = 1;
+  Widget buildDropDownQuestion3(int index, BuildContext context) {
+    String Question = questions[index];
+    int QuestionNumber = index + 1;
+    List<int> choices = [0,1,2,3,4,5,6,
+      7,8,9,10,11,12,13,14,15,16,17,18,19,20,];
+    return new Container(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      child: Column(
+        children: [
+          Text(
+            AppLocalizations.of(context)!.survey_question +
+                QuestionNumber.toString(),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          Container(
+              padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 5),
+              child: Text(
+                Question,
+                style: TextStyle(fontSize: 15),
+              )),
+          new DropdownButton<int>(
+              value: dropdownvalue3,
+              items: choices.map((int choice) {
+                return new DropdownMenuItem<int>(
+                  value: choice,
+                  child: new Text(choice.toString()),
+                );
+              }).toList(),
+              onChanged: (int? newValue) {
+                setState(() {
+                  answers[index] = newValue!.toInt();
+                  dropdownvalue3 = newValue;
+                  print(answers[index]);
+                });
+              }
+          )
+        ],
+      ),
+    );
+  }
+
+
+
   Widget buildNumInputQuestion(int index, BuildContext context) {
-    List<String> questions = [
-      AppLocalizations.of(context)!.survey_MDS_Q1,
-      AppLocalizations.of(context)!.survey_MDS_Q2,
-      AppLocalizations.of(context)!.survey_MDS_Q3,
-      AppLocalizations.of(context)!.survey_MDS_Q4,
-      AppLocalizations.of(context)!.survey_MDS_Q5,
-      AppLocalizations.of(context)!.survey_MDS_Q6,
-      AppLocalizations.of(context)!.survey_MDS_Q7,
-      AppLocalizations.of(context)!.survey_MDS_Q8,
-      AppLocalizations.of(context)!.survey_MDS_Q9,
-      AppLocalizations.of(context)!.survey_MDS_Q10,
-      AppLocalizations.of(context)!.survey_MDS_Q11,
-      AppLocalizations.of(context)!.survey_MDS_Q12,
-      AppLocalizations.of(context)!.survey_MDS_Q13,
-      AppLocalizations.of(context)!.survey_MDS_Q14,
-      AppLocalizations.of(context)!.survey_MDS_Q15,
-      AppLocalizations.of(context)!.survey_MDS_Q16,
-      AppLocalizations.of(context)!.survey_MDS_Q17,
-      AppLocalizations.of(context)!.survey_MDS_Q18,
-      AppLocalizations.of(context)!.survey_MDS_Q19,
-      AppLocalizations.of(context)!.survey_MDS_Q20,
-      AppLocalizations.of(context)!.survey_MDS_Q21,
-    ];
     String Question = questions[index];
     int QuestionNumber = index + 1;
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         child: Column(
           children: [
-
-
             Text(
               AppLocalizations.of(context)!.survey_question + QuestionNumber.toString(),
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-
             Container(
                 padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 5),
                 child: Text(
@@ -259,29 +368,7 @@ class _MDSUPDRSState extends State<MDSUPDRS> {
     }
 
   Widget buildGELTQuestion(int index, BuildContext context) {
-    List<String> questions = [
-      AppLocalizations.of(context)!.survey_MDS_Q1,
-      AppLocalizations.of(context)!.survey_MDS_Q2,
-      AppLocalizations.of(context)!.survey_MDS_Q3,
-      AppLocalizations.of(context)!.survey_MDS_Q4,
-      AppLocalizations.of(context)!.survey_MDS_Q5,
-      AppLocalizations.of(context)!.survey_MDS_Q6,
-      AppLocalizations.of(context)!.survey_MDS_Q7,
-      AppLocalizations.of(context)!.survey_MDS_Q8,
-      AppLocalizations.of(context)!.survey_MDS_Q9,
-      AppLocalizations.of(context)!.survey_MDS_Q10,
-      AppLocalizations.of(context)!.survey_MDS_Q11,
-      AppLocalizations.of(context)!.survey_MDS_Q12,
-      AppLocalizations.of(context)!.survey_MDS_Q13,
-      AppLocalizations.of(context)!.survey_MDS_Q14,
-      AppLocalizations.of(context)!.survey_MDS_Q15,
-      AppLocalizations.of(context)!.survey_MDS_Q16,
-      AppLocalizations.of(context)!.survey_MDS_Q17,
-      AppLocalizations.of(context)!.survey_MDS_Q18,
-      AppLocalizations.of(context)!.survey_MDS_Q19,
-      AppLocalizations.of(context)!.survey_MDS_Q20,
-      AppLocalizations.of(context)!.survey_MDS_Q21,
-    ];
+
     String Question = questions[index];
     int QuestionNumber = index + 1;
 
@@ -345,29 +432,7 @@ class _MDSUPDRSState extends State<MDSUPDRS> {
     );
   }
   Widget buildMDSQuestion(int index, BuildContext context) {
-    List<String> questions = [
-      AppLocalizations.of(context)!.survey_MDS_Q1,
-      AppLocalizations.of(context)!.survey_MDS_Q2,
-      AppLocalizations.of(context)!.survey_MDS_Q3,
-      AppLocalizations.of(context)!.survey_MDS_Q4,
-      AppLocalizations.of(context)!.survey_MDS_Q5,
-      AppLocalizations.of(context)!.survey_MDS_Q6,
-      AppLocalizations.of(context)!.survey_MDS_Q7,
-      AppLocalizations.of(context)!.survey_MDS_Q8,
-      AppLocalizations.of(context)!.survey_MDS_Q9,
-      AppLocalizations.of(context)!.survey_MDS_Q10,
-      AppLocalizations.of(context)!.survey_MDS_Q11,
-      AppLocalizations.of(context)!.survey_MDS_Q12,
-      AppLocalizations.of(context)!.survey_MDS_Q13,
-      AppLocalizations.of(context)!.survey_MDS_Q14,
-      AppLocalizations.of(context)!.survey_MDS_Q15,
-      AppLocalizations.of(context)!.survey_MDS_Q16,
-      AppLocalizations.of(context)!.survey_MDS_Q17,
-      AppLocalizations.of(context)!.survey_MDS_Q18,
-      AppLocalizations.of(context)!.survey_MDS_Q19,
-      AppLocalizations.of(context)!.survey_MDS_Q20,
-      AppLocalizations.of(context)!.survey_MDS_Q21,
-    ];
+
     String Question = questions[index];
     int QuestionNumber = index + 1;
 
@@ -468,9 +533,11 @@ class _MDSUPDRSState extends State<MDSUPDRS> {
     map["Survey Participant"] = widget.participantAnswer;
     DataBaseService db = DataBaseService(uid: uid);
     db.updateMDSUPDRS(answers, widget.participantAnswer);
+    MDSUPDRS.MDSUPDRSCompleted = true;
 
-    // await DataBaseService(uid:uid).userCollection.doc(uid).collection("MDS-UPDRS").doc(timestamp).set(map);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("提交已被记录")));
+    int count = 0;
+    Navigator.popUntil(context, (route) {return count++ == 2;});
  }
 
 
@@ -485,6 +552,7 @@ class _MDSUPDRSState extends State<MDSUPDRS> {
         style: ButtonStyle(
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15)))),
+
       ),
     );
   }

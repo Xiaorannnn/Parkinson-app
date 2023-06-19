@@ -7,12 +7,13 @@
 
 
     <application
-        android:label="parkinsons_app"
+        android:label="纽蓝"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true">
 
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

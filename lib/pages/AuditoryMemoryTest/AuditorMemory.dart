@@ -7,18 +7,20 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:record_mp3/record_mp3.dart';
+//import 'package:record_mp3/record_mp3.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // ignore: must_be_immutable
 class AuditoryMemory extends StatefulWidget {
   //set variables
-  String medicineAnswer;
+  // String medicineAnswer;
   String mp3Path;
   String activityTitle;
   //the constructor function
-  AuditoryMemory( {required this.medicineAnswer,required this.mp3Path,required this.activityTitle});
+  AuditoryMemory({required this.mp3Path, required this.activityTitle});
+
+  // AuditoryMemory( {required this.medicineAnswer,required this.mp3Path,required this.activityTitle});
 
   @override
   _AuditoryMemoryState createState() => _AuditoryMemoryState();
@@ -32,15 +34,12 @@ class _AuditoryMemoryState extends State<AuditoryMemory> {
   bool recordingFinished = false;
   bool recordingPlaying = false;
 
-
   late AudioCache audioCache;
   late AudioPlayer advancedPlayer;
-
 
   Duration _duration = new Duration();
   Duration _position = new Duration();
   late int x = 0;
-
 
   @override
   void initState() {
@@ -50,47 +49,67 @@ class _AuditoryMemoryState extends State<AuditoryMemory> {
     initAudio();
   }
 
+  Future<bool?> showWarning(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text("您确定想要退出吗？"),
+            actions: [
+              ElevatedButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text("取消")),
+              ElevatedButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: Text("确认"))
+            ],
+          ));
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context)!.auditory_header,
-          // "Auditory Memory Test",
-          style: TextStyle(fontSize: 15.0),
-        ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          height: screenSize.height,
-          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                AppLocalizations.of(context)!.auditory_memory_instruction,
-                // "Press the play button below to play the audio. Memorize the words you hear. After 5 seconds recall the words and speak them into the microphone.",
-                style: TextStyle(fontSize: 20.0),
-              ),
-              SizedBox(height: screenSize.height * 0.05),
-              recordingFinished ?buildTime():buildAudioPlayButton(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("${_position.inMinutes}:${_position.inSeconds.remainder(60)}"),
-                  buildSlider(),
-                  Text("${_duration.inMinutes}:${_duration.inSeconds.remainder(60)}"),
-
-                ],
-              )
-            ],
+    return WillPopScope(
+        onWillPop: () async {
+          final shouldPop = await showWarning(context);
+          return shouldPop ?? false;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              AppLocalizations.of(context)!.auditory_header,
+              // "Auditory Memory Test",
+              style: TextStyle(fontSize: 15.0),
+            ),
+            centerTitle: true,
           ),
-        ),
-      ),
-    );
+          body: SafeArea(
+            child: Container(
+              width: double.infinity,
+              height: screenSize.height,
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.auditory_memory_instruction,
+                    // "Press the play button below to play the audio. Memorize the words you hear. After 5 seconds recall the words and speak them into the microphone.",
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                  SizedBox(height: screenSize.height * 0.05),
+                  recordingFinished ? buildTime() : buildAudioPlayButton(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                          "${_position.inMinutes}:${_position.inSeconds.remainder(60)}"),
+                      buildSlider(),
+                      Text(
+                          "${_duration.inMinutes}:${_duration.inSeconds.remainder(60)}"),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        ));
   }
 
   /**--- Function for Recording Audio---**/
@@ -114,12 +133,14 @@ class _AuditoryMemoryState extends State<AuditoryMemory> {
     }
     return sdPath + "/test.mp3";
   }
-  void initAudio(){
 
+  void initAudio() {
     advancedPlayer = AudioPlayer();
     audioCache = AudioCache(fixedPlayer: advancedPlayer);
-    advancedPlayer.onDurationChanged.listen((d) => setState(() => _duration = d));
-    advancedPlayer.onAudioPositionChanged.listen((p) => setState(() => _position = p));
+    advancedPlayer.onDurationChanged
+        .listen((d) => setState(() => _duration = d));
+    advancedPlayer.onAudioPositionChanged
+        .listen((p) => setState(() => _position = p));
     advancedPlayer.onPlayerCompletion.listen((event) {
       setState(() {
         _position = Duration(seconds: 0);
@@ -128,14 +149,12 @@ class _AuditoryMemoryState extends State<AuditoryMemory> {
       });
     });
     audioCache.load(widget.mp3Path);
-    
   }
 
-
-    void onAudioPlayButtonPressed() async{
-      //x = await _getDuration();
+  void onAudioPlayButtonPressed() async {
+    //x = await _getDuration();
     setState(() {
-      if(!recordingFinished && !recordingPlaying){
+      if (!recordingFinished && !recordingPlaying) {
         audioCache.play(widget.mp3Path);
         recordingPlaying = true;
       }
@@ -147,9 +166,7 @@ class _AuditoryMemoryState extends State<AuditoryMemory> {
         opacity: recordingFinished ? 0.0 : 1.0,
         child: ElevatedButton(
           onPressed: onAudioPlayButtonPressed,
-          child: Text(
-              AppLocalizations.of(context)!.auditory_memory_play
-          ),
+          child: Text(AppLocalizations.of(context)!.auditory_memory_play),
           style: ButtonStyle(
               padding:
                   MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(25)),
@@ -162,42 +179,37 @@ class _AuditoryMemoryState extends State<AuditoryMemory> {
                       side: BorderSide(color: Colors.blue)))),
         ));
   }
-  Widget buildSlider(){
+
+  Widget buildSlider() {
     return Slider.adaptive(
-      activeColor: Colors.blue,
+        activeColor: Colors.blue,
         inactiveColor: Colors.grey,
         value: _position.inSeconds.toDouble(),
-        max:_duration.inSeconds.toDouble(),
+        max: _duration.inSeconds.toDouble(),
         onChanged: null);
   }
 
-  Widget buildTime(){
+  Widget buildTime() {
     return SizedBox(
       width: 100,
       height: 100,
-      child: Stack(
-        fit: StackFit.expand,
-        children:[
-          CircularProgressIndicator(
-            value: 1 - seconds/maxSeconds,
-            valueColor: AlwaysStoppedAnimation(Colors.grey),
-            strokeWidth: 12,
-            backgroundColor: Colors.greenAccent,
-          ),
-          Center(
-            child: Text(
+      child: Stack(fit: StackFit.expand, children: [
+        CircularProgressIndicator(
+          value: 1 - seconds / maxSeconds,
+          valueColor: AlwaysStoppedAnimation(Colors.grey),
+          strokeWidth: 12,
+          backgroundColor: Colors.greenAccent,
+        ),
+        Center(
+          child: Text(
             '$seconds',
             style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-            fontSize: 50
-        ),),
+                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 50),
           ),
-        ]
-      ),
+        ),
+      ]),
     );
   }
-
 
   void startCountDownTimer() {
     _timer = new CountdownTimer(
@@ -213,12 +225,17 @@ class _AuditoryMemoryState extends State<AuditoryMemory> {
       });
     });
     sub.onDone(() {
-      if(seconds== 0) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RecordActivity(medicineAnswer: widget.medicineAnswer, activityTitle: widget.activityTitle, instructionText: AppLocalizations.of(context)!.auditory_memory_speak, subInstructionsText: "")));
-
+      if (seconds == 0) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => RecordActivity(
+                    activityTitle: widget.activityTitle,
+                    instructionText:
+                        AppLocalizations.of(context)!.auditory_memory_speak,
+                    subInstructionsText: "")));
+        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RecordActivity(medicineAnswer: widget.medicineAnswer, activityTitle: widget.activityTitle, instructionText: AppLocalizations.of(context)!.auditory_memory_speak, subInstructionsText: "")));
       }
     });
   }
-
-
 }

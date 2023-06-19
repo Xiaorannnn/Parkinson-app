@@ -2,15 +2,15 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:parkinsons_app/services/Util.dart';
-import 'package:parkinsons_app/services/auth.dart';
+//import 'package:parkinsons_app/services/auth.dart';
 import 'package:parkinsons_app/services/database.dart';
 import 'package:parkinsons_app/widgets/WideButton.dart';
 import 'package:path_provider/path_provider.dart';
 //import 'package:sensors_plus/sensors_plus.dart';
-import 'package:pedometer/pedometer.dart';
+//import 'package:pedometer/pedometer.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:motion_sensors/motion_sensors.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:motion_sensors/motion_sensors.dart';
 import 'package:csv/csv.dart';
 import 'package:quiver/async.dart';
 
@@ -19,8 +19,10 @@ import 'package:amplify_flutter/amplify.dart';
 
 //build menu for the turning test
 class Turning extends StatefulWidget {
-  String medcineAnswer;
-  Turning({required this.medcineAnswer});
+  // String medcineAnswer;
+  // Turning({required this.medcineAnswer});
+  static bool turningCompleted = false;
+
   @override
   _TurningState createState() => _TurningState();
 }
@@ -28,22 +30,40 @@ class Turning extends StatefulWidget {
 class _TurningState extends State<Turning> {
   int maxSeconds = 3;
   int seconds = 3;
+
   CountdownTimer? _timer = null;
   bool testStarted = false;
+  bool cancel = false;
 
-
-
-  List<List<dynamic>>?_sensorDataArray = [["TimeStamp","Acc_x","Acc_y","Acc_z","Gyro_x","Gyro_y","Gyro_z","Magnetic_x","Magnetic_y","Magnetic_z"]];//this array of arrays will be converted into a csv
+  List<List<dynamic>>? _sensorDataArray = [
+    [
+      "TimeStamp",
+      "Acc_x",
+      "Acc_y",
+      "Acc_z",
+      "Gyro_x",
+      "Gyro_y",
+      "Gyro_z",
+      "Magnetic_x",
+      "Magnetic_y",
+      "Magnetic_z"
+    ]
+  ]; //this array of arrays will be converted into a csv
   List<double>? _userAccelerometerValues;
   List<double>? _gyroscopeValues;
   List<double>? _magnetometerValues;
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
-  List<String>instructionsMP3 = ['turnaround.mp3','standstill_30.mp3'];
-  List<int> waitTimes= [5,30];
+  List<String> instructionsMP3 = ['turnaround.mp3', 'standstill_30.mp3'];
+  List<int> waitTimes = [5, 30];
   int masterIndex = 0;
 
   AudioPlayer? audioPlayer;
   AudioCache? audioCache;
+
+  AudioPlayer? audioPlayer1;
+  AudioCache? audioCache1;
+
+  bool testCompleted = false;
 
   //counting down the time
   void startCountDownTimer() {
@@ -56,30 +76,44 @@ class _TurningState extends State<Turning> {
     var sub = _timer!.listen(null);
     sub.onData((duration) {
       setState(() {
+        if (cancel) {
+          audioPlayer!.pause();
+          audioPlayer1!.pause();
+
+          _timer!.cancel();
+        }
         seconds = maxSeconds - duration.elapsed.inSeconds;
       });
     });
     sub.onDone(() {
-      if(masterIndex < waitTimes.length){
-
+      if (cancel) {
+        _timer!.cancel();
+      } else if (masterIndex < waitTimes.length) {
         audioCache!.play(instructionsMP3[masterIndex]);
+        if (masterIndex == 1) {
+          audioPlayer1 = AudioPlayer();
+          audioCache1 = AudioCache(fixedPlayer: audioPlayer1);
+          audioCache1!.play("30s.mp3");
+        }
         maxSeconds = waitTimes[masterIndex];
         masterIndex++;
         startCountDownTimer();
-      }
-      else {
-        audioCache!.play('recording_finished.mp3');
+      } else {
+        cancelStream();
+        testCompleted = true;
+        audioCache!.play('testcompleted.mp3');
+        // audioCache!.play('recording_finished.mp3');
         writeDataToCsv();
         seconds = maxSeconds;
         testStarted = false;
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("转弯测试已完成!")));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("转向测试已完成!")));
         masterIndex = 0;
       }
     });
   }
 
-  void initAudio(){
+  void initAudio() {
     audioPlayer = AudioPlayer();
     audioCache = AudioCache(fixedPlayer: audioPlayer);
   }
@@ -90,52 +124,122 @@ class _TurningState extends State<Turning> {
     super.initState();
 
     checkPermissions();
-    initSensorSate();
-    initAudio();
+    // initSensorSate();
+    // initAudio();
   }
+
+  void cancelStream() {
+    _streamSubscriptions.forEach((subscription) {
+      subscription.cancel();
+    });
+    _timer!.cancel();
+  }
+
+  Future<bool?> showWarning(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text("您确定想要退出吗？"),
+            actions: [
+              ElevatedButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text("取消")),
+              ElevatedButton(
+                  onPressed: () {
+                    if (testStarted) {
+                      maxSeconds = 3;
+                      masterIndex = 0;
+                      Navigator.pop(context, true);
+                      cancel = true;
+                      // _timer!.cancel();
+                      audioPlayer1!.dispose();
+                      audioPlayer!.dispose();
+                    } else {
+                      Navigator.pop(context, true);
+                    }
+                  },
+                  child: Text("确认"))
+            ],
+          ));
 
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: buildAppBar(),
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          height: screenSize.height,
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-          child: Column(
-            children: [
-              buildInstructions(screenSize),
-              SizedBox(height: screenSize.height * 0.025,),
-              buildStartButton(),
-              SizedBox(height: screenSize.height * 0.025,),
-              if (testStarted) buildTime() ,
-            ],
+    return WillPopScope(
+        onWillPop: () async {
+          final shouldPop = await showWarning(context);
+          return shouldPop ?? false;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              "转弯测试",
+              style: TextStyle(fontSize: 15.0),
+              // "Tremor Test"
+            ),
+            centerTitle: true,
           ),
-        ),
-      ),
-    );
+          resizeToAvoidBottomInset: false,
+          body: SafeArea(
+            child: Container(
+              width: double.infinity,
+              height: screenSize.height,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              child: Column(
+                children: [
+                  buildInstructions(screenSize),
+                  SizedBox(
+                    height: screenSize.height * 0.025,
+                  ),
+                  if (!testStarted) buildStartButton(),
+                  SizedBox(
+                    height: screenSize.height * 0.025,
+                  ),
+                  if (testStarted) buildTime(),
+                  if (testCompleted)
+                    Text(
+                      "恭喜你完成测试！🎉",
+                      style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.red,
+                          fontFamily: "Helvetica"),
+                    )
+                ],
+              ),
+            ),
+          ),
+        ));
   }
-
 
   Future<bool> checkPermissions() async {
     final activityStatus = await Permission.activityRecognition.request();
     final storageStatus = await Permission.storage.request();
-    if (activityStatus != PermissionStatus.granted && storageStatus != PermissionStatus.granted) {
+    if (activityStatus != PermissionStatus.granted &&
+        storageStatus != PermissionStatus.granted) {
       throw Exception("Permission denied");
     }
     return true;
   }
 
-
-  void resetData(){
+  void resetData() {
     //set all member variables to initial state
-    _sensorDataArray = [["TimeStamp","Acc_x","Acc_y","Acc_z","Gyro_x","Gyro_y","Gyro_z","Magnetic_x","Magnetic_y","Magnetic_z"]] ;//this array of arrays will be converted into a csv
+    _sensorDataArray = [
+      [
+        "TimeStamp",
+        "Acc_x",
+        "Acc_y",
+        "Acc_z",
+        "Gyro_x",
+        "Gyro_y",
+        "Gyro_z",
+        "Magnetic_x",
+        "Magnetic_y",
+        "Magnetic_z"
+      ]
+    ]; //this array of arrays will be converted into a csv
   }
-  void updateSensorDataArray(){
-    if(testStarted) {
+
+  void updateSensorDataArray() {
+    if (testStarted) {
       List<dynamic> row = [
         createTimeStamp(),
         _userAccelerometerValues![0],
@@ -152,7 +256,6 @@ class _TurningState extends State<Turning> {
     }
   }
 
-
   void writeDataToCsv() async {
     String csv = const ListToCsvConverter().convert(_sensorDataArray);
 
@@ -162,15 +265,16 @@ class _TurningState extends State<Turning> {
     File file = File(pathOfTheFileToWrite);
     await file.writeAsString(csv);
     String timestamp = createTimeStamp();
+
     //upload to amplify
+    Turning.turningCompleted = true;
     final user = await Amplify.Auth.getCurrentUser();
     String uid = user.userId;
     DataBaseService db = DataBaseService(uid: uid);
     db.uploadFile(file, "Turning Test" + timestamp, ".csv");
-    db.updateTurningTest(widget.medcineAnswer);
-    // db.updateGeneric('Turning Test', widget.medcineAnswer);
+    db.updateTurningTest("");
+    // db.updateTurningTest(widget.medcineAnswer);
     resetData();
-
   }
 
   void initSensorSate() {
@@ -204,7 +308,6 @@ class _TurningState extends State<Turning> {
   void onMagnetometerEvent(MagnetometerEvent event) {
     setState(() {
       _magnetometerValues = <double>[event.x, event.y, event.z];
-
       updateSensorDataArray();
     });
   }
@@ -212,13 +315,13 @@ class _TurningState extends State<Turning> {
   /**--- Funcions for building UI---**/
   PreferredSizeWidget buildAppBar() {
     return AppBar(
-      title: Text(
-          AppLocalizations.of(context)!.walking_menu_turning
+      title: Text(AppLocalizations.of(context)!.walking_menu_turning
           // "Turning Test"
-      ),
+          ),
       centerTitle: true,
     );
   }
+
   Widget buildInstructions(Size screenSize) {
     return Column(
       children: [
@@ -276,14 +379,19 @@ class _TurningState extends State<Turning> {
   }
 
   Widget buildStartButton() {
-    return WideButton(color: testStarted?Colors.red:Colors.blue, buttonText: testStarted?AppLocalizations.of(context)!.walking_test_turning_stop:AppLocalizations.of(context)!.walking_test_turning_start, onPressed: (){
-      if(!testStarted){
-        testStarted = true;
-
-
-          startCountDownTimer();
-
-      }
-    });
+    return WideButton(
+        color: Colors.blue,
+        buttonText: testStarted
+            ? AppLocalizations.of(context)!.walking_test_turning_stop
+            : AppLocalizations.of(context)!.walking_test_turning_start,
+        onPressed: () {
+          if (!testStarted) {
+            cancel = false;
+            testStarted = true;
+            initSensorSate();
+            initAudio();
+            startCountDownTimer();
+          }
+        });
   }
 }

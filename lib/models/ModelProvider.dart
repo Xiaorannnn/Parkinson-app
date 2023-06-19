@@ -25,6 +25,7 @@ import 'AuditoryMemoryFourWords.dart';
 import 'AuditoryMemoryThreeWords.dart';
 import 'ClockDrawingTest.dart';
 import 'DemographicSurvey.dart';
+import 'InformationTest.dart';
 import 'JoinCirclesTest.dart';
 import 'MDSUPDRS.dart';
 import 'MMSE.dart';
@@ -34,6 +35,7 @@ import 'RecordSentenceTest.dart';
 import 'RecordVowelTest.dart';
 import 'RhythmTest.dart';
 import 'StraightWalkingTest.dart';
+import 'SubmitTime.dart';
 import 'TremorTest.dart';
 import 'TurningTest.dart';
 import 'UserAccount.dart';
@@ -43,6 +45,7 @@ export 'AuditoryMemoryFourWords.dart';
 export 'AuditoryMemoryThreeWords.dart';
 export 'ClockDrawingTest.dart';
 export 'DemographicSurvey.dart';
+export 'InformationTest.dart';
 export 'JoinCirclesTest.dart';
 export 'MDSUPDRS.dart';
 export 'MMSE.dart';
@@ -52,15 +55,16 @@ export 'RecordSentenceTest.dart';
 export 'RecordVowelTest.dart';
 export 'RhythmTest.dart';
 export 'StraightWalkingTest.dart';
+export 'SubmitTime.dart';
 export 'TremorTest.dart';
 export 'TurningTest.dart';
 export 'UserAccount.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "8a2cddd564ce98cb177283e87902c8b8";
+  String version = "7c67fa6983a685944fa77cb7ee65b9fc";
   @override
-  List<ModelSchema> modelSchemas = [AuditoryMemoryFiveWords.schema, AuditoryMemoryFourWords.schema, AuditoryMemoryThreeWords.schema, ClockDrawingTest.schema, DemographicSurvey.schema, JoinCirclesTest.schema, MDSUPDRS.schema, MMSE.schema, MemoryGame.schema, RecordBreathTest.schema, RecordSentenceTest.schema, RecordVowelTest.schema, RhythmTest.schema, StraightWalkingTest.schema, TremorTest.schema, TurningTest.schema, UserAccount.schema];
+  List<ModelSchema> modelSchemas = [AuditoryMemoryFiveWords.schema, AuditoryMemoryFourWords.schema, AuditoryMemoryThreeWords.schema, ClockDrawingTest.schema, DemographicSurvey.schema, InformationTest.schema, JoinCirclesTest.schema, MDSUPDRS.schema, MMSE.schema, MemoryGame.schema, RecordBreathTest.schema, RecordSentenceTest.schema, RecordVowelTest.schema, RhythmTest.schema, StraightWalkingTest.schema, SubmitTime.schema, TremorTest.schema, TurningTest.schema, UserAccount.schema];
   static final ModelProvider _instance = ModelProvider();
 
   static ModelProvider get instance => _instance;
@@ -77,6 +81,8 @@ class ModelProvider implements ModelProviderInterface {
         return ClockDrawingTest.classType;
       case "DemographicSurvey":
         return DemographicSurvey.classType;
+      case "InformationTest":
+        return InformationTest.classType;
       case "JoinCirclesTest":
         return JoinCirclesTest.classType;
       case "MDSUPDRS":
@@ -95,6 +101,8 @@ class ModelProvider implements ModelProviderInterface {
         return RhythmTest.classType;
       case "StraightWalkingTest":
         return StraightWalkingTest.classType;
+      case "SubmitTime":
+        return SubmitTime.classType;
       case "TremorTest":
         return TremorTest.classType;
       case "TurningTest":

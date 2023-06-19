@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+//import 'package:flutter/services.dart';
+import 'package:parkinsons_app/pages/SurveyTest/DropDownQuestion.dart';
 import 'package:parkinsons_app/pages/SurveyTest/MultipleChoiceQuestion.dart';
 import 'package:parkinsons_app/pages/SurveyTest/NumberInputQuestion.dart';
 import 'package:parkinsons_app/pages/SurveyTest/Question.dart';
 import 'package:parkinsons_app/pages/SurveyTest/SelectMultipleQuestion.dart';
 import 'package:parkinsons_app/pages/SurveyTest/StringInputQuestion.dart';
+import 'package:parkinsons_app/pages/SurveyTest/DateQuestion.dart';
 import 'package:parkinsons_app/services/Util.dart';
-import 'package:parkinsons_app/services/auth.dart';
+//import 'package:parkinsons_app/services/auth.dart';
 import 'package:parkinsons_app/services/database.dart';
-import 'package:parkinsons_app/services/database.dart';
-
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:amplify_flutter/amplify.dart';
 
-
 class DemoGraphicSurvey extends StatefulWidget {
-  //set variables
   String participantAnswer;
+  static bool demoCompleted = false;
 
-  //constructor function
   DemoGraphicSurvey({required this.participantAnswer});
 
   @override
@@ -27,7 +25,6 @@ class DemoGraphicSurvey extends StatefulWidget {
 }
 
 class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
-
   // List<String> questions = [
   //   "How old are you?",
   //   "What is your sex?",
@@ -81,217 +78,527 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
     "你是否被医学专家诊断为帕金森病?",
     "你的运动障碍是从哪一年开始的?",
     "哪一年你被诊断患有帕金森症?",
-    "你是哪一年开始服用帕金森病药物的?如果你还没有开始服用帕金森药物，请输入0。",
+    "你是哪一年开始服用帕金森病药物的?如果你还没有开始服用帕金森药物，请选择\"无\"。",
     "什么样的医疗保健提供者目前照顾你的帕金森病?",
     "您接受过脑深层刺激手术吗吗?",
     "除了脑起搏器之外，你是否做过帕金森病的手术?",
     "你是否被医学专家诊断患有阿尔茨海默氏症?",
     "你的认知相关症状是从哪一年开始的?",
     "你在哪一年被诊断出患有阿尔茨海默氏症?",
-    "你是从哪一年开始服用老年痴呆症药物的?如果你还没有开始服用治疗阿尔茨海默病的药物，请输入0。",
+    "你是从哪一年开始服用老年痴呆症药物的?如果你还没有开始服用治疗阿尔茨海默病的药物，请选择\"无\"。",
     "目前有哪些医疗机构在治疗你的阿尔茨海默病?",
     "你抽过烟吗?",
     "你抽烟多少年了?",
     "你平均每天抽几包烟?",
-    "你最近一次吸烟是什么时候(如果你还在吸烟，写上今天的日期)?",
+    "你最近一次吸烟是什么时候(若不吸烟，不用选择)?",
     "有医生告诉过你你有以下情况吗?请选择所有符合要求的。"
   ];
 
   List<List<String>> choices_array = [
-  //   ["integer"],
-  //   ["Female", "Male", "Prefer not to answer"],
-  //   [
-  //     "",
-  //     "Black or African",
-  //     "Latino/Hispanic",
-  //     "Native American",
-  //     "Pacific Islander",
-  //     "Middle Eastern",
-  //     "Caribbean",
-  //     "South Asian",
-  //     "East Asian",
-  //     "White or Caucasian",
-  //     "Mixed"
-  //   ],
-  //   [
-  //     "A homemaker",
-  //     "A student",
-  //     "Employment for wages",
-  //     "Out of work",
-  //     "Retired",
-  //     "Self-employed",
-  //     "Unable to work"
-  //   ],
-  //   [
-  //     "2-year college degree",
-  //     "4-year college degree",
-  //     "Doctoral Degree",
-  //     "High School Diploma/GED",
-  //     "Master's Degree",
-  //     "Some college",
-  //     "Some graduate school",
-  //     "Some high school"
-  //   ],
-  //   [
-  //     "Divorced",
-  //     "Married or domestic partnership",
-  //     "Other",
-  //     "Separated",
-  //     "Single, never married",
-  //     "Widowed"
-  //   ],
-  //   ["true", "false"],
-  //   ["true", "false"],
-  //   ["true", "false"],
-  //   [
-  //     "Difficult",
-  //     "Easy",
-  //     "Neither easy nor difficult",
-  //     "Very Difficult",
-  //     "Very easy"
-  //   ],
-  //   ["true", "false", "Not sure"],
-  //   ["true", "false"],
-  //   ["true", "false"],
-  //   ["true", "false"],
-  //   ["true", "false"],
-  //   ["integer"],
-  //   ["integer"],
-  //   ["integer"],
-  //   [
-  //     "Don't know",
-  //     "General Neurologist (non-Parkinson Disease specialist)",
-  //     "Nurse Practitioner or Physician's Assistant",
-  //     "Other",
-  //     "Parkinson Disease/Movement Disorder Specialist",
-  //     "Primary Care Doctor"
-  //   ],
-  //   ["true", "false"],
-  //   ["true", "false"],
-  //   ["true", "false"],
-  //   ["integer"],
-  //   ["integer"],
-  //   ["integer"],
-  //   [
-  //     "Don't know",
-  //     "General Neurologist (non-Parkinson Disease specialist)",
-  //     "Nurse Practitioner or Physician's Assistant",
-  //     "Other",
-  //     "Parkinson Disease/Movement Disorder Specialist",
-  //     "Primary Care Doctor"
-  //   ],
-  //   ["true", "false"],
-  //   ["integer"],
-  //   ["1", "2", "3", "4", "5"],
-  //   ["integer"],
-  //   [
-  //     "",
-  //     "Acute Myocardial Infarction/Heart Attack",
-  //     "Alzheimer Disease or Alzheimer dementia",
-  //     "Atrial Fibrillation",
-  //     "Anxiety",
-  //     "Cataract",
-  //     "Kidney Disease",
-  //     "Chronic Obstructive Pulmonary Disease or Asthma",
-  //     "Heart Failure/Congestive Heart Failure",
-  //     "Diabetes or Pre­diabetes or High Blood Sugar",
-  //     "Glaucoma",
-  //     "Hip/Pelvic Fracture",
-  //     "Ischemic Heart Disease",
-  //     "Depression",
-  //     "Osteoporosis",
-  //     "Rheumatoid Arthritis",
-  //     "Dementia",
-  //     "Stroke/Transient Ischemic Attack",
-  //     "Breast Cancer",
-  //     "Colorectal Cancer",
-  //     "Prostate Cancer",
-  //     "Lung Cancer",
-  //     "Endometrial/Uterine Cancer",
-  //     "Any other kind of cancer OR tumor",
-  //     "Head Injury with Loss of Consciousness/Concussion",
-  //     "Urinary Tract infections",
-  //     "Obstructive Sleep Apnea",
-  //     "Schizophrenia or Bipolar Disorder",
-  //     "Peripheral Vascular Disease"
-  //   ],
-  // ];
+    //   ["integer"],
+    //   ["Female", "Male", "Prefer not to answer"],
+    //   [
+    //     "",
+    //     "Black or African",
+    //     "Latino/Hispanic",
+    //     "Native American",
+    //     "Pacific Islander",
+    //     "Middle Eastern",
+    //     "Caribbean",
+    //     "South Asian",
+    //     "East Asian",
+    //     "White or Caucasian",
+    //     "Mixed"
+    //   ],
+    //   [
+    //     "A homemaker",
+    //     "A student",
+    //     "Employment for wages",
+    //     "Out of work",
+    //     "Retired",
+    //     "Self-employed",
+    //     "Unable to work"
+    //   ],
+    //   [
+    //     "2-year college degree",
+    //     "4-year college degree",
+    //     "Doctoral Degree",
+    //     "High School Diploma/GED",
+    //     "Master's Degree",
+    //     "Some college",
+    //     "Some graduate school",
+    //     "Some high school"
+    //   ],
+    //   [
+    //     "Divorced",
+    //     "Married or domestic partnership",
+    //     "Other",
+    //     "Separated",
+    //     "Single, never married",
+    //     "Widowed"
+    //   ],
+    //   ["true", "false"],
+    //   ["true", "false"],
+    //   ["true", "false"],
+    //   [
+    //     "Difficult",
+    //     "Easy",
+    //     "Neither easy nor difficult",
+    //     "Very Difficult",
+    //     "Very easy"
+    //   ],
+    //   ["true", "false", "Not sure"],
+    //   ["true", "false"],
+    //   ["true", "false"],
+    //   ["true", "false"],
+    //   ["true", "false"],
+    //   ["integer"],
+    //   ["integer"],
+    //   ["integer"],
+    //   [
+    //     "Don't know",
+    //     "General Neurologist (non-Parkinson Disease specialist)",
+    //     "Nurse Practitioner or Physician's Assistant",
+    //     "Other",
+    //     "Parkinson Disease/Movement Disorder Specialist",
+    //     "Primary Care Doctor"
+    //   ],
+    //   ["true", "false"],
+    //   ["true", "false"],
+    //   ["true", "false"],
+    //   ["integer"],
+    //   ["integer"],
+    //   ["integer"],
+    //   [
+    //     "Don't know",
+    //     "General Neurologist (non-Parkinson Disease specialist)",
+    //     "Nurse Practitioner or Physician's Assistant",
+    //     "Other",
+    //     "Parkinson Disease/Movement Disorder Specialist",
+    //     "Primary Care Doctor"
+    //   ],
+    //   ["true", "false"],
+    //   ["integer"],
+    //   ["1", "2", "3", "4", "5"],
+    //   ["integer"],
+    //   [
+    //     "",
+    //     "Acute Myocardial Infarction/Heart Attack",
+    //     "Alzheimer Disease or Alzheimer dementia",
+    //     "Atrial Fibrillation",
+    //     "Anxiety",
+    //     "Cataract",
+    //     "Kidney Disease",
+    //     "Chronic Obstructive Pulmonary Disease or Asthma",
+    //     "Heart Failure/Congestive Heart Failure",
+    //     "Diabetes or Pre­diabetes or High Blood Sugar",
+    //     "Glaucoma",
+    //     "Hip/Pelvic Fracture",
+    //     "Ischemic Heart Disease",
+    //     "Depression",
+    //     "Osteoporosis",
+    //     "Rheumatoid Arthritis",
+    //     "Dementia",
+    //     "Stroke/Transient Ischemic Attack",
+    //     "Breast Cancer",
+    //     "Colorectal Cancer",
+    //     "Prostate Cancer",
+    //     "Lung Cancer",
+    //     "Endometrial/Uterine Cancer",
+    //     "Any other kind of cancer OR tumor",
+    //     "Head Injury with Loss of Consciousness/Concussion",
+    //     "Urinary Tract infections",
+    //     "Obstructive Sleep Apnea",
+    //     "Schizophrenia or Bipolar Disorder",
+    //     "Peripheral Vascular Disease"
+    //   ],
+    // ];
 
     //answers patients would choose
-    ["integer"],
-    ["女性", "男性", "不想回答"],
-    ["string"],
     [
-      "2年制大学学位",
-      "4年制大学学位",
-      "博士学位",
-      "高中",
-      "硕士",
-      "学院",
-      "研究生院",
-      "技校"
+      "<18",
+      "18-30",
+      "30-40",
+      "40-50",
+      "50-55",
+      "55-60",
+      "60-65",
+      "65-70",
+      "70-75",
+      "75-80",
+      "80-85",
+      "85-90",
+      ">90"
     ],
+    ["女性", "男性", "不想回答"],
+    ["汉族", "苗族", "满族", "回族", "壮族", "其他"],
+    ["文盲", "小学", "初中", "高中", "技校", "专科", "2年制大学学位", "4年制大学学位", "硕士", "博士学位"],
     [
       "家庭主妇",
       "学生",
-      "就业工人",
+      "专业技术人员",
+      "商业，服务行业人员",
+      "农、林、牧、渔、水利业生产人员",
+      "运输人员",
+      "军人",
+      "国家机关、党群组织、事业单位负责人",
+      "特殊职业的其他从业人员",
       "失业",
       "退休",
-      "个体经营",
       "无就业能力"
     ],
-    [
-      "离婚",
-      "已婚或同居伙伴关系",
-      "其他",
-      "分居",
-      "单身，从未结婚",
-      "丧偶"
-    ],
+    ["离婚", "已婚或同居伙伴关系", "其他", "分居", "单身，从未结婚", "丧偶"],
     ["是", "否"],
     ["是", "否"],
     ["是", "否"],
-    [
-      "困难",
-      "简单",
-      "中等",
-      "非常困难",
-      "非常简单"
-    ],
+    ["困难", "简单", "中等", "非常困难", "非常简单"],
     ["是", "否", "不确定"],
     ["是", "否"],
     ["是", "否"],
     ["是", "否"],
     ["是", "否"],
-    ["integer"],
-    ["integer"],
-    ["integer"],
+    //question 16
     [
-      "不知道",
-      "普通神经科医师(非帕金森病专家)",
-      "执业护士或医生助理",
-      "其他",
-      "帕金森病/运动障碍专家",
-      "主治医生"
+      "drop",
+      " ",
+      "无",
+      "1980之前",
+      "1981",
+      "1982",
+      "1983",
+      "1984",
+      "1985",
+      "1986",
+      "1987",
+      "1988",
+      "1989",
+      "1990",
+      "1991",
+      "1992",
+      "1993",
+      "1994",
+      "1995",
+      "1996",
+      "1997",
+      "1998",
+      "1999",
+      "2000",
+      "2001",
+      "2002",
+      "2003",
+      "2004",
+      "2005",
+      "2006",
+      "2007",
+      "2008",
+      "2009",
+      "2010",
+      "2011",
+      "2012",
+      "2013",
+      "2014",
+      "2015",
+      "2016",
+      "2017",
+      "2018",
+      "2019",
+      "2020",
+      "2021",
+      "2022",
     ],
-    ["是", "否"],
-    ["是", "否"],
-    ["是", "否"],
-    ["integer"],
-    ["integer"],
-    ["integer"],
+    // ["integer"],
+    //17
     [
-      "不知道",
-      "普通神经科医师(非阿兹海默病专家)",
-      "执业护士或医生助理",
-      "其他",
-      "帕金森病/运动障碍专家",
-      "主治医生"
+      "drop",
+      " ",
+      "无",
+      "1980之前",
+      "1981",
+      "1982",
+      "1983",
+      "1984",
+      "1985",
+      "1986",
+      "1987",
+      "1988",
+      "1989",
+      "1990",
+      "1991",
+      "1992",
+      "1993",
+      "1994",
+      "1995",
+      "1996",
+      "1997",
+      "1998",
+      "1999",
+      "2000",
+      "2001",
+      "2002",
+      "2003",
+      "2004",
+      "2005",
+      "2006",
+      "2007",
+      "2008",
+      "2009",
+      "2010",
+      "2011",
+      "2012",
+      "2013",
+      "2014",
+      "2015",
+      "2016",
+      "2017",
+      "2018",
+      "2019",
+      "2020",
+      "2021",
+      "2022",
     ],
+    //18
+    [
+      "drop",
+      " ",
+      "无",
+      "1980之前",
+      "1981",
+      "1982",
+      "1983",
+      "1984",
+      "1985",
+      "1986",
+      "1987",
+      "1988",
+      "1989",
+      "1990",
+      "1991",
+      "1992",
+      "1993",
+      "1994",
+      "1995",
+      "1996",
+      "1997",
+      "1998",
+      "1999",
+      "2000",
+      "2001",
+      "2002",
+      "2003",
+      "2004",
+      "2005",
+      "2006",
+      "2007",
+      "2008",
+      "2009",
+      "2010",
+      "2011",
+      "2012",
+      "2013",
+      "2014",
+      "2015",
+      "2016",
+      "2017",
+      "2018",
+      "2019",
+      "2020",
+      "2021",
+      "2022",
+    ],
+    ["不知道", "普通神经科医师(非帕金森病专家)", "执业护士或医生助理", "其他", "帕金森病/运动障碍专家", "主治医生"],
     ["是", "否"],
-    ["integer"],
-    ["1", "2", "3", "4", "5"],
-    ["integer"],
+    ["是", "否"],
+    ["是", "否"],
+    //23
+    [
+      "drop",
+      " ",
+      "无",
+      "1980之前",
+      "1981",
+      "1982",
+      "1983",
+      "1984",
+      "1985",
+      "1986",
+      "1987",
+      "1988",
+      "1989",
+      "1990",
+      "1991",
+      "1992",
+      "1993",
+      "1994",
+      "1995",
+      "1996",
+      "1997",
+      "1998",
+      "1999",
+      "2000",
+      "2001",
+      "2002",
+      "2003",
+      "2004",
+      "2005",
+      "2006",
+      "2007",
+      "2008",
+      "2009",
+      "2010",
+      "2011",
+      "2012",
+      "2013",
+      "2014",
+      "2015",
+      "2016",
+      "2017",
+      "2018",
+      "2019",
+      "2020",
+      "2021",
+      "2022",
+    ],
+    //24
+    [
+      "drop",
+      " ",
+      "无",
+      "1980之前",
+      "1981",
+      "1982",
+      "1983",
+      "1984",
+      "1985",
+      "1986",
+      "1987",
+      "1988",
+      "1989",
+      "1990",
+      "1991",
+      "1992",
+      "1993",
+      "1994",
+      "1995",
+      "1996",
+      "1997",
+      "1998",
+      "1999",
+      "2000",
+      "2001",
+      "2002",
+      "2003",
+      "2004",
+      "2005",
+      "2006",
+      "2007",
+      "2008",
+      "2009",
+      "2010",
+      "2011",
+      "2012",
+      "2013",
+      "2014",
+      "2015",
+      "2016",
+      "2017",
+      "2018",
+      "2019",
+      "2020",
+      "2021",
+      "2022",
+    ],
+    //25
+    [
+      "drop",
+      " ",
+      "无",
+      "1980之前",
+      "1981",
+      "1982",
+      "1983",
+      "1984",
+      "1985",
+      "1986",
+      "1987",
+      "1988",
+      "1989",
+      "1990",
+      "1991",
+      "1992",
+      "1993",
+      "1994",
+      "1995",
+      "1996",
+      "1997",
+      "1998",
+      "1999",
+      "2000",
+      "2001",
+      "2002",
+      "2003",
+      "2004",
+      "2005",
+      "2006",
+      "2007",
+      "2008",
+      "2009",
+      "2010",
+      "2011",
+      "2012",
+      "2013",
+      "2014",
+      "2015",
+      "2016",
+      "2017",
+      "2018",
+      "2019",
+      "2020",
+      "2021",
+      "2022",
+    ],
+    ["不知道", "普通神经科医师(非阿兹海默病专家)", "执业护士或医生助理", "其他", "帕金森病/运动障碍专家", "主治医生"],
+    ["是", "否"],
+    //28
+    [
+      "drop",
+      " ",
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "29",
+      "30",
+      ">30"
+    ],
+    ["0", "1", "2", "3", "4", "5"],
+    //30
+    ["date"],
+    // ["integer"],
     [
       "",
       "急性心肌梗死/心脏病发作",
@@ -321,7 +628,8 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
       "尿路感染",
       "阻塞性睡眠呼吸暂停",
       "精神分裂症或双相情感障碍",
-      "周围性血管疾病"
+      "周围性血管疾病",
+      "无上述症状"
     ],
   ];
 
@@ -332,11 +640,13 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
     // TODO: implement initState
     super.initState();
     widget_array = List.generate(questions.length, (index) {
-      if (choices_array[index][0] == 'string'){
-        StringInputQuestion question = StringInputQuestion(question: questions[index], questionNumber: index +1);
+      if (choices_array[index][0] == 'string') {
+        StringInputQuestion question = StringInputQuestion(
+            question: questions[index], questionNumber: index + 1);
         return question;
       } else if (choices_array[index][0] == "integer") {
-        NumberInputQuestion question = NumberInputQuestion(question: questions[index], questionNumber: index + 1);
+        NumberInputQuestion question = NumberInputQuestion(
+            question: questions[index], questionNumber: index + 1);
         return question;
       } else if (choices_array[index][0] == "") {
         choices_array[index].removeAt(0);
@@ -344,6 +654,21 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
             question: questions[index],
             questionNumber: index + 1,
             choices: choices_array[index]);
+        return question;
+      } else if (choices_array[index][0] == "drop") {
+        choices_array[index].removeAt(0);
+        DropDownQuestion question = DropDownQuestion(
+          question: questions[index],
+          questionNumber: index + 1,
+          choices: choices_array[index],
+        );
+        return question;
+      } else if (choices_array[index][0] == "date") {
+        DateQuestion question = DateQuestion(
+          question: questions[index],
+          questionNumber: index + 1,
+          choices: choices_array[index],
+        );
         return question;
       } else {
         MultipleChoiceQuestion question = MultipleChoiceQuestion(
@@ -355,30 +680,48 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
     });
   }
 
+  Future<bool?> showWarning(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text("您确定想要退出吗？"),
+            actions: [
+              ElevatedButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text("取消")),
+              ElevatedButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: Text("确认"))
+            ],
+          ));
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.survey_demo_header),
-          centerTitle: true,
-        ),
-        body: SafeArea(
-          child: Container(
-            width: double.infinity,
-            height: screenSize.height,
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            child: ListView(
-              children: [
-                Column(
-                  children: widget_array,
-                ),
-                buildSubmitButton(screenSize, context)
-              ],
+    return WillPopScope(
+        onWillPop: () async {
+          final shouldPop = await showWarning(context);
+          return shouldPop ?? false;
+        },
+        child: Scaffold(
+            appBar: AppBar(
+              title: Text(AppLocalizations.of(context)!.survey_demo_header),
+              centerTitle: true,
             ),
-          ),
-        ));
+            body: SafeArea(
+              child: Container(
+                width: double.infinity,
+                height: screenSize.height,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: ListView(
+                  children: [
+                    Column(
+                      children: widget_array,
+                    ),
+                    buildSubmitButton(screenSize, context)
+                  ],
+                ),
+              ),
+            )));
   }
 
   //submission entrance
@@ -388,8 +731,8 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
       Question question = widget_array[i] as Question;
       String answer = question.getAnswer();
       if (answer == "") {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("请完成所有测试后提交！")));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("请完成所有测试后提交！")));
         return;
       }
       answers.add(answer);
@@ -403,10 +746,15 @@ class _DemoGraphicSurveyState extends State<DemoGraphicSurvey> {
     }
     map["Survey Participant"] = widget.participantAnswer;
     //upload data to the database
+    DemoGraphicSurvey.demoCompleted = true;
     DataBaseService db = DataBaseService(uid: uid);
     db.updateDemographicSurvey(answers, widget.participantAnswer);
     ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text("提交已记录")));
+        .showSnackBar(SnackBar(content: Text("记录已提交！")));
+    int count = 0;
+    Navigator.popUntil(context, (route) {
+      return count++ == 2;
+    });
   }
 
   Widget buildSubmitButton(Size screenSize, context) {

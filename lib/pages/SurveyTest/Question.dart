@@ -1,11 +1,8 @@
-import 'package:flutter/material.dart';
+//import 'package:flutter/material.dart';
 
-
-
-abstract class Question{
-
+abstract class Question {
   String answer = "";
-  String getAnswer(){
+  String getAnswer() {
     return this.answer;
-}
+  }
 }

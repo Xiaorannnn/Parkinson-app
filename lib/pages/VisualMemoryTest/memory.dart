@@ -1,8 +1,9 @@
 import 'dart:async';
+// import 'dart:html';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:parkinsons_app/pages/VisualMemoryTest/VisualMemoryTestMenu.dart';
+//import 'package:parkinsons_app/pages/VisualMemoryTest/VisualMemoryTestMenu.dart';
 import 'package:parkinsons_app/services/auth.dart';
 import 'package:parkinsons_app/services/database.dart';
 import 'package:parkinsons_app/widgets/TileModel.dart';
@@ -16,22 +17,28 @@ CountdownTimer? _timer = null;
 List<TileModel> pairs = <TileModel>[];
 bool selected = false;
 bool gameStarted = false;
+bool preGameStarted = false;
 
 String correctImagePath = ""; //path to what the user will have to remember
 int difficulty = 0; //index of difficulty
 
 //create a memory class
 class Memory extends StatefulWidget {
-  //set variables
-  String medicineAnswer;
+  // String medicineAnswer;
   int gridDimension;
-  //constructor functions
-  Memory({required this.medicineAnswer,required this.gridDimension});
+
+  static bool difficult1Completed = false;
+  static bool difficult2Completed = false;
+  static bool difficult3Completed = false;
+  static bool difficult4Completed = false;
+  static bool difficult5Completed = false;
+
+  Memory({required this.gridDimension});
+  // Memory({required this.medicineAnswer,required this.gridDimension});
 
   @override
   _MemoryState createState() => _MemoryState();
 }
-
 
 class _MemoryState extends State<Memory> {
   List<int> activeIndexes = []; // holds indexes of tiles with images in them
@@ -52,6 +59,28 @@ class _MemoryState extends State<Memory> {
   late CountdownTimer sub;
   int score = 0;
 
+  FutureOr onGoBackMemory(dynamic value) {
+    setState(() {
+      int gd = widget.gridDimension;
+      if (gd == 2) {
+        Memory.difficult1Completed = true;
+      } else if (gd == 3) {
+        Memory.difficult2Completed = true;
+      } else if (gd == 4) {
+        Memory.difficult3Completed = true;
+      } else if (gd == 5) {
+        Memory.difficult4Completed = true;
+      } else if (gd == 6) {
+        Memory.difficult5Completed = true;
+      }
+      print("#####");
+      print(Memory.difficult1Completed);
+      print(Memory.difficult2Completed);
+      print(Memory.difficult3Completed);
+      print(Memory.difficult4Completed);
+      print(Memory.difficult5Completed);
+    });
+  }
 
   AuthService _authService = AuthService();
 
@@ -69,6 +98,7 @@ class _MemoryState extends State<Memory> {
 
     // selected = false;
   }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -82,132 +112,159 @@ class _MemoryState extends State<Memory> {
     List<String> startButtonString = [
       AppLocalizations.of(context)!.memory_start,
       AppLocalizations.of(context)!.memory_nextstage,
-      AppLocalizations.of(context)!.memory_end];
+      AppLocalizations.of(context)!.memory_end
+    ];
 
     final Size size = MediaQuery.of(context).size;
 
-    Widget getWidget(){
-      if (gameStarted){
+    Widget getWidget() {
+      if (gameStarted) {
         return Text("${startButtonString[difficulty]}");
-      } else{
+      } else {
         return Text("${startButtonString[difficulty]}");
       }
     }
 
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            AppLocalizations.of(context)!.memory_header,
-            // "Visual Memory Test!",
-            style: TextStyle(fontSize: 15.0),
-          ),
-          centerTitle: true,
-        ),
-        body: SafeArea(
-          child: Container(
-              height: size.height,
-              color: Colors.white,
-              child: Center(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                        Opacity(
-                          opacity: correctShapeOpactity,
-                          child: Text(
-                            AppLocalizations.of(context)!.memory_title,
+    Future<bool?> showWarning(BuildContext context) => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("您确定想要退出吗？"),
+              actions: [
+                ElevatedButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text("取消")),
+                ElevatedButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text("确认"))
+              ],
+            ));
+
+    return WillPopScope(
+        onWillPop: () async {
+          final shouldPop = await showWarning(context);
+          return shouldPop ?? false;
+        },
+        child: Scaffold(
+            appBar: AppBar(
+              title: Text(
+                AppLocalizations.of(context)!.memory_header,
+                // "Visual Memory Test!",
+                style: TextStyle(fontSize: 15.0),
+              ),
+              centerTitle: true,
+            ),
+            body: SafeArea(
+              child: Container(
+                  height: size.height,
+                  color: Colors.white,
+                  child: Center(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Opacity(
+                                  opacity: correctShapeOpactity,
+                                  child: Text(
+                                    AppLocalizations.of(context)!.memory_title,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: "Helvetica",
+                                        color: Colors.black),
+                                  ),
+                                ),
+                                Opacity(
+                                  opacity: correctShapeOpactity,
+                                  child: Image.asset(
+                                    correctImagePath,
+                                    height: size.width * 0.10,
+                                    width: size.width * 0.10,
+                                  ),
+                                )
+                              ]),
+                          Opacity(
+                            opacity: youWonOpacity,
+                            child: Text(
+                              instruction,
+                              style: TextStyle(
+                                  fontSize: size.width * 0.05,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Helvetica",
+                                  color: Colors.black),
+                            ),
+                          ),
+                          Opacity(
+                              opacity: timeOpacity,
+                              child: Container(
+                                  padding: EdgeInsets.all(size.height * 0.025),
+                                  child: Text(
+                                    AppLocalizations.of(context)!.memory_time +
+                                        "$_countDownCurrent",
+                                    style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.black,
+                                        fontFamily: "Helvetica"),
+                                  ))),
+                          Container(
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(width: 4.0, color: Colors.blue)),
+                            child: SizedBox(
+                              height: size.width * 0.9,
+                              width: size.width * 0.9,
+                              child: GridView(
+                                shrinkWrap: true,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        mainAxisSpacing: 0.0,
+                                        crossAxisCount: widget.gridDimension),
+                                children:
+                                    List.generate(visiblePairs.length, (index) {
+                                  return Tile(
+                                    imageAssetPath:
+                                        visiblePairs[index].getImageAssetPath(),
+                                    index: index,
+                                    parent: this,
+                                  );
+                                }),
+                              ),
+                            ),
+                          ),
+                          Text(
+                            AppLocalizations.of(context)!.memory_tries +
+                                "$score",
                             style: TextStyle(
-                                fontSize: 15,
+                                fontSize: size.width * 0.05,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: "Helvetica",
                                 color: Colors.black),
                           ),
-                        ),
-                        Opacity(
-                          opacity: correctShapeOpactity,
-                          child: Image.asset(
-                            correctImagePath,
-                            height: size.width * 0.10,
-                            width: size.width * 0.10,
-                          ),
-                        )
-                      ]),
-                      Opacity(
-                        opacity: youWonOpacity,
-                        child: Text(
-                          instruction,
-                          style: TextStyle(
-                              fontSize: size.width * 0.05,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "Helvetica",
-                              color: Colors.black),
-                        ),
-                      ),
-                      Opacity(
-                          opacity: timeOpacity,
-                          child: Container(
-                              padding: EdgeInsets.all(size.height * 0.025),
-                              child: Text(
-                                AppLocalizations.of(context)!.memory_time + "$_countDownCurrent",
-                                style: TextStyle(
-                                    fontSize: 20.0,
-                                    color: Colors.black,
-                                    fontFamily: "Helvetica"),
-                              ))),
-                      Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 4.0, color: Colors.blue)),
-                        child: SizedBox(
-                          height: size.width * 0.9,
-                          width: size.width * 0.9,
-                          child: GridView(
-                            shrinkWrap: true,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    mainAxisSpacing: 0.0,
-                                    crossAxisCount: widget.gridDimension),
-                            children: List.generate(visiblePairs.length, (index) {
-                              return Tile(
-                                imageAssetPath:
-                                    visiblePairs[index].getImageAssetPath(),
-                                index: index,
-                                parent: this,
-                              );
-                            }),
-                          ),
-                        ),
-                      ),
-                      Text(
-                        AppLocalizations.of(context)!.memory_tries + "$score",
-                        style: TextStyle(
-                            fontSize: size.width * 0.05,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "Helvetica",
-                            color: Colors.black),
-                      ),
-
-                      Container(
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Visibility(
-                                  visible: !gameStarted,
+                          Container(
+                            child: Center(
+                                child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Visibility(
+                                  visible: !preGameStarted,
                                   child: ElevatedButton(
                                     onPressed: () {
                                       if (!gameStarted) {
                                         if (difficulty < 1) {
                                           setState(() {
-                                            gameStarted = true;
+                                            preGameStarted = true;
+                                            // gameStarted = true;
                                             correctShapeOpactity = 1.0;
                                             youWonOpacity = 0.0;
-                                            pairs = getPairs(widget.gridDimension);
+                                            pairs =
+                                                getPairs(widget.gridDimension);
                                             pairs.shuffle();
                                             visiblePairs = pairs;
                                             selected = true;
                                             Random random = Random();
                                             correctImagePath =
-                                            "assets/green_triangle.png";
+                                                "assets/green_triangle.png";
                                             _countDownCurrent = 5;
                                             timeOpacity = 1.0;
                                             _timer = new CountdownTimer(
@@ -217,17 +274,20 @@ class _MemoryState extends State<Memory> {
                                             var sub = _timer!.listen(null);
                                             sub.onData((duration) {
                                               setState(() {
-                                                _countDownCurrent = 5 - duration.elapsed.inSeconds;
+                                                _countDownCurrent = 5 -
+                                                    duration.elapsed.inSeconds;
                                               });
                                             });
                                             sub.onDone(() {
-                                              if(_countDownCurrent == 0) {
+                                              if (_countDownCurrent == 0) {
                                                 setState(() {
-                                                  AppLocalizations.of(context)!.memory_find;
+                                                  gameStarted = true;
+                                                  AppLocalizations.of(context)!
+                                                      .memory_find;
                                                   // instructionText = "Find where the shape is: ";
-                                                  visiblePairs =
-                                                      getQuestions(widget.gridDimension);
-                                                  correctShapeOpactity = 1.0;
+                                                  visiblePairs = getQuestions(
+                                                      widget.gridDimension);
+                                                  correctShapeOpactity = 0.0;
                                                   youWonOpacity = 1.0;
                                                   instruction = '请找到你刚才看到的图形！';
                                                   score = 0;
@@ -235,42 +295,29 @@ class _MemoryState extends State<Memory> {
                                                 });
                                               }
                                             });
-                                            // Future.delayed(const Duration(seconds: 5),
-                                            //         () {
-                                            //       setState(() {
-                                            //         AppLocalizations.of(context)!.memory_find;
-                                            //         // instructionText = "Find where the shape is: ";
-                                            //         visiblePairs =
-                                            //             getQuestions(widget.gridDimension);
-                                            //         correctShapeOpactity = 1.0;
-                                            //         score = 0;
-                                            //         startCountDownTimer();
-                                            //       });
-                                            //     });
-
                                             selected = false;
                                           });
                                         } else {
-                                          if (widget.gridDimension < 6) {
-                                            Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Memory(medicineAnswer: widget.medicineAnswer, gridDimension: widget.gridDimension+1)));
-                                          } else {
-                                            Navigator.pop(context);
-                                          }
+                                          Navigator.pop(context);
+                                          // if (widget.gridDimension < 6) {
+                                          //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Memory(gridDimension: widget.gridDimension+1))).then(onGoBackMemory);
+                                          //   // Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Memory(medicineAnswer: widget.medicineAnswer, gridDimension: widget.gridDimension+1)));
+                                          // } else {
+                                          //   Navigator.pop(context);
+                                          // }
                                         }
                                       }
                                     },
-                                    child: Text("${startButtonString[difficulty]}"),
-                                    // child: Text("$difficulty"),
-                                    // child: Text("${widget.gridDimension}"),
+                                    child: Text(
+                                        "${startButtonString[difficulty]}"),
                                   ),
-                              ),
-                            ],
-                          )
+                                ),
+                              ],
+                            )),
                           ),
-                        ),
-                    ]),
-              )),
-        ));
+                        ]),
+                  )),
+            )));
   }
 
   //build counting down timer
@@ -291,11 +338,13 @@ class _MemoryState extends State<Memory> {
       });
     });
     sub.onDone(() {
-      if(_countDownCurrent == 0) {
+      if (_countDownCurrent == 0) {
+        // DataBaseService(uid: uid).updateUserMemoryGame(score, widget.gridDimension - 1, false, widget.medicineAnswer);
         DataBaseService(uid: uid)
-            .updateUserMemoryGame(score, widget.gridDimension - 1, false, widget.medicineAnswer);
+            .updateUserMemoryGame(score, widget.gridDimension - 1, false, "");
       }
       gameStarted = false;
+      preGameStarted = false;
     });
   }
 }
@@ -323,9 +372,9 @@ class _TileState extends State<Tile> {
         if (!selected && gameStarted) {
           setState(() {
             widget.parent.setState(() {
-                if (pairs[widget.index].getisSelected() == false) {
-                  widget.parent.score++;
-                }
+              if (pairs[widget.index].getisSelected() == false) {
+                widget.parent.score++;
+              }
             });
             pairs[widget.index].setisSelected(true);
             print(checkForWin());
@@ -350,16 +399,30 @@ class _TileState extends State<Tile> {
         return false;
       }
     }
+
+    int gd = widget.parent.widget.gridDimension;
+
+    if (gd == 2) {
+      Memory.difficult1Completed = true;
+    } else if (gd == 3) {
+      Memory.difficult2Completed = true;
+    } else if (gd == 4) {
+      Memory.difficult3Completed = true;
+    } else if (gd == 5) {
+      Memory.difficult4Completed = true;
+    } else if (gd == 6) {
+      Memory.difficult5Completed = true;
+    }
+
     widget.parent.instruction = '做得好，下一阶段！';
     widget.parent.youWonOpacity = 1.0;
     if (difficulty < 1) {
       difficulty++;
-      // print("12345678");
       print(widget.parent.widget.gridDimension);
     } else {
       difficulty = 0;
     }
-    if(widget.parent.widget.gridDimension == 6) {
+    if (widget.parent.widget.gridDimension == 6) {
       difficulty = 2;
     }
 
@@ -369,14 +432,15 @@ class _TileState extends State<Tile> {
 
     final user = await Amplify.Auth.getCurrentUser();
     String uid = user.userId;
-    DataBaseService(uid: uid)
-        .updateUserMemoryGame(widget.parent.score,
-        widget.parent.widget.gridDimension - 1, true,
-        widget.parent.widget.medicineAnswer);
+    DataBaseService(uid: uid).updateUserMemoryGame(
+        widget.parent.score, widget.parent.widget.gridDimension - 1, true, "");
+    // DataBaseService(uid: uid)
+    //     .updateUserMemoryGame(widget.parent.score,
+    //     widget.parent.widget.gridDimension - 1, true,
+    //     widget.parent.widget.medicineAnswer);
     return true;
   }
 }
-
 
 List<TileModel> getPairs(int gridDimension) {
   List<TileModel> pairs = [];

@@ -50,13 +50,9 @@ class _SelectMultipleQuestionState extends State<SelectMultipleQuestion> {
           ),
           Column(
               children: List.generate(widget.choices.length, (index) {
-
-
-                RadioListTile<bool> tile = RadioListTile(
+                CheckboxListTile tile = CheckboxListTile(
                     title: Text(widget.choices[index]),
                     value: radioSates[index],
-                    groupValue: widget.selected,
-                    toggleable: true,
                     onChanged: (value) {
                       setState(() {
                       //  bool inverse = !(radioSates[index]);

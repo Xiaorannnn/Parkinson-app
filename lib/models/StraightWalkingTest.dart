@@ -30,6 +30,7 @@ class StraightWalkingTest extends Model {
   final String id;
   final String? _uid;
   final String? _MedicineAnswer;
+  final String? _stepcount;
 
   @override
   getInstanceType() => classType;
@@ -65,13 +66,27 @@ class StraightWalkingTest extends Model {
     }
   }
   
-  const StraightWalkingTest._internal({required this.id, required uid, required MedicineAnswer}): _uid = uid, _MedicineAnswer = MedicineAnswer;
+  String get stepcount {
+    try {
+      return _stepcount!;
+    } catch(e) {
+      throw new DataStoreException(
+          DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
+  }
   
-  factory StraightWalkingTest({String? id, required String uid, required String MedicineAnswer}) {
+  const StraightWalkingTest._internal({required this.id, required uid, required MedicineAnswer, required stepcount}): _uid = uid, _MedicineAnswer = MedicineAnswer, _stepcount = stepcount;
+  
+  factory StraightWalkingTest({String? id, required String uid, required String MedicineAnswer, required String stepcount}) {
     return StraightWalkingTest._internal(
       id: id == null ? UUID.getUUID() : id,
       uid: uid,
-      MedicineAnswer: MedicineAnswer);
+      MedicineAnswer: MedicineAnswer,
+      stepcount: stepcount);
   }
   
   bool equals(Object other) {
@@ -84,7 +99,8 @@ class StraightWalkingTest extends Model {
     return other is StraightWalkingTest &&
       id == other.id &&
       _uid == other._uid &&
-      _MedicineAnswer == other._MedicineAnswer;
+      _MedicineAnswer == other._MedicineAnswer &&
+      _stepcount == other._stepcount;
   }
   
   @override
@@ -97,31 +113,35 @@ class StraightWalkingTest extends Model {
     buffer.write("StraightWalkingTest {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("uid=" + "$_uid" + ", ");
-    buffer.write("MedicineAnswer=" + "$_MedicineAnswer");
+    buffer.write("MedicineAnswer=" + "$_MedicineAnswer" + ", ");
+    buffer.write("stepcount=" + "$_stepcount");
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  StraightWalkingTest copyWith({String? id, String? uid, String? MedicineAnswer}) {
+  StraightWalkingTest copyWith({String? id, String? uid, String? MedicineAnswer, String? stepcount}) {
     return StraightWalkingTest(
       id: id ?? this.id,
       uid: uid ?? this.uid,
-      MedicineAnswer: MedicineAnswer ?? this.MedicineAnswer);
+      MedicineAnswer: MedicineAnswer ?? this.MedicineAnswer,
+      stepcount: stepcount ?? this.stepcount);
   }
   
   StraightWalkingTest.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _uid = json['uid'],
-      _MedicineAnswer = json['MedicineAnswer'];
+      _MedicineAnswer = json['MedicineAnswer'],
+      _stepcount = json['stepcount'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'uid': _uid, 'MedicineAnswer': _MedicineAnswer
+    'id': id, 'uid': _uid, 'MedicineAnswer': _MedicineAnswer, 'stepcount': _stepcount
   };
 
   static final QueryField ID = QueryField(fieldName: "straightWalkingTest.id");
   static final QueryField UID = QueryField(fieldName: "uid");
   static final QueryField MEDICINEANSWER = QueryField(fieldName: "MedicineAnswer");
+  static final QueryField STEPCOUNT = QueryField(fieldName: "stepcount");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "StraightWalkingTest";
     modelSchemaDefinition.pluralName = "StraightWalkingTests";
@@ -147,6 +167,12 @@ class StraightWalkingTest extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: StraightWalkingTest.MEDICINEANSWER,
+      isRequired: true,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: StraightWalkingTest.STEPCOUNT,
       isRequired: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));

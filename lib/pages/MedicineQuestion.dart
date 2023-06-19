@@ -1,9 +1,9 @@
-import 'package:flutter/foundation.dart';
+//import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:parkinsons_app/pages/RhythmTest/RhythmIntro.dart';
+/*import 'package:parkinsons_app/pages/RhythmTest/RhythmIntro.dart';
 import 'package:parkinsons_app/pages/RhythmTest/rhythm.dart';
 import 'package:parkinsons_app/services/Util.dart';
-import 'package:parkinsons_app/services/auth.dart';
+import 'package:parkinsons_app/services/auth.dart';*/
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -20,7 +20,7 @@ class MedicineQuestion extends StatefulWidget {
 
 class _MedicineQuestionState extends State<MedicineQuestion> {
   int selectedRadio = 0;
-  String medicineAnswer= "";
+  String medicineAnswer = "";
 
   @override
   void initState() {
@@ -47,7 +47,9 @@ class _MedicineQuestionState extends State<MedicineQuestion> {
                 SizedBox(height: screenSize.height * 0.025),
                 buildInstructions(screenSize),
                 SizedBox(height: screenSize.height * 0.025),
-                Divider(thickness: 2.0,),
+                Divider(
+                  thickness: 2.0,
+                ),
                 buildQuestions(),
                 Divider(
                   thickness: 2.0,
@@ -72,7 +74,8 @@ class _MedicineQuestionState extends State<MedicineQuestion> {
         Text(
           // "We would like to understand how your performance on this activity could be affected by the timing of your medication.",
           AppLocalizations.of(context)!.medicine_title,
-          style: TextStyle(fontSize: 20.0),),
+          style: TextStyle(fontSize: 20.0),
+        ),
         SizedBox(
           height: screenSize.height * 0.025,
         ),
@@ -155,12 +158,13 @@ class _MedicineQuestionState extends State<MedicineQuestion> {
   }
 
   void handleNextPressed() {
-    if(medicineAnswer != ""){
-      Navigator.of(context).pushReplacementNamed(widget.routeNameOfNextWidget,arguments: {'medicineAnswer':medicineAnswer});
-    }
-    else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("请回答上述问题"),));
+    if (medicineAnswer != "") {
+      Navigator.of(context).pushReplacementNamed(widget.routeNameOfNextWidget,
+          arguments: {'medicineAnswer': medicineAnswer});
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("请回答上述问题"),
+      ));
     }
   }
-
 }
