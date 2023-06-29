@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
         //language modes: Chinese and English
         supportedLocales: [
           Locale('zh', 'CN'),
-          Locale('en', ''),
+          //Locale('en', ''),
         ],
         initialRoute: '/login',
         builder: EasyLoading.init(),

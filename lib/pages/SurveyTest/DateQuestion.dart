@@ -76,7 +76,8 @@ class _DateQuestion extends State<DateQuestion> {
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.greenAccent,
+                    //backgroundColor: Colors.greenAccent,
+                    primary: Colors.greenAccent,
                   )),
               SizedBox(
                 height: 20.0,

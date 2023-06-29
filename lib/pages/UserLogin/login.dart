@@ -251,7 +251,8 @@ Widget buildLoginBtn(BuildContext context, _LoginState parent) {
           EasyLoading.dismiss();
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
+          //backgroundColor: Colors.blue,
+          primary: Colors.blue,
           elevation: 5,
           padding: EdgeInsets.all(15),
           shape: RoundedRectangleBorder(
@@ -275,7 +276,8 @@ Widget buildSignUpBtn(BuildContext context) {
           Navigator.pushNamed(context, '/signup');
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white54,
+          //backgroundColor: Colors.white54,
+          primary: Colors.white54,
           elevation: 5,
           padding: EdgeInsets.all(15),
           shape: RoundedRectangleBorder(
