@@ -204,7 +204,7 @@ Widget buildSignUpBtn(BuildContext context, _SignUpState parent) {
           //Navigator.pop(context);
           if (_formKey.currentState!.validate()) {
             dynamic result =
-                await _auth.registerWithEmailAndPassword(username, password);
+                await _auth.registerWithEmailAndPassword(username, password,email);
             if (result == true) {
               ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text("注册成功!")));

@@ -58,18 +58,24 @@ class AuthService {
   }
 
 //register with email and password Amplify
-  Future registerWithEmailAndPassword(String name, String password) async {
-    try {
-      SignUpResult result = await Amplify.Auth.signUp(
-        username: name,
-        password: password,
-      );
-      return result.isSignUpComplete;
-    } on AuthException catch (e) {
-      print("EXCEPTION BBBBB ${e.message}");
-      return null;
-    }
+  Future registerWithEmailAndPassword(
+    String name, String password, String email) async {
+  try {
+    SignUpResult result = await Amplify.Auth.signUp(
+      username: name,
+      password: password,
+      options: CognitoSignUpOptions(
+        userAttributes: {
+          'email': email,
+        },
+      ),
+    );
+    return result.isSignUpComplete;
+  } on AuthException catch (e) {
+    print("EXCEPTION BBBBB ${e.message}");
+    return null;
   }
+}
 
 //sign out
   Future signOut() async {
